@@ -9,17 +9,17 @@ import Cookies from 'universal-cookie'
 export function Provider({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate()
   const [token, setToken] = useState('')
-  // const cookies = new Cookies()
+  const cookies = new Cookies()
   const [mounted, setMounted] = useState(false)
 
-  // const checkSession = async () => {
-  //   // Lấy giá trị của cookie
-  //   const value = cookies.get('token')
+  const checkSession = async () => {
+    // Lấy giá trị của cookie
+    const value = cookies.get('token')
 
-  //   // setToken(value)
+    // setToken(value)
 
-  //   if (!value) return navigate('/invalid')
-  // }
+    if (!value) return navigate('/invalid')
+  }
 
   useEffect(() => {
     // Uncomment the following line if you want to disable this effect in development mode
@@ -38,7 +38,7 @@ export function Provider({ children }: { children: React.ReactNode }) {
 
           if (isAppWebView) {
             console.log('WebView detected')
-            // checkSession() // Ensure checkSession is defined or imported
+            checkSession() // Ensure checkSession is defined or imported
           } else {
             console.log('Non-WebView detected')
             navigate('/invalid') // Uncomment this line to navigate to '/invalid' route

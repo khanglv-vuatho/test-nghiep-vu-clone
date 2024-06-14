@@ -145,7 +145,7 @@ const Step1 = ({ setActiveStep }: Step) => {
   return (
     <div className='flex flex-col gap-4'>
       <h1 className='text-center text-2xl font-bold text-primary-black'>Bạn đang hoạt động trong lĩnh vực nào?</h1>
-      <p className='text-red-200'>{token}</p>
+      <p className='text-green-200'>{token}</p>
       <div className='flex flex-col gap-2'>
         <Input
           ref={itemRef}
