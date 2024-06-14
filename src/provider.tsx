@@ -9,19 +9,19 @@ import Cookies from 'universal-cookie'
 export function Provider({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate()
   const [token, setToken] = useState('')
-  const cookies = new Cookies()
+  // const cookies = new Cookies()
 
-  const checkSession = async () => {
-    // Lấy giá trị của cookie
-    const value = cookies.get('token')
+  // const checkSession = async () => {
+  //   // Lấy giá trị của cookie
+  //   const value = cookies.get('token')
 
-    // setToken(value)
+  //   // setToken(value)
 
-    console.log({ token })
+  //   console.log({ token })
 
-    console.log({ value })
-    if (!value) return navigate('/invalid')
-  }
+  //   console.log({ value })
+  //   if (!value) return navigate('/invalid')
+  // }
 
   // useEffect(() => {
   //   // Uncomment the following line if you want to disable this effect in development mode
