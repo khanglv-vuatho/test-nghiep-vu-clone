@@ -24,16 +24,12 @@ const getLangFromUrl = () => {
 const authorization = async () => {
   const cookies = new Cookies()
   let token
-  if (import.meta.env.MODE === 'development') {
-    token =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZnVsbF9uYW1lIjoiTkdVWeG7hE4gVFLDgCBUSEFOSCBIVVkgIiwicHJvZmlsZV9waWN0dXJlIjoiaHR0cHM6Ly9jZG4tc2FuZGJveC52dWF0aG8uY29tL2ZhYWIzNmJmLTgxNTYtNDgyNC1iMWFmLWFiMGVjZTA0ODQ3NV8xNzAwMDQwMDY0MDExIiwicmVmX2lkIjpudWxsLCJreWNfc3RhdHVzIjoyLCJ3b3JrZXJfc3RhdHVzIjoyLCJzZXNzaW9uX2xvZ2lucyI6W3siSVAiOiIxOTIuMTY4LjAuNzciLCJkZXZpY2UiOiIxNzE4MDE0NjYzMzE2IiwidGltZSI6MTcxODAxNDY2MzMxNn1dLCJpYXQiOjE3MTgwMTQ2NjN9.ZuS9BXibaYkBAPoQeRDIR5dSaXg6WLgEHfEKgOivTxw'
-  } else {
-    token = cookies.get('token')
-    ToastComponent({
-      type: 'info',
-      message: token
-    })
-  }
+
+  token = cookies.get('token')
+  ToastComponent({
+    type: 'info',
+    message: token
+  })
 
   const lang = getLangFromUrl()
 
