@@ -170,9 +170,25 @@ const Step1 = ({ setActiveStep }: Step) => {
     onSearching && handleSearchJob()
   }, [onSearching])
 
+  const sendMessageToFlutter = (message: any) => {
+    // Lấy reference đến iframe hoặc window khác chứa ứng dụng Flutter
+    const flutterWindow: any = document.getElementById('flutterWindow')
+    const flutterWindow123: any = document.getElementById('messageHandler')
+    const contentWindow = flutterWindow?.contentWindow
+    const contentWindow123 = flutterWindow123?.contentWindow
+
+    // Gửi tin nhắn tới Flutter
+    contentWindow.postMessage(message, '*')
+    contentWindow123.postMessage(message, '*')
+  }
+
   return (
     <div className='flex flex-col gap-4'>
       <h1 className='text-center text-2xl font-bold text-primary-black'>Bạn đang hoạt động trong lĩnh vực nào?</h1>
+      <header className='App-header'>
+        <h1>Sender App</h1>
+        <button onClick={() => sendMessageToFlutter(JSON.stringify({ type: 'messageType', data: 'Hello from ReactJS' }))}>Send Message</button>
+      </header>
       <div className='flex flex-col gap-2'>
         <Input
           ref={itemRef}
