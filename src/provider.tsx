@@ -17,6 +17,7 @@ export function Provider({ children }: { children: React.ReactNode }) {
   const checkSession = useCallback(async () => {
     // const value = cookies.get('token')
     // if (!value) return navigate('/invalid')
+    console.log({ userAgent })
   }, [cookies, navigate])
 
   useEffect(() => {
