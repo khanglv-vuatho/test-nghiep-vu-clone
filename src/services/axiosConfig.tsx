@@ -1,7 +1,6 @@
 import ToastComponent from '@/components/ToastComponent'
 
 import axios, { AxiosResponse } from 'axios'
-import Cookies from 'universal-cookie'
 
 const apiConfig = {
   baseUrl: import.meta.env.VITE_API_URL
