@@ -1,7 +1,9 @@
 import ToastComponent from '@/components/ToastComponent'
 
 import axios, { AxiosResponse } from 'axios'
+import Cookies from 'universal-cookie'
 
+const cookies = new Cookies()
 const apiConfig = {
   baseUrl: import.meta.env.VITE_API_URL
 }
@@ -21,10 +23,10 @@ const getLangFromUrl = () => {
 }
 
 const authorization = async () => {
-  const token = localStorage.getItem('token')
+  const token = cookies.get('token')
   ToastComponent({
     type: 'info',
-    message: token || ''
+    message: token || 'token failed'
   })
 
   const lang = getLangFromUrl()
