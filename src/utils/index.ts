@@ -1,4 +1,5 @@
 import instance from '@/services/axiosConfig'
+import moment from 'moment'
 import { useEffect, useRef, useState } from 'react'
 
 const getCookie = (name: string) => {
@@ -79,4 +80,10 @@ const handleAddLangInUrl = ({ mainUrl, lang }: { mainUrl: string; lang: string }
   return `${mainUrl}?lang=${lang}`
 }
 
-export { getCookie, checkValidToken, useUnfocusItem, capitalizeWords, useDebounce, handleAddLangInUrl }
+const formatLocalTime = (time: string) => {
+  // Chuyển đổi thời gian UTC sang giờ địa phương
+  const convertedLocalTime = moment.utc(time).local().format('HH:mm:ss')
+  return convertedLocalTime
+}
+
+export { getCookie, checkValidToken, useUnfocusItem, capitalizeWords, useDebounce, handleAddLangInUrl, formatLocalTime }

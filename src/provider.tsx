@@ -2,49 +2,41 @@ import { NextUIProvider } from '@nextui-org/system'
 import { useNavigate } from 'react-router-dom'
 import store from '@/store'
 import { Provider as ReduxProvider } from 'react-redux'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import Wrapper from './wrapper'
-
+import { ToastContainer } from 'react-toastify'
 import Cookies from 'universal-cookie'
+
 export function Provider({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate()
   const [token, setToken] = useState('')
   const cookies = new Cookies()
   const [mounted, setMounted] = useState(false)
+  const [userAgent, setUserAgent] = useState<string | null>(null)
 
-  const checkSession = async () => {
-    // Lấy giá trị của cookie
-    const value = cookies.get('token')
-
-    // setToken(value)
-
-    if (!value) return navigate('/invalid')
-  }
+  const checkSession = useCallback(async () => {
+    // const value = cookies.get('token')
+    // if (!value) return navigate('/invalid')
+  }, [cookies, navigate])
 
   useEffect(() => {
-    // Uncomment the following line if you want to disable this effect in development mode
     if (import.meta.env.MODE === 'development') return
 
     if (typeof window !== 'undefined' && typeof navigator !== 'undefined') {
-      const userAgent = navigator.userAgent || navigator.vendor
-      // Use the correct regex string. Modify this if your regex needs to match a different pattern
+      const ua = navigator.userAgent || navigator.vendor
+      setUserAgent(ua)
       const regexString = import.meta.env.VITE_API_REGEX
-
+      console.log({ env: import.meta.env.VITE_API_REGEX })
       if (regexString) {
         try {
-          const isAppWebView = new RegExp(regexString).test(userAgent)
-          console.log('new RegExp(regexString)', new RegExp(regexString))
-          console.log('User Agent:', userAgent)
-
+          const isAppWebView = regexString == ua
           if (isAppWebView) {
-            console.log('WebView detected')
-            checkSession() // Ensure checkSession is defined or imported
+            checkSession()
           } else {
-            console.log('Non-WebView detected')
-            navigate('/invalid') // Uncomment this line to navigate to '/invalid' route
+            navigate('/invalid')
           }
         } catch (error) {
-          console.error('Invalid regular expression:', regexString, error)
+          console.log({ error })
         }
       } else {
         console.error('VITE_API_REGEX is not defined')
@@ -53,11 +45,8 @@ export function Provider({ children }: { children: React.ReactNode }) {
   }, [navigate, token])
 
   useEffect(() => {
-    const cookies = new Cookies()
-    // Lấy giá trị của cookie
     const value = cookies.get('token')
     setToken(value)
-    console.log({ value })
   }, [token])
 
   useEffect(() => {
@@ -69,7 +58,10 @@ export function Provider({ children }: { children: React.ReactNode }) {
   return (
     <NextUIProvider navigate={navigate}>
       <ReduxProvider store={store}>
-        <Wrapper token={token}>{children}</Wrapper>
+        <ToastContainer />
+        <Wrapper token={token} userAgent={userAgent as any}>
+          {children}
+        </Wrapper>
       </ReduxProvider>
     </NextUIProvider>
   )

@@ -3,14 +3,18 @@ import ImageFallback from '@/components/ImageFallback'
 import { DefaultModal } from '@/components/Modal'
 import RadioGroupCustom from '@/components/RadioGroupCustom'
 import WrapperBottom from '@/components/WrapperBottom'
+import { status } from '@/constants'
 import DefaultLayout from '@/layouts/default'
 import instance from '@/services/axiosConfig'
 import { TInitState } from '@/store'
+import { Test } from '@/types'
+// import { formatLocalTime } from '@/utils'
+
 import { Button, Link, Progress, Skeleton } from '@nextui-org/react'
-import { ArrowLeft2, Clock, DocumentText1, Gift, MessageQuestion, TickCircle } from 'iconsax-react'
+import { ArrowLeft2, Clock, DocumentText1, Gift, MessageQuestion, TickCircle, AddCircle } from 'iconsax-react'
 import moment from 'moment'
 import { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
 type Answer = {
@@ -20,15 +24,28 @@ type Answer = {
 
 export default function TestingPage() {
   const step1 = useSelector((state: TInitState) => state.step1)
+  // const testDetail = useSelector((state: TInitState) => state.testDetail) as Test
+  const isStartAgain = useSelector((state: TInitState) => state.isStartAgain)
+  const testDetail = useSelector((state: TInitState) => state.testDetail) as Test
 
   const [onFetching, setOnFetching] = useState(false)
   const [onStart, setOnStart] = useState(false)
   const [onFetchingDetail, setOnFetchingDetail] = useState(false)
+  const [onFetchingAnswer, setOnFetchingAnswer] = useState(false)
+  const [statusTest, setStatusTest] = useState<number>()
   const [dataTesting, setDataTesting] = useState<any>({})
   const [dataTestingTopic, setDataTestingTopic] = useState<any>({})
+  const [listQuestions, setListQuestions] = useState<any>([])
+  const [meta, setMeta] = useState<any>({})
   const [isReady, setIsReady] = useState(false)
 
+  const targetTime = moment.utc(testDetail?.meta?.can_retake)
+  const currentTime = moment.utc()
+
+  const isAfterCurrentTime = targetTime.isBefore(currentTime)
+
   const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   const converTimeMinutes = (time: string) => {
     return moment.duration(time).asMinutes()
@@ -51,11 +68,50 @@ export default function TestingPage() {
     try {
       const { data }: any = await instance.get(`/webview/skill-tests/${dataTesting?.id}`)
       setDataTestingTopic(data)
+      setStatusTest(data?.status)
+
+      dispatch({
+        type: 'isStartAgain',
+        payload: data?.status == status.failed
+      })
+
+      setIsReady(data?.status !== status.pending)
     } catch (error) {
       console.log(error)
     } finally {
       setOnFetchingDetail(false)
     }
+  }
+  console.log({ testDetail })
+  const handleGetListQuestions = async () => {
+    try {
+      const { data }: any = await instance.post(`/webview/skill-tests/${dataTesting?.id}/${statusTest == status.failed ? 'again' : 'start'}`)
+
+      setListQuestions(data?.topic?.questions)
+      setMeta(data?.meta)
+      dispatch({
+        type: 'isStartAgain',
+        payload: data?.status == status.failed
+      })
+
+      statusTest == status.failed ? setOnFetchingDetail(true) : setOnStart(true)
+    } catch (error: any) {
+      console.log(error)
+    } finally {
+      setOnFetchingAnswer(false)
+    }
+  }
+
+  const handleStart = () => {
+    if (statusTest == status.failed) {
+      setOnFetchingAnswer(true)
+    } else {
+      setOnFetchingAnswer(true)
+    }
+  }
+
+  const formatDDMMYYYY = (time: string) => {
+    return moment(time).format('DD/MM/YYYY')
   }
 
   useEffect(() => {
@@ -71,6 +127,10 @@ export default function TestingPage() {
   }, [onFetchingDetail])
 
   useEffect(() => {
+    onFetchingAnswer && handleGetListQuestions()
+  }, [onFetchingAnswer])
+
+  useEffect(() => {
     if (!dataTesting?.id) return
     setOnFetchingDetail(true)
   }, [dataTesting])
@@ -83,24 +143,23 @@ export default function TestingPage() {
 
   useEffect(() => {
     const checkStatusAndRefetch = async () => {
-      if (dataTestingTopic?.status !== 0) {
-        try {
-          const { data } = await instance.get(`/webview/skill-tests/${dataTesting?.id}`)
-          setDataTestingTopic(data)
-          setIsReady(true)
-        } catch (error) {
-          console.error(error)
-        } finally {
-          setIsReady(false)
-        }
-      } else {
-        setIsReady(true)
+      try {
+        const { data } = await instance.get(`/webview/skill-tests/${dataTesting?.id}`)
+        setDataTestingTopic(data)
+      } catch (error) {
+        console.error(error)
       }
     }
 
-    if (dataTestingTopic?.status !== 0) {
+    if (dataTestingTopic?.status === status.failed) {
+      return
+    }
+
+    if (dataTestingTopic?.status === status.pending) {
       const interval = setInterval(() => {
         checkStatusAndRefetch()
+        setIsReady(false)
+        console.log({ isReady })
       }, 4000)
 
       return () => clearInterval(interval)
@@ -109,263 +168,193 @@ export default function TestingPage() {
     }
   }, [dataTestingTopic])
 
+  useEffect(() => {
+    setOnFetching(true)
+  }, [])
+
+  useEffect(() => {
+    // scroll to top when screen is mounted
+    window.scrollTo(0, 0)
+  }, [])
+
   return onStart ? (
-    <Questions testId={dataTesting?.id} />
+    <Questions testId={dataTesting?.id} listQuestions={listQuestions} meta={meta} />
   ) : (
     <DefaultLayout>
-      <div className='flex flex-col gap-4 overflow-scroll p-4'>
-        <Button startContent={<ArrowLeft2 />} className='h-14 justify-start bg-transparent px-0 text-base font-bold text-primary-black' as={Link} href='/'>
-          Bài kiểm tra
-        </Button>
-        <div className='flex flex-col items-center'>
-          <div className='size-[200px]'>
-            <ImageFallback src='/robot.png' alt='hero' height={400} width={400} className='size-full' />
+      {testDetail?.meta?.can_retake ? (
+        <div className='flex min-h-[calc(100dvh-128px)] flex-col gap-2 overflow-hidden'>
+          <div className='flex items-center justify-center bg-white py-4 text-center'>
+            <div className='font-bold'>Kết quả</div>
           </div>
+          <div className='flex flex-col gap-4 px-4'>
+            {/* <div className='flex gap-2'>{dataTestingTopic?.results?.map((_: any, index: number) => <div key={index} className='h-1 w-full rounded-[4px] bg-primary-blue' />)}</div> */}
+            {testDetail?.results?.map((item: any, index: number) => (
+              <div key={item} className='relative flex w-[calc(100%-4px)] items-center gap-4 rounded-2xl bg-white p-4 shadow-[8px_8px_16px_0px_#0000000A]'>
+                <div className='absolute inset-0 z-[-10] translate-x-1 rounded-2xl bg-primary-red' />
+                <div className='flex size-8 items-center justify-center rounded-full bg-primary-blue text-sm font-bold text-white'>{index + 1}</div>
+                <div className='flex flex-1 flex-col gap-1'>
+                  <p className='font-bold'>{step1?.title}</p>
+                  <p>{formatDDMMYYYY(item.finish_time.split(' ')?.[0])}</p>
+                </div>
+                <div className='flex w-[65px] items-center justify-start gap-1'>
+                  <span>
+                    <AddCircle variant='Bold' className='rotate-45 text-primary-red transition' />
+                  </span>
+                  <p className='font-bold'>{item.percent}%</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          {/* <div className='flex h-full flex-1 flex-col gap-4 px-4'>
+            {dataTestingTopic?.results?.map((item: any) => (
+              <div key={item} className='relative flex flex-col gap-4 rounded-xl bg-white p-4 shadow-[8px_8px_16px_0px_#0000000A]'>
+                <div className='absolute -bottom-[10%] -right-[3%] flex size-[72px] rotate-45 items-center justify-center rounded-full border-2 border-primary-red bg-primary-red/10 text-sm font-bold text-primary-red backdrop-blur-sm'>
+                  <p>{item.percent >= 40 ? 'Gần đạt' : 'Chưa đạt'}</p>
+                </div>
+                <div className='flex items-center justify-between'>
+                  <p className='text-2xl font-bold text-primary-blue'>{step1?.title}</p>
+                  <p className='text-xl font-bold text-primary-red'>{item.percent}%</p>
+                </div>
+                <div className='flex flex-col gap-2'>
+                  <div className='flex items-center gap-1.5'>
+                    <p className='font-bold'>Lần {item.times}:</p>
+                    <p className='font-bold text-primary-red'>
+                      {item?.correct_answer}/{item?.total_question}
+                    </p>
+                  </div>
+                  <p>Ngày {formatDDMMYYYY(item.finish_time.split(' ')?.[0])}</p>
+                </div>
+              </div>
+            ))}
+          </div> */}
+        </div>
+      ) : (
+        <>
+          <div className='sticky top-0 z-50 flex flex-col gap-4 px-4'>
+            <Button startContent={<ArrowLeft2 />} className='h-14 justify-start bg-transparent px-0 text-base font-bold text-primary-black' as={Link} href='/'>
+              Bài kiểm tra
+            </Button>
+          </div>
+          <div className='flex flex-col gap-4 p-4'>
+            <div className='flex flex-col items-center'>
+              <div className='size-[200px]'>
+                <ImageFallback src='/robot.png' alt='hero' height={400} width={400} className='size-full' />
+              </div>
+              {!isReady && (
+                <div className='flex flex-col gap-2'>
+                  <p className='text-primary-blue'>Bộ câu hỏi đang được soạn...</p>
+                  <Progress size='md' isIndeterminate aria-label='Loading...' className='max-w-md' />
+                </div>
+              )}
+            </div>
+            <div className='flex flex-col gap-2'>
+              <h1 className='text-center text-2xl font-semibold text-primary-blue'>Kiểm tra nghiệp vụ {dataTestingTopic?.topic?.title}</h1>
+              {!isReady ? (
+                <div className='flex items-center justify-center gap-2'>
+                  <Skeleton className='h-12 w-[100px] rounded-lg' />
+                  <Skeleton className='h-12 w-[100px] rounded-lg' />
+                </div>
+              ) : (
+                <div className='flex items-center justify-center gap-2'>
+                  <PrimaryLightButton disableRipple startContent={<DocumentText1 />}>
+                    {dataTestingTopic?.topic?.questions_length} câu
+                  </PrimaryLightButton>
+                  <PrimaryLightButton disableRipple disableAnimation startContent={<Clock />}>
+                    {converTimeMinutes(dataTestingTopic?.topic?.time)} phút
+                  </PrimaryLightButton>
+                </div>
+              )}
+            </div>
+            <div className='flex flex-col gap-2 rounded-lg bg-primary-light-gray p-4'>
+              <div className='flex items-center gap-2 font-semibold text-primary-blue'>
+                <span>
+                  <Gift />
+                </span>
+                <p>Quyền lợi</p>
+              </div>
+              <ul className='list-inside list-disc pl-2'>
+                <li>Được nhận công việc liên quan đến nghề sửa chữa điện lạnh trên app Vua Thợ. </li>
+                <li>Được cập nhập các quy định quan trọng của Vua Thợ.</li>
+                <li>Được hướng dẫn chi tiết quy trình làm việc của dịch vụ.</li>
+              </ul>
+            </div>
+            <div className='flex flex-col gap-2 rounded-lg bg-primary-light-gray p-4'>
+              <div className='flex items-center gap-2 font-semibold text-primary-blue'>
+                <span>
+                  <MessageQuestion />
+                </span>
+                <p>Hướng dẫn</p>
+              </div>
+              <ul className='list-inside list-disc pl-2'>
+                <li>Tổng thời gian làm bài tối đa là 15 phút.</li>
+                <li>Thợ cần trả lời đúng tất cả câu hỏi để hoàn thành bài test.</li>
+                <li>Làm bài test theo thứ tự, có thể back chọn lại.</li>
+                <li>Không thể thoát ra khỏi màn hình khi làm bài, nếu thoát ra sẽ làm lại từ đầu.</li>
+                <li>Khi hết thời gian làm bài, hệ thống sẽ tự động tính điểm và thông báo kết quả.</li>
+              </ul>
+            </div>
+          </div>
+        </>
+      )}
+      <div className='fixed bottom-0 min-h-[84px] w-full bg-white p-4'>
+        {testDetail?.meta?.can_retake ? (
           <div className='flex flex-col gap-2'>
-            <p className='text-primary-blue'>Bộ câu hỏi đang được soạn...</p>
-            <Progress size='md' isIndeterminate aria-label='Loading...' className='max-w-md' />
+            <PrimaryButton isDisabled={isAfterCurrentTime} className='h-11 w-full rounded-full'>
+              Làm lại
+            </PrimaryButton>
+            <Button className='h-11 w-full rounded-full bg-transparent text-[#A6A6A6]'>Thoát</Button>
+            {/* Ngày <span className='font-bold'>{moment(testDetail?.meta?.can_retake?.split(' ')?.[0]).format('DD/MM/YYYY')}</span> */}
           </div>
-        </div>
-        <div className='flex flex-col gap-2'>
-          <h1 className='text-center text-2xl font-semibold text-primary-blue'>Kiểm tra nghiệp vụ {dataTestingTopic?.topic?.title}</h1>
-          {!isReady ? (
-            <div className='flex items-center gap-2'>
-              <Skeleton className='h-10 w-[100px] rounded-lg' />
-              <Skeleton className='h-10 w-[100px] rounded-lg' />
-            </div>
-          ) : (
-            <div className='flex items-center gap-2'>
-              <PrimaryLightButton startContent={<DocumentText1 />}>{dataTestingTopic?.topic?.questions_length} câu</PrimaryLightButton>
-              <PrimaryLightButton startContent={<Clock />}>{converTimeMinutes(dataTestingTopic?.topic?.time)} phút</PrimaryLightButton>
-            </div>
-          )}
-        </div>
-        <div className='flex flex-col gap-2 rounded-lg bg-primary-light-gray p-4'>
-          <div className='flex items-center gap-2 font-semibold text-primary-blue'>
-            <span>
-              <Gift />
-            </span>
-            <p>Quyền lợi</p>
-          </div>
-          <ul className='list-inside list-disc pl-2'>
-            <li className=''>Được nhận công việc liên quan đến nghề sửa chữa điện lạnh trên app Vua Thợ. </li>
-            <li>Được cập nhập các quy định quan trọng của Vua Thợ.</li>
-            <li>Được hướng dẫn chi tiết quy trình làm việc của dịch vụ.</li>
-          </ul>
-        </div>
-        <div className='flex flex-col gap-2 rounded-lg bg-primary-light-gray p-4'>
-          <div className='flex items-center gap-2 font-semibold text-primary-blue'>
-            <span>
-              <MessageQuestion />
-            </span>
-            <p>Hướng dẫn</p>
-          </div>
-          <ul className='list-inside list-disc pl-2'>
-            <li className=''>Tổng thời gian làm bài tối đa là 15 phút.</li>
-            <li>Thợ cần trả lời đúng tất cả câu hỏi để hoàn thành bài test.</li>
-            <li>Làm bài test theo thứ tự, có thể back chọn lại.</li>
-            <li>Không thể thoát ra khỏi màn hình khi làm bài, nếu thoát ra sẽ làm lại từ đầu.</li>
-            <li>Khi hết thời gian làm bài, hệ thống sẽ tự động tính điểm và thông báo kết quả.</li>
-          </ul>
-        </div>
-      </div>
-      <div className='fixed bottom-0 w-full bg-white p-4 pb-6'>
-        <PrimaryButton isLoading={!isReady} onPress={() => setOnStart(true)} className='h-11 w-full rounded-full'>
-          Bắt đầu làm
-        </PrimaryButton>
+        ) : (
+          <PrimaryButton isDisabled={!isReady} isLoading={onFetchingAnswer} onPress={handleStart} className='h-12 w-full rounded-full'>
+            {isStartAgain ? 'Kiểm tra lại' : 'Bắt đầu làm'}
+          </PrimaryButton>
+        )}
       </div>
     </DefaultLayout>
   )
 }
+type TQuestions = { testId: number; listQuestions: any; meta: any }
 
-const Questions = ({ testId }: { testId: number }) => {
-  const questionsFake = [
-    {
-      id: 1,
-      question: 'Khi vệ sinh máy giặt, bước đầu tiên bạn cần thực hiện là gì?',
-      answers: [
-        {
-          id: 1,
-          answer: 'Rút phích cắm điện của máy giặt'
-        },
-        {
-          id: 2,
-          answer: 'Mở vòi nước và làm ướt bên trong máy'
-        },
-        {
-          id: 3,
-          answer: 'Thêm chất tẩy rửa vào ngăn đựng'
-        },
-        {
-          id: 4,
-          answer: 'Bắt đầu chọn chế độ vệ sinh tự động'
-        },
-        {
-          id: 234,
-          answer: 'Rút phích cắm điện của máy giặ  3213 213 213 21t'
-        },
-        {
-          id: 22123,
-          answer: 'Mở vòi nước và làm ướt bên trong 123 23 21  máy'
-        },
-        {
-          id: 3321321,
-          answer: 'Thêm chất tẩy rửa vào n 3213 21găn đựng'
-        },
-        {
-          id: 4312312123,
-          answer: 'Bắt đầu chọn chế độ  123 12vệ sinh tự động'
-        },
-        {
-          id: 4543543453543,
-          answer: 'Rút phích cắm điện của má35453435y giặt'
-        },
-        {
-          id: 2543453543,
-          answer: 'Mở vòi nước và làm ướt bê35445543n trong máy'
-        },
-        {
-          id: 354534453,
-          answer: 'Thêm chất tẩy 435543453rửa vào ngăn đựng'
-        },
-        {
-          id: 45434,
-          answer: 'Bắt đầu chọn543543543453 chế độ vệ sinh tự động'
-        }
-      ],
-      number_choices: 1,
-      attachments: []
-    },
-    {
-      id: 2,
-      question: 'Loại chất tẩy rửa nào là phù hợp nhất để vệ sinh lồng giặt?',
-      answers: [
-        {
-          id: 5,
-          answer: 'Chất tẩy rửa chuyên dụng cho máy giặt'
-        },
-        {
-          id: 6,
-          answer: 'Nước rửa chén'
-        },
-        {
-          id: 7,
-          answer: 'Giấm trắng'
-        },
-        {
-          id: 8,
-          answer: 'Nước tẩy quần áo'
-        }
-      ],
-      number_choices: 1,
-      attachments: []
-    },
-    {
-      id: 3,
-      question: 'Khi nào bạn nên thực hiện vệ sinh bộ lọc xơ vải của máy giặt?',
-      answers: [
-        {
-          id: 9,
-          answer: 'Sau mỗi lần giặt'
-        },
-        {
-          id: 10,
-          answer: 'Mỗi tháng một lần'
-        },
-        {
-          id: 11,
-          answer: 'Chỉ khi máy giặt có mùi'
-        },
-        {
-          id: 12,
-          answer: 'Khi máy giặt không còn hoạt động'
-        }
-      ],
-      number_choices: 1,
-      attachments: []
-    },
-    {
-      id: 4,
-      question: 'Nước xả vải có thể sử dụng trong quá trình vệ sinh máy giặt không?',
-      answers: [
-        {
-          id: 13,
-          answer: 'Có, để làm mềm và thơm lồng giặt'
-        },
-        {
-          id: 14,
-          answer: 'Không, vì nước xả vải có thể để lại cặn'
-        },
-        {
-          id: 15,
-          answer: 'Có, nhưng chỉ với lượng nhỏ'
-        },
-        {
-          id: 16,
-          answer: 'Không, trừ khi được nhà sản xuất khuyến nghị'
-        }
-      ],
-      number_choices: 1,
-      attachments: []
-    },
-    {
-      id: 5,
-      question: 'Để loại bỏ mùi hôi từ máy giặt, bạn nên sử dụng phương pháp nào?',
-      answers: [
-        {
-          id: 17,
-          answer: 'Chạy một chu trình giặt nóng với chất tẩy rửa'
-        },
-        {
-          id: 18,
-          answer: 'Phơi nắng lồng giặt'
-        },
-        {
-          id: 19,
-          answer: 'Sử dụng nước rửa chén'
-        },
-        {
-          id: 20,
-          answer: 'Dùng cồn để lau chùi'
-        }
-      ],
-      number_choices: 1,
-      attachments: []
-    }
-  ]
+const Questions = ({ testId, listQuestions, meta }: TQuestions) => {
   const navigate = useNavigate()
 
-  const [onFetching, setOnFetching] = useState(false)
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [answerSheets, setAnswerSheets] = useState<any>([])
   const [isOpenModal, setIsOpenModal] = useState(false)
-  const [listQuestions, setListQuestions] = useState<any>([])
-  const [meta, setMeta] = useState<any>({
-    endTime: '',
-    startTime: ''
-  })
-  console.log({ listQuestions, meta })
+  const [onChecking, setOnChecking] = useState(false)
+
   //time zone
-  const endTime = moment.utc('2024-06-14 02:42:45')
-  const startTime = moment.utc('2024-06-14 02:32:45')
+  const endTime = moment.utc(meta.end_time)
+  const startTime = moment.utc(meta.start_time)
   const currentTime = moment.utc()
   const totalSecondsCountdown = endTime.diff(currentTime, 'seconds')
   const elapsedTime = currentTime.diff(startTime)
   const totalDuration = endTime.diff(startTime)
 
   const secondsRemaining = endTime.diff(currentTime, 'seconds')
+
   const [timeLeft, setTimeLeft] = useState(totalSecondsCountdown)
   const [progress, setProgress] = useState(0)
 
+  const dispatch = useDispatch()
+
+  const IS_FINAL_QUESTION = currentQuestion === listQuestions.length - 1
+  const IS_FILL_FULL_QUESTION = answerSheets.length < listQuestions.length
+
   const handleNextQuestion = () => {
-    if (currentQuestion < questionsFake.length - 1) {
+    if (IS_FINAL_QUESTION) {
+      handleSubmit()
+      return
+    }
+    if (currentQuestion < listQuestions.length - 1) {
       setCurrentQuestion(currentQuestion + 1)
     }
   }
 
   const handleStoreAnswer = (id: number) => {
     setAnswerSheets((prevAnswers: Answer[]) => {
-      const questionId = questionsFake[currentQuestion].id
+      const questionId = listQuestions[currentQuestion].id
       const newAnswer: Answer = {
         id: questionId,
         answer: [id]
@@ -394,16 +383,44 @@ const Questions = ({ testId }: { testId: number }) => {
 
   const handleSubmit = () => {
     setIsOpenModal(true)
+    console.log({ answerSheets })
   }
-  const handleSubmitApi = () => {
-    navigate('/result')
-  }
+  const handleSubmitApi = async () => {
+    try {
+      const payload = {
+        type: 'submit',
+        answer_sheets: answerSheets.map((item: any) => ({
+          id: item.id,
+          answers: item.answer
+        }))
+      }
 
-  const handleTimeEnd = () => {}
+      const data: any = await instance.post(`/webview/skill-tests/${testId}/submit`, payload)
+
+      if (data.status == 200) {
+        navigate('/result')
+        dispatch({
+          type: 'resultTest',
+          payload: {
+            testId: testId,
+            kyc_status: data?.data?.kyc_status,
+            percent: data?.data?.result?.percent,
+            questions: data?.data?.questions
+          }
+        })
+      }
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setOnChecking(false)
+    }
+  }
 
   useEffect(() => {
-    // if (timeLeft <= -1) return navigate('/result')
+    onChecking && handleSubmitApi()
+  }, [onChecking])
 
+  useEffect(() => {
     if (timeLeft > 0) {
       const timer = setInterval(() => {
         setTimeLeft(secondsRemaining)
@@ -411,32 +428,14 @@ const Questions = ({ testId }: { testId: number }) => {
       }, 1000)
 
       return () => clearInterval(timer)
-    } else {
-      handleTimeEnd()
     }
-  }, [timeLeft, totalSecondsCountdown])
-
-  const handleGetListQuestions = async () => {
-    try {
-      const { data }: any = await instance.post(`/webview/skill-tests/${testId}/start`)
-      console.log({ data })
-
-      setListQuestions(data)
-      setMeta(data.meta)
-    } catch (error) {
-      console.log(error)
-    } finally {
-      setOnFetching(false)
-    }
-  }
+  }, [timeLeft, totalSecondsCountdown, meta])
 
   useEffect(() => {
-    onFetching && handleGetListQuestions()
-  }, [onFetching])
-
-  useEffect(() => {
-    setOnFetching(true)
-  }, [])
+    if (progress > 99.4) {
+      setOnChecking(true)
+    }
+  }, [progress])
 
   return (
     <div>
@@ -451,12 +450,9 @@ const Questions = ({ testId }: { testId: number }) => {
                 track: 'bg-primary-light-blue'
               }}
             />
-            <Button onClick={handleSubmit} isDisabled={answerSheets.length < questionsFake.length} className='rounded-full bg-primary-blue font-bold text-white'>
-              Nộp bài
-            </Button>
           </div>
           <div className='flex w-full items-center gap-3 overflow-auto p-4 pt-0'>
-            {questionsFake.map((question, index) => {
+            {listQuestions.map((question: any, index: number) => {
               const isCurrentSelect = index === currentQuestion
               const isSelected = answerSheets.some((answer: any) => answer.id == question.id)
 
@@ -476,28 +472,23 @@ const Questions = ({ testId }: { testId: number }) => {
           </div>
           <div className='flex flex-col gap-4 p-4 py-2'>
             <h1 className='font-bold'>
-              Câu {questionsFake?.[currentQuestion]?.id}: {questionsFake?.[currentQuestion]?.question}
+              Câu {listQuestions?.[currentQuestion]?.id}: {listQuestions?.[currentQuestion]?.question}
             </h1>
             <p className='text-primary-gray'>Hãy chọn 1 đáp án đúng</p>
           </div>
         </div>
         <div className='flex-1 overflow-y-auto bg-primary-light-blue p-4 pb-[88px]'>
-          <RadioGroupCustom data={questionsFake?.[currentQuestion]?.answers} answerSheets={answerSheets} handleStoreAnswer={handleStoreAnswer} />
+          <RadioGroupCustom data={listQuestions?.[currentQuestion]?.answers} currentAnswer={answerSheets?.[currentQuestion]} handleStoreAnswer={handleStoreAnswer} />
         </div>
       </div>
       <WrapperBottom>
-        <PrimaryOutlineButton isDisabled={currentQuestion === 0} onPress={handlePrevQuestion} className='h-12 w-full rounded-full'>
+        <PrimaryOutlineButton isDisabled={currentQuestion === 0} onPress={handlePrevQuestion} className='z-20 h-12 w-full rounded-full bg-white'>
           Trở về
         </PrimaryOutlineButton>
-        {answerSheets.length === questionsFake.length && currentQuestion === questionsFake.length - 1 ? (
-          <Button onClick={handleSubmit} className='h-12 w-full rounded-full bg-primary-blue font-bold text-white'>
-            Nộp bài
-          </Button>
-        ) : (
-          <PrimaryButton onPress={handleNextQuestion} className='h-12 w-full rounded-full'>
-            Tiếp tục
-          </PrimaryButton>
-        )}
+
+        <PrimaryButton onPress={handleNextQuestion} isDisabled={IS_FINAL_QUESTION && IS_FILL_FULL_QUESTION} className='h-12 w-full rounded-full'>
+          {IS_FINAL_QUESTION ? 'Nộp bài' : 'Tiếp tục'}
+        </PrimaryButton>
       </WrapperBottom>
       <DefaultModal isOpen={isOpenModal} onOpenChange={setIsOpenModal as any}>
         <div className='flex flex-col gap-6'>
@@ -514,7 +505,7 @@ const Questions = ({ testId }: { testId: number }) => {
             <PrimaryOutlineButton onPress={() => setIsOpenModal(false)} className='h-12 w-full rounded-full'>
               Hủy
             </PrimaryOutlineButton>
-            <PrimaryButton onPress={handleSubmitApi} className='h-12 w-full rounded-full'>
+            <PrimaryButton isLoading={onChecking} onPress={() => setOnChecking(true)} className='h-12 w-full rounded-full'>
               Xác nhận
             </PrimaryButton>
           </div>

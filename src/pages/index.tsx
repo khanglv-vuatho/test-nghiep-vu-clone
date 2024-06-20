@@ -1,13 +1,15 @@
 import { PrimaryButton, PrimaryOutlineButton } from '@/components/Buttons'
 import ImageFallback from '@/components/ImageFallback'
+import { status } from '@/constants'
 import DefaultLayout from '@/layouts/default'
+import instance from '@/services/axiosConfig'
+import { TInitState } from '@/store'
+
+import { capitalizeWords, handleAddLangInUrl, useDebounce, useUnfocusItem } from '@/utils'
 import { Button, Chip, CircularProgress, Input, Radio, RadioGroup } from '@nextui-org/react'
 import { useEffect, useRef, useState } from 'react'
-import { capitalizeWords, handleAddLangInUrl, useDebounce, useUnfocusItem } from '@/utils'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { TInitState } from '@/store'
-import instance from '@/services/axiosConfig'
 
 type Step = {
   setActiveStep: any
@@ -31,7 +33,7 @@ export default function IndexPage() {
           </div>
         </div>
       )}
-      <div className={`h-full px-6 ${activeStep < 3 ? 'p-4 pb-2' : ''}`}>{steps[activeStep]}</div>
+      <div className={`h-full px-6 scrollbar-hide ${activeStep < 3 ? 'p-4 pb-2' : ''}`}>{steps[activeStep]}</div>
     </DefaultLayout>
   )
 }
@@ -45,8 +47,8 @@ const Step1 = ({ setActiveStep }: Step) => {
   const [showResult, setShowResult] = useState(false)
   const [dataJob, setDataJob] = useState([])
   const [onSearching, setOnSearching] = useState(false)
+  const [onSendingRequest, setOnSendingRequest] = useState(false)
 
-  const dispatch = useDispatch()
   const exclusionRef = useRef(null)
 
   const debouncedSearchTerm = useDebounce(searchTempValue, 300) // Adjust the delay as needed
@@ -54,6 +56,9 @@ const Step1 = ({ setActiveStep }: Step) => {
   const itemRef = useUnfocusItem(() => {
     setShowResult(false)
   }, exclusionRef)
+
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const handleChange = (event: any) => {
     setErrorJob(false)
@@ -77,7 +82,6 @@ const Step1 = ({ setActiveStep }: Step) => {
   }
 
   const handleSelectItem = (item: any) => {
-    console.log({ item })
     const title = item?.name?.vi
     const thumb = item?.icon?.url
     const id = item?.id
@@ -117,6 +121,7 @@ const Step1 = ({ setActiveStep }: Step) => {
     })
     itemRef.current?.focus()
   }
+
   const handleSearchJob = async () => {
     try {
       const { data } = await instance.get(`/webview/industries?search=${searchValue}`)
@@ -128,11 +133,28 @@ const Step1 = ({ setActiveStep }: Step) => {
     }
   }
 
-  useEffect(() => {
-    onSearching && handleSearchJob()
-  }, [onSearching])
-
   const handlePrevStep = () => {}
+
+  const handleRequestJob = async () => {
+    try {
+      await instance.post('/webview/request-new-industry', {
+        name: searchValue
+      })
+
+      navigate('/request-new-job')
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const handleRequestNewJob = () => {
+    dispatch({
+      type: 'searchValue',
+      payload: searchValue
+    })
+    if (searchValue.length <= 4) return navigate('/request-new-job')
+    setOnSendingRequest(true)
+  }
 
   useEffect(() => {
     if (debouncedSearchTerm) {
@@ -140,12 +162,17 @@ const Step1 = ({ setActiveStep }: Step) => {
     }
   }, [debouncedSearchTerm])
 
-  const token = useSelector((state: TInitState) => state.token)
+  useEffect(() => {
+    onSendingRequest && handleRequestJob()
+  }, [onSendingRequest])
+
+  useEffect(() => {
+    onSearching && handleSearchJob()
+  }, [onSearching])
 
   return (
     <div className='flex flex-col gap-4'>
       <h1 className='text-center text-2xl font-bold text-primary-black'>Bạn đang hoạt động trong lĩnh vực nào?</h1>
-      <p className='text-green-200'>{token}</p>
       <div className='flex flex-col gap-2'>
         <Input
           ref={itemRef}
@@ -161,7 +188,7 @@ const Step1 = ({ setActiveStep }: Step) => {
             )
           }
           variant='bordered'
-          placeholder='Trả lời...'
+          placeholder='Nhập ngành nghề của bạn'
           classNames={{
             input: 'text-primary-black placeholder:text-primary-gray',
             inputWrapper: `border-[1px] h-14 ${errorJob ? 'group-data-[focus=true]:border-primary-red border-primary-red' : 'group-data-[focus=true]:border-primary-blue'}`
@@ -172,16 +199,15 @@ const Step1 = ({ setActiveStep }: Step) => {
         {showResult && dataJob.length > 0 && (
           <div className='z-20 flex max-h-[250px] flex-col gap-2 overflow-auto rounded-xl bg-white p-4 shadow-[8px_8px_16px_0px_#0000000A]'>
             {dataJob?.map((item: any) => {
-              // is_added
               return (
                 <button disabled={item?.is_added} key={item?.id} onClick={() => handleSelectItem(item)} className='flex items-center justify-between'>
                   <div className='flex items-center gap-2'>
                     <div className='size-[48px]'>
                       <ImageFallback src={item?.icon?.url} alt='baove' height={200} width={200} className='size-full' />
                     </div>
-                    <p>{item?.name?.vi}</p>
+                    <p className='text-left'>{item?.name?.vi}</p>
                   </div>
-                  {item?.is_added && <Chip className='h-6 bg-primary-green text-[8px] text-white *:px-1.5'>Đã thêm</Chip>}
+                  {item?.is_added && <Chip className='h-6 bg-primary-green text-xs text-white *:px-1.5'>Đã thêm</Chip>}
                 </button>
               )
             })}
@@ -191,13 +217,15 @@ const Step1 = ({ setActiveStep }: Step) => {
       </div>
       {errorJob && (
         <div className='flex items-center justify-center gap-2'>
-          <PrimaryOutlineButton className='h-10 w-fit rounded-full px-6' onClick={handleReset}>
+          <PrimaryOutlineButton className='h-12 rounded-full px-6' onClick={handleReset}>
             Chọn lại
           </PrimaryOutlineButton>
-          <PrimaryButton className='h-10 w-fit rounded-full px-6'>Gửi yêu cầu</PrimaryButton>
+          <PrimaryButton isLoading={onSendingRequest} onPress={handleRequestNewJob} className='h-12 rounded-full px-6'>
+            Gửi yêu cầu
+          </PrimaryButton>
         </div>
       )}
-      <BottomHanldePrevNext isShowResult={showResult} isDisableNextButton={step1.title === ''} IS_FINAL_STEP={false} handleNextStep={handleNextStep} handlePrevStep={handlePrevStep} />
+      <BottomHanldePrevNext isHideBackButton={true} isShowResult={showResult} handleNextStep={handleNextStep} handlePrevStep={handlePrevStep} />
     </div>
   )
 }
@@ -215,18 +243,18 @@ const Step2 = ({ setActiveStep }: Step) => {
       label: <p className='font-bold text-primary-blue'>Thợ chính</p>,
       descripton: (
         <div className='flex flex-col gap-4'>
-          <ul className='ml-1.5 p-4'>
+          <ul className='p-4 *:text-sm'>
             <li>
               <span className='text-2xl leading-none'>• </span>
-              <span>Có nhiều kinh nghiệm, đã thành thạo các kỹ năng chuyên môn.</span>
+              <span>Bắt buộc kiểm tra trình độ nghiệp vụ để kiểm định chất lượng</span>
             </li>
             <li>
               <span className='text-2xl leading-none'>• </span>
-              <span>Có khả năng thực hiện các công việc phức tạp, độc lập hoàn thành nhiệm vụ.</span>
+              <span>Có thể nhận công việc trực tiếp từ Khách hàng</span>
             </li>
-            <li className=''>
+            <li>
               <span className='text-2xl leading-none'>• </span>
-              <span className='text-primary-green'>Có quyền tìm thêm thợ phụ để trợ giúp cho công việc cần nhiều người.</span>
+              <span>Có thể đặt Thợ phụ để hỗ trợ cho công việc</span>
             </li>
           </ul>
           <div className='mx-auto'>
@@ -242,23 +270,19 @@ const Step2 = ({ setActiveStep }: Step) => {
       label: (
         <div className='flex w-full items-center justify-between'>
           <p className={`font-bold ${activeRadio === 1 ? 'text-primary-blue' : 'text-primary-black'}`}>Thợ phụ</p>
-          <div className='rounded-lg bg-primary-yellow p-2 text-sm text-white'>Sắp ra mắt!!!</div>
+          <div className='rounded-lg bg-primary-red p-2 text-sm text-white'>Sắp ra mắt!!!</div>
         </div>
       ),
       descripton: (
         <div className='flex flex-col gap-4'>
-          <ul className='ml-1.5 p-4'>
+          <ul className='p-4 *:text-sm'>
             <li>
               <span className='text-2xl leading-none'>• </span>
-              <span>Ít kinh nghiệm, đang trong giai đoạn học nghề hoặc mới vào nghề.</span>
+              <span>Chỉ thể nhận công việc từ Thợ chính</span>
             </li>
             <li>
               <span className='text-2xl leading-none'>• </span>
-              <span> Thực hiện các công việc đơn giản, hỗ trợ thợ chính.</span>
-            </li>
-            <li>
-              <span className='text-2xl leading-none'>• </span>
-              <span className='text-primary-green'>Có thể nhận lời mời từ thợ chính nhưng không thể tự chủ động tìm kiếm công việc.</span>
+              <span>Không yêu cầu kiểm tra trình độ nghiệp vụ</span>
             </li>
           </ul>
           <div className='mx-auto'>
@@ -328,14 +352,20 @@ const Step2 = ({ setActiveStep }: Step) => {
           </div>
         ))}
       </RadioGroup>
-      <BottomHanldePrevNext isDisableNextButton={activeRadio === null} IS_FINAL_STEP={false} handleNextStep={handleNextStep} handlePrevStep={handlePrevStep} />
+      <BottomHanldePrevNext isDisableNextButton={activeRadio === null} handleNextStep={handleNextStep} handlePrevStep={handlePrevStep} />
     </div>
   )
 }
 
 const Step2End = () => {
+  const [isLoading, setIsLoading] = useState(false)
+  const handleCloseWebView = () => {
+    setIsLoading(true)
+    window.postMessage('canPop')
+  }
+
   return (
-    <div className='flex h-[calc(100dvh-100px)] items-center justify-center'>
+    <div className='flex h-[calc(100dvh-120px)] items-center justify-center'>
       <div className='flex flex-col gap-4'>
         <div className='mx-auto'>
           <div className='size-[200px]'>
@@ -348,7 +378,9 @@ const Step2End = () => {
         </div>
       </div>
       <div className='fixed bottom-0 left-0 right-0 p-4 pb-6'>
-        <Button className='h-12 w-full rounded-full bg-primary-blue text-base text-white'>Đã hiểu</Button>
+        <Button isLoading={isLoading} onPress={handleCloseWebView} className='h-12 w-full rounded-full bg-primary-blue text-base text-white'>
+          Đã hiểu
+        </Button>
       </div>
     </div>
   )
@@ -358,8 +390,15 @@ const Step3 = ({ setActiveStep }: Step) => {
   const step1 = useSelector((state: TInitState) => state.step1)
   const lang = useSelector((state: TInitState) => state.lang.lang)
 
+  const [onFetchingTest, setOnFetchingTest] = useState(false)
+  const [onFetchingDetail, setOnFetchingDetail] = useState(false)
+
+  const [dataTesting, setDataTesting] = useState<any>({})
+
+  const dispatch = useDispatch()
+
   const handleNextStep = () => {
-    navigate(handleAddLangInUrl({ mainUrl: '/testing', lang }))
+    setOnFetchingTest(true)
   }
 
   const handlePrevStep = () => {
@@ -367,28 +406,74 @@ const Step3 = ({ setActiveStep }: Step) => {
       return prev - 1
     })
   }
+  const handleFetchingTest = async () => {
+    try {
+      const { data }: any = await instance.post('/webview/request-skill-test', {
+        industry_id: step1.id
+      })
+      setDataTesting(data)
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setOnFetchingTest(false)
+    }
+  }
+
+  const handleGetQuestionAndAnswerDetail = async () => {
+    try {
+      const { data }: any = await instance.get(`/webview/skill-tests/${dataTesting?.id}`)
+      dispatch({
+        type: 'testDetail',
+        payload: data
+      })
+
+      dispatch({
+        type: 'isStartAgain',
+        payload: data?.status == status.failed
+      })
+
+      navigate(handleAddLangInUrl({ mainUrl: '/testing', lang }))
+
+      //if failed
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setOnFetchingDetail(false)
+    }
+  }
+  useEffect(() => {
+    onFetchingTest && handleFetchingTest()
+  }, [onFetchingTest])
+
+  useEffect(() => {
+    onFetchingDetail && handleGetQuestionAndAnswerDetail()
+  }, [onFetchingDetail])
+
+  useEffect(() => {
+    if (!dataTesting?.id) return
+    setOnFetchingDetail(true)
+  }, [dataTesting])
 
   return (
     <div className='flex flex-col gap-4'>
       <div className='mx-auto'>
         <div className='size-[200px]'>
-          <ImageFallback src='step3.png' alt='step-3' height={400} width={400} className='size-full' />
+          <ImageFallback src={step1?.thumb} alt={step1?.thumb} height={400} width={400} className='size-full' />
         </div>
       </div>
       <div className='flex flex-col items-center gap-2'>
-        <p>Chỉ còn một bước cuối để trở thành thợ</p>
-        <p className='text-2xl font-bold text-primary-blue'>{capitalizeWords(step1?.title)}</p>
+        <p className='text-center text-2xl font-bold text-primary-blue'>{capitalizeWords(step1?.title)}</p>
         <p className='text-base-black text-center text-sm'>
           Đối với thợ chính, bạn cần phải làm bài kiểm tra kĩ năng trước khi bắt đầu làm việc, để đảm bảo cho khách hàng có trải nghiệm tốt và gia tăng cơ hội việc làm cho bạn.
         </p>
       </div>
-      <BottomHanldePrevNext IS_FINAL_STEP={true} handleNextStep={handleNextStep} handlePrevStep={handlePrevStep} />
+      <BottomHanldePrevNext handleNextStep={handleNextStep} handlePrevStep={handlePrevStep} isNextLoading={onFetchingTest} />
     </div>
   )
 }
 
-type PropsBottomHandlePrevNext = { handlePrevStep: () => void; handleNextStep: () => void; IS_FINAL_STEP: boolean; isDisableNextButton?: boolean; isShowResult?: boolean }
-const BottomHanldePrevNext = ({ handlePrevStep, handleNextStep, IS_FINAL_STEP, isDisableNextButton = false, isShowResult }: PropsBottomHandlePrevNext) => {
+type PropsBottomHandlePrevNext = { handlePrevStep: () => void; handleNextStep: () => void; isDisableNextButton?: boolean; isShowResult?: boolean; isNextLoading?: boolean; isHideBackButton?: boolean }
+const BottomHanldePrevNext = ({ handlePrevStep, handleNextStep, isDisableNextButton = false, isShowResult, isNextLoading, isHideBackButton }: PropsBottomHandlePrevNext) => {
   const [bottomPadding, setBottomPadding] = useState(70)
 
   // const step1 = useSelector((state: TInitState) => state.step1)
@@ -418,13 +503,19 @@ const BottomHanldePrevNext = ({ handlePrevStep, handleNextStep, IS_FINAL_STEP, i
       }
     }
   }, [])
+
   return (
-    <div className='fixed bottom-0 left-0 z-50 grid w-full grid-cols-2 items-center gap-4 bg-white px-8 py-4 transition' style={{ transform: isStep1 ? `translateY(-${bottomPadding}px)` : '' }}>
-      <PrimaryOutlineButton className='h-11 rounded-full' onClick={handlePrevStep}>
-        Quay lại
-      </PrimaryOutlineButton>
-      <PrimaryButton isDisabled={isDisableNextButton} className='h-11 rounded-full' onClick={handleNextStep}>
-        {IS_FINAL_STEP ? 'Hoàn thành' : 'Tiếp tục'}
+    <div
+      className={`${isHideBackButton ? 'p-4' : 'px-8 py-4'} fixed bottom-0 left-0 z-50 flex w-full items-center gap-4 bg-white transition`}
+      style={{ transform: isStep1 ? `translateY(-${bottomPadding}px)` : '' }}
+    >
+      {!isHideBackButton && (
+        <PrimaryOutlineButton className={`h-12 w-full rounded-full`} onClick={handlePrevStep}>
+          Quay lại
+        </PrimaryOutlineButton>
+      )}
+      <PrimaryButton isLoading={isNextLoading} isDisabled={isDisableNextButton} className='h-12 w-full rounded-full' onClick={handleNextStep}>
+        Tiếp tục
       </PrimaryButton>
     </div>
   )

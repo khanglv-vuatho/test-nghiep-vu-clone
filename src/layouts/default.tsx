@@ -1,3 +1,3 @@
 export default function DefaultLayout({ children }: { children: React.ReactNode }) {
-  return <main className='pb-[100px]'>{children}</main>
+  return <main className='min-h-[100dvh] pb-[84px]'>{children}</main>
 }

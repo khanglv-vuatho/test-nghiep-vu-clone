@@ -1,53 +1,37 @@
-import { Radio, RadioGroup } from '@nextui-org/react'
-import { useState } from 'react'
-
 type Props = {
   data: { id: number; answer: string }[]
   handleStoreAnswer: (id: number) => void
-  answerSheets: { id: number; answer: number[] }[]
+  currentAnswer: { id: number; answer: number[] }
 }
-const RadioGroupCustom = ({ data, handleStoreAnswer, answerSheets }: Props) => {
-  const [selected, setSelected] = useState('')
+
+const RadioGroupCustom = ({ data, handleStoreAnswer, currentAnswer }: Props) => {
+  const labels = ['A', 'B', 'C', 'D']
+  const handleSelectAnswer = (id: number) => {
+    handleStoreAnswer(id)
+  }
+
   return (
-    <RadioGroup
-      classNames={{
-        base: '1 static block',
-        label: '2',
-        description: '3',
-        errorMessage: '4',
-        wrapper: '5 gap-4 flex-auto w-full'
-      }}
-      value={selected}
-      className=''
-      onValueChange={setSelected}
-    >
-      {data.map((value) => {
-        const isActive = selected === value.answer
-        const isSelected = answerSheets.some((item) => item.answer.includes(value.id))
+    <div className='relative flex flex-col gap-2'>
+      {data.map((value, index) => {
+        const label = labels[index]
+        const isSelected = currentAnswer?.answer.includes(value.id)
+
         return (
-          <Radio
-            classNames={{
-              base: `6 m-0 w-full p-4 flex rounded-xl transition static ${isActive || isSelected ? 'bg-primary-blue' : 'bg-white'}`,
-              label: `7 ${isActive || isSelected ? 'text-white' : 'text-primary-black'}`,
-              description: '8',
-              control: '9',
-              labelWrapper: 'm-0',
-              wrapper: 'hidden'
-            }}
-            style={{
-              width: '100%',
-              maxWidth: '100%',
-              position: 'static'
-            }}
-            key={value.answer}
-            value={value.answer}
-            onChange={() => handleStoreAnswer(value.id)}
+          <button
+            key={value.id}
+            onClick={() => handleSelectAnswer(value.id)}
+            className={`relative z-50 flex w-full cursor-pointer items-center gap-2 rounded-xl p-4 transition ${isSelected ? 'activeDiv bg-primary-blue text-white' : 'bg-white'}`}
           >
-            {value.answer}
-          </Radio>
+            <span
+              className={`z-50 flex size-7 flex-shrink-0 select-none items-center justify-center rounded-full font-bold ${isSelected ? 'bg-white text-primary-blue' : 'bg-primary-light-blue text-primary-black'}`}
+            >
+              {label}
+            </span>
+            <span className={`z-50 select-none text-left ${isSelected ? 'text-white' : 'text-primary-black'}`}>{value.answer}</span>
+          </button>
         )
       })}
-    </RadioGroup>
+    </div>
   )
 }
 
