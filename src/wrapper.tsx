@@ -2,10 +2,9 @@ import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { useLocation } from 'react-router-dom'
 
-const Wrapper = ({ children, token, userAgent }: { children: React.ReactNode; token: string; userAgent: string }) => {
+const Wrapper = ({ children, token }: { children: React.ReactNode; token: string }) => {
   const location = useLocation()
   const dispatch = useDispatch()
-  console.log({ userAgent })
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search)
 
@@ -19,16 +18,6 @@ const Wrapper = ({ children, token, userAgent }: { children: React.ReactNode; to
       }
     })
   }, [])
-
-  useEffect(() => {
-    if (token) {
-      localStorage.setItem('token', token)
-      dispatch({
-        type: 'token',
-        payload: token
-      })
-    }
-  }, [token])
 
   return (
     <>

@@ -59,9 +59,7 @@ export function Provider({ children }: { children: React.ReactNode }) {
     <NextUIProvider navigate={navigate}>
       <ReduxProvider store={store}>
         <ToastContainer />
-        <Wrapper token={token} userAgent={userAgent as any}>
-          {children}
-        </Wrapper>
+        <Wrapper token={token}>{children}</Wrapper>
       </ReduxProvider>
     </NextUIProvider>
   )

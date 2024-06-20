@@ -23,14 +23,14 @@ const getLangFromUrl = () => {
 
 const authorization = async () => {
   const cookies = new Cookies()
-  let token
 
-  token = cookies.get('token')
+  const token = localStorage.getItem('token')
   ToastComponent({
     type: 'info',
-    message: token
+    message: token || '123'
   })
 
+  console.log({ token })
   const lang = getLangFromUrl()
 
   if (token) {
