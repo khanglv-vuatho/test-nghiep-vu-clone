@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useLocation } from 'react-router-dom'
 import Cookies from 'universal-cookie'
@@ -6,9 +6,14 @@ import Cookies from 'universal-cookie'
 const Wrapper = ({ children, token }: { children: React.ReactNode; token: string }) => {
   const location = useLocation()
   const dispatch = useDispatch()
+  const [tokenTest, setTokenTest] = useState('')
   const cookies = new Cookies()
 
   const token123 = cookies.get('token')
+  useEffect(() => {
+    const token1 = cookies.get('token')
+    setTokenTest(token1)
+  }, [cookies])
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search)
@@ -26,7 +31,7 @@ const Wrapper = ({ children, token }: { children: React.ReactNode; token: string
 
   return (
     <>
-      test: {token123}:{token}456:{children}
+      token:{tokenTest} test: {token123}:{token}456:{children}
     </>
   )
 }
