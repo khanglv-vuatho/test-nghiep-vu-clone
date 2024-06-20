@@ -24,10 +24,6 @@ const getLangFromUrl = () => {
 
 const authorization = async () => {
   const token = cookies.get('token')
-  ToastComponent({
-    type: 'info',
-    message: token || 'token failed'
-  })
 
   const lang = getLangFromUrl()
 
