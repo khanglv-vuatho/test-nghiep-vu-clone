@@ -1,4 +1,4 @@
-import { Test } from '@/types'
+import { Test, direction } from '@/types'
 import { createStore } from 'redux'
 
 type Answer = {
@@ -33,6 +33,7 @@ export type TInitState = {
   testDetail: Test | {}
   isStartAgain: boolean
   searchValue: string
+  direction: direction
 }
 const DefaultValueState: TInitState = {
   searchValue: '',
@@ -54,13 +55,16 @@ const DefaultValueState: TInitState = {
     id: null
   },
   step2: null,
-  token: ''
+  token: '',
+  direction: 'right'
 }
 
 function counterReducer(state: TInitState = DefaultValueState, action: { type: string; payload: any }) {
   switch (action.type) {
     case 'lang':
       return { ...state, lang: action.payload }
+    case 'direction':
+      return { ...state, direction: action.payload }
     case 'currentStep':
       return { ...state, currentStep: action.payload }
     case 'resultTest':

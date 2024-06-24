@@ -1,4 +1,4 @@
-import instance from '@/services/axiosConfig'
+import ToastComponent from '@/components/ToastComponent'
 import moment from 'moment'
 import { useEffect, useRef, useState } from 'react'
 
@@ -6,17 +6,6 @@ const getCookie = (name: string) => {
   let value = '; ' + document.cookie
   let parts: any = value.split('; ' + name + '=')
   if (parts.length === 2) return parts.pop().split(';').shift()
-}
-
-const checkValidToken = async (token: string) => {
-  try {
-    const data: any = await instance.get(`/abc&token=${token}`)
-    console.log({ data })
-  } catch (error) {
-    console.log(error)
-  }
-
-  return token ? token : getCookie('access_token')
 }
 
 const useUnfocusItem = (callback: () => void, exclusionRef?: React.RefObject<HTMLElement | null>): React.RefObject<any> => {
@@ -76,14 +65,29 @@ const useDebounce = (value: string, delay: number) => {
   return debouncedValue
 }
 
-const handleAddLangInUrl = ({ mainUrl, lang }: { mainUrl: string; lang: string }) => {
-  return `${mainUrl}?lang=${lang}`
+const handleAddLangInUrl = ({ mainUrl, lang, token }: { mainUrl: string; lang: string; token: string }) => {
+  return `${mainUrl}?lang=${lang}&token=${token}`
 }
 
 const formatLocalTime = (time: string) => {
-  // Chuyển đổi thời gian UTC sang giờ địa phương
-  const convertedLocalTime = moment.utc(time).local().format('HH:mm:ss')
-  return convertedLocalTime
+  const utcMoment = moment.utc(time, 'HH:mm:ss')
+  const localTime = utcMoment.local().format('HH:mm:ss')
+  return localTime
 }
 
-export { getCookie, checkValidToken, useUnfocusItem, capitalizeWords, useDebounce, handleAddLangInUrl, formatLocalTime }
+const formatDDMMYYYY = (time: string) => {
+  return moment(time).format('DD/MM/YYYY')
+}
+
+const postMessageCustom = ({ message }: { message: string }) => {
+  //@ts-ignore
+  if (window?.vuatho) {
+    //@ts-ignore
+    window?.vuatho?.postMessage(message)
+  } else {
+    if (import.meta.env.MODE === 'development') return
+    ToastComponent({ message: message || 'has bug here', type: 'error' })
+  }
+}
+
+export { getCookie, useUnfocusItem, capitalizeWords, useDebounce, handleAddLangInUrl, formatLocalTime, formatDDMMYYYY, postMessageCustom }

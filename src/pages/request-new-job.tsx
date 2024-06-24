@@ -1,8 +1,10 @@
-import ImageFallback from '@/components/ImageFallback'
-import { TInitState } from '@/store'
 import { Button } from '@nextui-org/react'
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
+
+import ImageFallback from '@/components/ImageFallback'
+import { TInitState } from '@/store'
+import { postMessageCustom } from '@/utils'
 
 const RequestNewJob = () => {
   const searchValue = useSelector((state: TInitState) => state.searchValue)
@@ -10,7 +12,7 @@ const RequestNewJob = () => {
 
   const handleCloseWebView = () => {
     setIsLoading(true)
-    window.postMessage('canPop')
+    postMessageCustom({ message: 'canPop' })
   }
 
   return (

@@ -1,9 +1,7 @@
 import ToastComponent from '@/components/ToastComponent'
 
 import axios, { AxiosResponse } from 'axios'
-import Cookies from 'universal-cookie'
 
-const cookies = new Cookies()
 const apiConfig = {
   baseUrl: import.meta.env.VITE_API_URL
 }
@@ -23,7 +21,14 @@ const getLangFromUrl = () => {
 }
 
 const authorization = async () => {
-  const token = cookies.get('token')
+  let token
+  if (import.meta.env.MODE === 'development') {
+    token =
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZnVsbF9uYW1lIjoiTkdVWeG7hE4gVFLDgCBUSEFOSCBIVVkgIiwicHJvZmlsZV9waWN0dXJlIjoiaHR0cHM6Ly9jZG4tc2FuZGJveC52dWF0aG8uY29tL2ZhYWIzNmJmLTgxNTYtNDgyNC1iMWFmLWFiMGVjZTA0ODQ3NV8xNzAwMDQwMDY0MDExIiwicmVmX2lkIjpudWxsLCJreWNfc3RhdHVzIjoyLCJ3b3JrZXJfc3RhdHVzIjoyLCJzZXNzaW9uX2xvZ2lucyI6W3siSVAiOiIxOTIuMTY4LjAuNzciLCJkZXZpY2UiOiIxNzE4MDE0NjYzMzE2IiwidGltZSI6MTcxODAxNDY2MzMxNn1dLCJpYXQiOjE3MTgwMTQ2NjN9.ZuS9BXibaYkBAPoQeRDIR5dSaXg6WLgEHfEKgOivTxw'
+  } else {
+    const queryParams = new URLSearchParams(location.search)
+    token = queryParams?.get('token')
+  }
 
   const lang = getLangFromUrl()
 
@@ -81,6 +86,10 @@ instance.interceptors.response.use(
           message: error?.response?.data?.message || 'Something went wrong, please try again',
           type: 'error'
         })
+
+        if (error?.response?.data?.status === 401) {
+          window.location.href = '/invalid'
+        }
       } else if (error?.request) {
         console.log('====== Timeout =====')
       } else {

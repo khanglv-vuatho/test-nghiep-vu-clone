@@ -43,3 +43,5 @@ export type Test = {
   results: Result[]
   meta: Meta
 }
+
+export type direction = 'left' | 'right' | 'up' | 'down'

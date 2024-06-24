@@ -1,21 +1,23 @@
+import { Button, Progress, Skeleton } from '@nextui-org/react'
+import { AddCircle, ArrowLeft2, Clock, DocumentText1, Gift, MessageQuestion, TickCircle } from 'iconsax-react'
+import moment from 'moment'
+import { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+
 import { PrimaryButton, PrimaryLightButton, PrimaryOutlineButton } from '@/components/Buttons'
 import ImageFallback from '@/components/ImageFallback'
 import { DefaultModal } from '@/components/Modal'
 import RadioGroupCustom from '@/components/RadioGroupCustom'
+import TimeZone from '@/components/TimeZone'
 import WrapperBottom from '@/components/WrapperBottom'
 import { status } from '@/constants'
 import DefaultLayout from '@/layouts/default'
 import instance from '@/services/axiosConfig'
 import { TInitState } from '@/store'
 import { Test } from '@/types'
-// import { formatLocalTime } from '@/utils'
-
-import { Button, Link, Progress, Skeleton } from '@nextui-org/react'
-import { ArrowLeft2, Clock, DocumentText1, Gift, MessageQuestion, TickCircle, AddCircle } from 'iconsax-react'
-import moment from 'moment'
-import { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import { formatDDMMYYYY, formatLocalTime, handleAddLangInUrl, postMessageCustom } from '@/utils'
+import WrapperAnimation from '@/components/WrapperAnimation'
 
 type Answer = {
   id: number
@@ -42,7 +44,12 @@ export default function TestingPage() {
   const targetTime = moment.utc(testDetail?.meta?.can_retake)
   const currentTime = moment.utc()
 
-  const isAfterCurrentTime = targetTime.isBefore(currentTime)
+  const IS_AFTER_CURRENT_TIME = targetTime.isBefore(currentTime)
+
+  const lang = useSelector((state: TInitState) => state.lang.lang)
+
+  const queryParams = new URLSearchParams(location.search)
+  const token = queryParams?.get('token') || ''
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -82,7 +89,6 @@ export default function TestingPage() {
       setOnFetchingDetail(false)
     }
   }
-  console.log({ testDetail })
   const handleGetListQuestions = async () => {
     try {
       const { data }: any = await instance.post(`/webview/skill-tests/${dataTesting?.id}/${statusTest == status.failed ? 'again' : 'start'}`)
@@ -110,8 +116,12 @@ export default function TestingPage() {
     }
   }
 
-  const formatDDMMYYYY = (time: string) => {
-    return moment(time).format('DD/MM/YYYY')
+  const handleBackTest = () => {
+    dispatch({
+      type: 'direction',
+      payload: 'left'
+    })
+    navigate('/')
   }
 
   useEffect(() => {
@@ -137,7 +147,7 @@ export default function TestingPage() {
 
   useEffect(() => {
     if (!step1.title) {
-      navigate('/')
+      navigate(handleAddLangInUrl({ mainUrl: '/', lang, token }))
     }
   }, [])
 
@@ -155,11 +165,14 @@ export default function TestingPage() {
       return
     }
 
+    if (dataTestingTopic?.status === status.doing) {
+      handleStart()
+    }
+
     if (dataTestingTopic?.status === status.pending) {
       const interval = setInterval(() => {
         checkStatusAndRefetch()
         setIsReady(false)
-        console.log({ isReady })
       }, 4000)
 
       return () => clearInterval(interval)
@@ -187,51 +200,45 @@ export default function TestingPage() {
             <div className='font-bold'>Kết quả</div>
           </div>
           <div className='flex flex-col gap-4 px-4'>
-            {/* <div className='flex gap-2'>{dataTestingTopic?.results?.map((_: any, index: number) => <div key={index} className='h-1 w-full rounded-[4px] bg-primary-blue' />)}</div> */}
-            {testDetail?.results?.map((item: any, index: number) => (
-              <div key={item} className='relative flex w-[calc(100%-4px)] items-center gap-4 rounded-2xl bg-white p-4 shadow-[8px_8px_16px_0px_#0000000A]'>
-                <div className='absolute inset-0 z-[-10] translate-x-1 rounded-2xl bg-primary-red' />
-                <div className='flex size-8 items-center justify-center rounded-full bg-primary-blue text-sm font-bold text-white'>{index + 1}</div>
-                <div className='flex flex-1 flex-col gap-1'>
-                  <p className='font-bold'>{step1?.title}</p>
-                  <p>{formatDDMMYYYY(item.finish_time.split(' ')?.[0])}</p>
-                </div>
-                <div className='flex w-[65px] items-center justify-start gap-1'>
-                  <span>
-                    <AddCircle variant='Bold' className='rotate-45 text-primary-red transition' />
-                  </span>
-                  <p className='font-bold'>{item.percent}%</p>
-                </div>
-              </div>
-            ))}
-          </div>
-          {/* <div className='flex h-full flex-1 flex-col gap-4 px-4'>
-            {dataTestingTopic?.results?.map((item: any) => (
-              <div key={item} className='relative flex flex-col gap-4 rounded-xl bg-white p-4 shadow-[8px_8px_16px_0px_#0000000A]'>
-                <div className='absolute -bottom-[10%] -right-[3%] flex size-[72px] rotate-45 items-center justify-center rounded-full border-2 border-primary-red bg-primary-red/10 text-sm font-bold text-primary-red backdrop-blur-sm'>
-                  <p>{item.percent >= 40 ? 'Gần đạt' : 'Chưa đạt'}</p>
-                </div>
-                <div className='flex items-center justify-between'>
-                  <p className='text-2xl font-bold text-primary-blue'>{step1?.title}</p>
-                  <p className='text-xl font-bold text-primary-red'>{item.percent}%</p>
-                </div>
-                <div className='flex flex-col gap-2'>
-                  <div className='flex items-center gap-1.5'>
-                    <p className='font-bold'>Lần {item.times}:</p>
-                    <p className='font-bold text-primary-red'>
-                      {item?.correct_answer}/{item?.total_question}
-                    </p>
+            {testDetail?.results?.map((item: any, index: number) => {
+              const isLastItem = index == testDetail?.results?.length - 1
+              return (
+                <div
+                  key={item?.finish_time}
+                  className={`relative flex items-center gap-4 rounded-2xl bg-white p-4 shadow-[8px_8px_16px_0px_#0000000A] ${isLastItem ? 'w-[calc(100%-4px)]' : 'w-full'}`}
+                >
+                  {isLastItem && <div className='absolute inset-0 z-[-10] translate-x-1 rounded-2xl bg-primary-red' />}
+                  <div className='flex size-8 items-center justify-center rounded-full bg-primary-blue text-sm font-bold text-white'>{index + 1}</div>
+                  <div className='flex flex-1 flex-col gap-1'>
+                    <p className='font-bold'>{step1?.title}</p>
+                    <p>{formatDDMMYYYY(item.finish_time.split(' ')?.[0])}</p>
                   </div>
-                  <p>Ngày {formatDDMMYYYY(item.finish_time.split(' ')?.[0])}</p>
+                  <div className='flex w-[65px] items-center justify-start gap-1'>
+                    <span>
+                      <AddCircle variant='Bold' className='rotate-45 text-primary-red transition' />
+                    </span>
+                    <p className='font-bold'>{item.percent}%</p>
+                  </div>
                 </div>
+              )
+            })}
+          </div>
+          {!IS_AFTER_CURRENT_TIME && (
+            <div className='mt-6 flex flex-col gap-4'>
+              <div className='text-center text-sm'>
+                <p>Bạn đã hết lượt kiểm tra, vui lòng đợi đến</p>
+                <p>
+                  {formatLocalTime(testDetail?.meta?.can_retake?.split(' ')?.[1])} {formatDDMMYYYY(testDetail?.meta?.can_retake.split(' ')?.[0])}
+                </p>
               </div>
-            ))}
-          </div> */}
+              <TimeZone targetDate={testDetail?.meta?.can_retake} />
+            </div>
+          )}
         </div>
       ) : (
         <>
-          <div className='sticky top-0 z-50 flex flex-col gap-4 px-4'>
-            <Button startContent={<ArrowLeft2 />} className='h-14 justify-start bg-transparent px-0 text-base font-bold text-primary-black' as={Link} href='/'>
+          <div className='sticky top-0 z-50 flex flex-col gap-4 bg-white px-4'>
+            <Button startContent={<ArrowLeft2 />} className='h-14 justify-start bg-transparent px-0 text-base font-bold text-primary-black' onPress={handleBackTest}>
               Bài kiểm tra
             </Button>
           </div>
@@ -299,10 +306,12 @@ export default function TestingPage() {
       <div className='fixed bottom-0 min-h-[84px] w-full bg-white p-4'>
         {testDetail?.meta?.can_retake ? (
           <div className='flex flex-col gap-2'>
-            <PrimaryButton isDisabled={isAfterCurrentTime} className='h-11 w-full rounded-full'>
+            <PrimaryButton isDisabled={!IS_AFTER_CURRENT_TIME} onPress={handleStart} className='h-11 w-full rounded-full'>
               Làm lại
             </PrimaryButton>
-            <Button className='h-11 w-full rounded-full bg-transparent text-[#A6A6A6]'>Thoát</Button>
+            <Button onPress={() => postMessageCustom({ message: 'canPop' })} className='h-11 w-full rounded-full bg-transparent text-[#A6A6A6]'>
+              Thoát
+            </Button>
             {/* Ngày <span className='font-bold'>{moment(testDetail?.meta?.can_retake?.split(' ')?.[0]).format('DD/MM/YYYY')}</span> */}
           </div>
         ) : (
@@ -318,6 +327,12 @@ type TQuestions = { testId: number; listQuestions: any; meta: any }
 
 const Questions = ({ testId, listQuestions, meta }: TQuestions) => {
   const navigate = useNavigate()
+
+  const lang = useSelector((state: TInitState) => state.lang.lang)
+  const direction = useSelector((state: TInitState) => state.direction)
+
+  const queryParams = new URLSearchParams(location.search)
+  const token = queryParams?.get('token') || ''
 
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [answerSheets, setAnswerSheets] = useState<any>([])
@@ -349,12 +364,17 @@ const Questions = ({ testId, listQuestions, meta }: TQuestions) => {
     }
     if (currentQuestion < listQuestions.length - 1) {
       setCurrentQuestion(currentQuestion + 1)
+      dispatch({
+        type: 'direction',
+        payload: 'left'
+      })
     }
   }
 
   const handleStoreAnswer = (id: number) => {
     setAnswerSheets((prevAnswers: Answer[]) => {
-      const questionId = listQuestions[currentQuestion].id
+      const questionId = listQuestions?.[currentQuestion]?.id
+
       const newAnswer: Answer = {
         id: questionId,
         answer: [id]
@@ -367,6 +387,7 @@ const Questions = ({ testId, listQuestions, meta }: TQuestions) => {
         // Update the existing answer
         const updatedAnswers = [...prevAnswers]
         updatedAnswers[existingAnswerIndex] = newAnswer
+
         return updatedAnswers
       } else {
         // Add the new answer
@@ -378,12 +399,15 @@ const Questions = ({ testId, listQuestions, meta }: TQuestions) => {
   const handlePrevQuestion = () => {
     if (currentQuestion > 0) {
       setCurrentQuestion(currentQuestion - 1)
+      dispatch({
+        type: 'direction',
+        payload: 'right'
+      })
     }
   }
 
   const handleSubmit = () => {
     setIsOpenModal(true)
-    console.log({ answerSheets })
   }
   const handleSubmitApi = async () => {
     try {
@@ -394,11 +418,15 @@ const Questions = ({ testId, listQuestions, meta }: TQuestions) => {
           answers: item.answer
         }))
       }
-
+      dispatch({
+        type: 'direction',
+        payload: 'left'
+      })
       const data: any = await instance.post(`/webview/skill-tests/${testId}/submit`, payload)
 
       if (data.status == 200) {
-        navigate('/result')
+        navigate(handleAddLangInUrl({ mainUrl: '/result', lang, token }))
+
         dispatch({
           type: 'resultTest',
           payload: {
@@ -408,12 +436,18 @@ const Questions = ({ testId, listQuestions, meta }: TQuestions) => {
             questions: data?.data?.questions
           }
         })
+
+        setAnswerSheets([])
       }
     } catch (error) {
       console.log(error)
     } finally {
       setOnChecking(false)
     }
+  }
+
+  const handleChecking = () => {
+    setOnChecking(true)
   }
 
   useEffect(() => {
@@ -438,7 +472,7 @@ const Questions = ({ testId, listQuestions, meta }: TQuestions) => {
   }, [progress])
 
   return (
-    <div>
+    <div className='w-full'>
       <div className='flex min-h-dvh flex-col gap-4'>
         <div className='flex flex-col gap-4'>
           <div className='flex items-center gap-2 p-4'>
@@ -451,7 +485,7 @@ const Questions = ({ testId, listQuestions, meta }: TQuestions) => {
               }}
             />
           </div>
-          <div className='flex w-full items-center gap-3 overflow-auto p-4 pt-0'>
+          <div className='z-50 flex w-full items-center gap-3 overflow-auto p-4 pt-0'>
             {listQuestions.map((question: any, index: number) => {
               const isCurrentSelect = index === currentQuestion
               const isSelected = answerSheets.some((answer: any) => answer.id == question.id)
@@ -462,7 +496,7 @@ const Questions = ({ testId, listQuestions, meta }: TQuestions) => {
                   onClick={() => setCurrentQuestion(index)}
                   className={`relative flex size-11 flex-shrink-0 select-none items-center justify-center rounded-full border font-bold transition ${isSelected ? 'border-primary-green text-primary-green' : 'border-primary-blue text-primary-blue'} ${isCurrentSelect ? '!border-primary-blue !bg-primary-blue !text-white' : ''}`}
                 >
-                  {index + 1}
+                  <p className='z-50'>{index + 1}</p>
                   <span className='absolute bottom-0 right-0 translate-x-1/2 translate-y-[10%] text-xs font-bold'>
                     <TickCircle variant='Bold' className={`transition ${isSelected && !isCurrentSelect ? 'text-primary-green' : 'hidden'}`} />
                   </span>
@@ -470,15 +504,25 @@ const Questions = ({ testId, listQuestions, meta }: TQuestions) => {
               )
             })}
           </div>
-          <div className='flex flex-col gap-4 p-4 py-2'>
-            <h1 className='font-bold'>
-              Câu {listQuestions?.[currentQuestion]?.id}: {listQuestions?.[currentQuestion]?.question}
-            </h1>
-            <p className='text-primary-gray'>Hãy chọn 1 đáp án đúng</p>
-          </div>
+
+          <WrapperAnimation keyRender={currentQuestion} direction={direction} duration={0.1}>
+            <div className='flex flex-col gap-4 p-4 py-2'>
+              <h1 className='font-bold'>
+                Câu {listQuestions?.[currentQuestion]?.id}: {listQuestions?.[currentQuestion]?.question}
+              </h1>
+              <p className='text-primary-gray'>Hãy chọn 1 đáp án đúng</p>
+            </div>
+          </WrapperAnimation>
         </div>
         <div className='flex-1 overflow-y-auto bg-primary-light-blue p-4 pb-[88px]'>
-          <RadioGroupCustom data={listQuestions?.[currentQuestion]?.answers} currentAnswer={answerSheets?.[currentQuestion]} handleStoreAnswer={handleStoreAnswer} />
+          <WrapperAnimation keyRender={currentQuestion} direction={direction} duration={0.08}>
+            <RadioGroupCustom
+              data={listQuestions?.[currentQuestion]?.answers}
+              answerSheets={answerSheets}
+              currentAnswerId={listQuestions?.[currentQuestion]?.id}
+              handleStoreAnswer={handleStoreAnswer}
+            />
+          </WrapperAnimation>
         </div>
       </div>
       <WrapperBottom>
@@ -505,7 +549,7 @@ const Questions = ({ testId, listQuestions, meta }: TQuestions) => {
             <PrimaryOutlineButton onPress={() => setIsOpenModal(false)} className='h-12 w-full rounded-full'>
               Hủy
             </PrimaryOutlineButton>
-            <PrimaryButton isLoading={onChecking} onPress={() => setOnChecking(true)} className='h-12 w-full rounded-full'>
+            <PrimaryButton isLoading={onChecking} onPress={handleChecking} className='h-12 w-full rounded-full'>
               Xác nhận
             </PrimaryButton>
           </div>

@@ -1,14 +1,17 @@
+import { Button } from '@nextui-org/react'
+import { AddCircle, TickCircle } from 'iconsax-react'
+import { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import confetti from 'canvas-confetti'
+
 import { PrimaryButton } from '@/components/Buttons'
 import ImageFallback from '@/components/ImageFallback'
 import WrapperBottom from '@/components/WrapperBottom'
 import instance from '@/services/axiosConfig'
 import { TInitState } from '@/store'
-import { Button, Link } from '@nextui-org/react'
-
-import { AddCircle, TickCircle } from 'iconsax-react'
-import { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import { handleAddLangInUrl, postMessageCustom } from '@/utils'
+import DefaultLayout from '@/layouts/default'
 
 const ResultPage = () => {
   const resultTest = useSelector((state: TInitState) => state.resultTest)
@@ -16,16 +19,35 @@ const ResultPage = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [isTestAgain, setIsTestAgain] = useState(false)
   const [isTestTriesMaxedOut, setIsTestTriesMaxedOut] = useState(false)
+  const [isLoadingCloseWebView, setIsLoadingCloseWebView] = useState(false)
 
-  const IS_KYC_STATUS = resultTest.kyc_status == 2
+  const lang = useSelector((state: TInitState) => state.lang.lang)
+
+  const queryParams = new URLSearchParams(location.search)
+  const token = queryParams?.get('token') || ''
+
+  const IS_KYC_STATUS = resultTest.kyc_status != 2
+
+  console.log({ IS_KYC_STATUS })
 
   const navigate = useNavigate()
+  const dispatch = useDispatch()
+
+  const handleCloseWebView = () => {
+    setIsLoadingCloseWebView(true)
+    postMessageCustom({ message: 'canPop' })
+  }
+
   const handleNextResult = () => {
+    dispatch({
+      type: 'direction',
+      payload: 'left'
+    })
     if (IS_KYC_STATUS) {
-      setIsLoading(true)
-      window.postMessage('canPop')
+      navigate(handleAddLangInUrl({ mainUrl: '/kyc', lang, token }))
     } else {
-      navigate('/kyc')
+      setIsLoading(true)
+      postMessageCustom({ message: 'canPop' })
     }
   }
 
@@ -36,7 +58,7 @@ const ResultPage = () => {
   const handleApiTestAgain = async () => {
     try {
       await instance.post(`/webview/skill-tests/${resultTest?.testId}/again`)
-      navigate('/testing')
+      navigate(handleAddLangInUrl({ mainUrl: '/testing', lang, token }))
     } catch (error) {
       console.log(error)
       setIsTestTriesMaxedOut(true)
@@ -49,35 +71,37 @@ const ResultPage = () => {
   }, [isTestAgain])
 
   return (
-    <div className={`flex min-h-[calc(100dvh-80px)] flex-col gap-6 bg-primary-light-blue ${isPass ? 'pb-[100px]' : 'pb-[160px]'}`}>
-      <div>
-        <p className='py-4 text-center text-xl font-bold'>Kết quả</p>
-        <div className='px-4'>
-          <Pass />
+    <DefaultLayout>
+      <div className={`flex min-h-[calc(100dvh-80px)] flex-col gap-6 bg-primary-light-blue ${isPass ? 'pb-[100px]' : 'pb-[160px]'}`}>
+        <div>
+          <p className='py-4 text-center text-xl font-bold'>Kết quả</p>
+          <div className='px-4'>
+            <Pass />
+          </div>
+          <WrapperBottom className='z-50 px-4'>
+            {isPass ? (
+              <PrimaryButton isLoading={isLoading} onPress={handleNextResult} className='h-12 w-full rounded-full font-bold'>
+                {IS_KYC_STATUS ? 'Tiếp tục' : 'Xong'}
+              </PrimaryButton>
+            ) : (
+              <div className='flex w-full flex-col gap-1'>
+                {isTestTriesMaxedOut ? (
+                  <p className='text-center font-bold text-primary-blue'>Bạn đã hết số lần làm lại bài kiểm tra, vui lòng quay lại sau</p>
+                ) : (
+                  <PrimaryButton isLoading={isTestAgain} className='h-12 w-full rounded-full font-bold' onPress={handleTestAgain}>
+                    Làm lại
+                  </PrimaryButton>
+                )}
+                <Button onPress={handleCloseWebView} isLoading={isLoadingCloseWebView} className='h-12 bg-transparent text-primary-gray'>
+                  Thoát
+                </Button>
+              </div>
+            )}
+          </WrapperBottom>
         </div>
-        <WrapperBottom className='z-50 px-4'>
-          {isPass ? (
-            <PrimaryButton isLoading={isLoading} onPress={handleNextResult} className='h-12 w-full rounded-full font-bold'>
-              {IS_KYC_STATUS ? 'Xong' : 'Tiếp tục'}
-            </PrimaryButton>
-          ) : (
-            <div className='flex w-full flex-col gap-1'>
-              {isTestTriesMaxedOut ? (
-                <p className='text-center font-bold text-primary-blue'>Bạn đã hết số lần làm lại bài kiểm tra, vui lòng quay lại sau</p>
-              ) : (
-                <PrimaryButton isLoading={isTestAgain} className='h-12 w-full rounded-full font-bold' onPress={handleTestAgain}>
-                  Làm lại
-                </PrimaryButton>
-              )}
-              <Button as={Link} href='/' className='h-12 bg-transparent text-primary-gray'>
-                Thoát
-              </Button>
-            </div>
-          )}
-        </WrapperBottom>
+        {resultTest?.percent === 100 ? null : <ResultArea />}
       </div>
-      {resultTest?.percent === 100 ? null : <ResultArea />}
-    </div>
+    </DefaultLayout>
   )
 }
 
@@ -86,6 +110,25 @@ const Pass = () => {
   const step1 = useSelector((state: TInitState) => state.step1)
 
   const isPass = resultTest?.percent >= 60
+  useEffect(() => {
+    if (isPass) {
+      const fireConfetti = (angle: number) => {
+        confetti({
+          angle: angle,
+          spread: 30,
+          particleCount: 60,
+          origin: { y: 0.6 }
+        })
+      }
+
+      const angles = [90, 120, 60] // Angles for left, center, and right
+
+      // Fire confetti 3 times with 0.2 second interval from different angles
+      angles.forEach((angle, index) => {
+        setTimeout(() => fireConfetti(angle), (index + 1) * 200)
+      })
+    }
+  }, [isPass])
 
   return (
     <div className='flex flex-col gap-4'>

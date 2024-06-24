@@ -1,15 +1,17 @@
+import { motion } from 'framer-motion'
+import { Button, Chip, CircularProgress, Input, Radio, RadioGroup } from '@nextui-org/react'
+import { useEffect, useRef, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+
 import { PrimaryButton, PrimaryOutlineButton } from '@/components/Buttons'
 import ImageFallback from '@/components/ImageFallback'
 import { status } from '@/constants'
 import DefaultLayout from '@/layouts/default'
 import instance from '@/services/axiosConfig'
 import { TInitState } from '@/store'
-
-import { capitalizeWords, handleAddLangInUrl, useDebounce, useUnfocusItem } from '@/utils'
-import { Button, Chip, CircularProgress, Input, Radio, RadioGroup } from '@nextui-org/react'
-import { useEffect, useRef, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import ToastComponent from '@/components/ToastComponent'
+import { capitalizeWords, handleAddLangInUrl, postMessageCustom, useDebounce, useUnfocusItem } from '@/utils'
 
 type Step = {
   setActiveStep: any
@@ -82,6 +84,14 @@ const Step1 = ({ setActiveStep }: Step) => {
   }
 
   const handleSelectItem = (item: any) => {
+    if (item?.is_added) {
+      ToastComponent({
+        message: 'Bạn đã chọn ngành nghề này trước đó',
+        type: 'error'
+      })
+      return
+    }
+
     const title = item?.name?.vi
     const thumb = item?.icon?.url
     const id = item?.id
@@ -156,6 +166,20 @@ const Step1 = ({ setActiveStep }: Step) => {
     setOnSendingRequest(true)
   }
 
+  const shoudleRenderResult = () => {
+    return onSearching ? (
+      <div className='flex w-full justify-center'>
+        <CircularProgress
+          classNames={{
+            svg: 'h-8 w-8 text-primary-blue'
+          }}
+        />
+      </div>
+    ) : (
+      <p className='text-center'>Không tìm thấy lĩnh vực bạn tìm</p>
+    )
+  }
+
   useEffect(() => {
     if (debouncedSearchTerm) {
       setOnSearching(true)
@@ -170,25 +194,9 @@ const Step1 = ({ setActiveStep }: Step) => {
     onSearching && handleSearchJob()
   }, [onSearching])
 
-  const sendMessageToFlutter = (message: any) => {
-    // Lấy reference đến iframe hoặc window khác chứa ứng dụng Flutter
-    const flutterWindow: any = document.getElementById('flutterWindow')
-    const flutterWindow123: any = document.getElementById('messageHandler')
-    const contentWindow = flutterWindow?.contentWindow
-    const contentWindow123 = flutterWindow123?.contentWindow
-
-    // Gửi tin nhắn tới Flutter
-    contentWindow.postMessage(message, '*')
-    contentWindow123.postMessage(message, '*')
-  }
-
   return (
     <div className='flex flex-col gap-4'>
       <h1 className='text-center text-2xl font-bold text-primary-black'>Bạn đang hoạt động trong lĩnh vực nào?</h1>
-      <header className='App-header'>
-        <h1>Sender App</h1>
-        <button onClick={() => sendMessageToFlutter(JSON.stringify({ type: 'messageType', data: 'Hello from ReactJS' }))}>Send Message</button>
-      </header>
       <div className='flex flex-col gap-2'>
         <Input
           ref={itemRef}
@@ -212,28 +220,30 @@ const Step1 = ({ setActiveStep }: Step) => {
           onFocus={handleFocusInput}
         />
 
-        {showResult && dataJob.length > 0 && (
+        {searchValue.length > 0 && showResult && (
           <div className='z-20 flex max-h-[250px] flex-col gap-2 overflow-auto rounded-xl bg-white p-4 shadow-[8px_8px_16px_0px_#0000000A]'>
-            {dataJob?.map((item: any) => {
-              return (
-                <button disabled={item?.is_added} key={item?.id} onClick={() => handleSelectItem(item)} className='flex items-center justify-between'>
-                  <div className='flex items-center gap-2'>
-                    <div className='size-[48px]'>
-                      <ImageFallback src={item?.icon?.url} alt='baove' height={200} width={200} className='size-full' />
-                    </div>
-                    <p className='text-left'>{item?.name?.vi}</p>
-                  </div>
-                  {item?.is_added && <Chip className='h-6 bg-primary-green text-xs text-white *:px-1.5'>Đã thêm</Chip>}
-                </button>
-              )
-            })}
+            {dataJob.length > 0
+              ? dataJob?.map((item: any) => {
+                  return (
+                    <button key={item?.id} onClick={() => handleSelectItem(item)} className='flex items-center justify-between'>
+                      <div className='flex items-center gap-2'>
+                        <div className='size-[48px]'>
+                          <ImageFallback src={item?.icon?.url} alt='baove' height={200} width={200} className='size-full' />
+                        </div>
+                        <p className='text-left'>{item?.name?.vi}</p>
+                      </div>
+                      {item?.is_added && <Chip className='h-6 bg-primary-green text-xs text-white *:px-1.5'>Đã thêm</Chip>}
+                    </button>
+                  )
+                })
+              : shoudleRenderResult()}
           </div>
         )}
         {errorJob && <span className='text-center text-sm text-[#FF3131]'>Xin lỗi! Nghề nghiệp của bạn chưa có ở Vua Thợ, bạn có muốn gửi yêu cầu cho chúng tôi?</span>}
       </div>
       {errorJob && (
         <div className='flex items-center justify-center gap-2'>
-          <PrimaryOutlineButton className='h-12 rounded-full px-6' onClick={handleReset}>
+          <PrimaryOutlineButton className='h-12 rounded-full px-6' onPress={handleReset}>
             Chọn lại
           </PrimaryOutlineButton>
           <PrimaryButton isLoading={onSendingRequest} onPress={handleRequestNewJob} className='h-12 rounded-full px-6'>
@@ -339,7 +349,19 @@ const Step2 = ({ setActiveStep }: Step) => {
       <h1 className='text-center text-2xl font-bold text-primary-black'>Bạn muốn đăng ký làm thợ chính hay thợ phụ?</h1>
       <RadioGroup value={activeRadio?.toString()}>
         {options.map((item, index) => (
-          <div
+          <motion.div
+            initial={{
+              opacity: 0,
+              y: 100
+            }}
+            animate={{
+              opacity: 1,
+              y: 0
+            }}
+            transition={{
+              delay: (index + 0.5) * 0.1,
+              duration: 0.2
+            }}
             ref={(el) => (optionRefs.current[index] = el)}
             onClick={() => {
               setActiveRadio(item.value)
@@ -365,7 +387,7 @@ const Step2 = ({ setActiveStep }: Step) => {
               {item.label}
             </Radio>
             {item.descripton}
-          </div>
+          </motion.div>
         ))}
       </RadioGroup>
       <BottomHanldePrevNext isDisableNextButton={activeRadio === null} handleNextStep={handleNextStep} handlePrevStep={handlePrevStep} />
@@ -377,7 +399,7 @@ const Step2End = () => {
   const [isLoading, setIsLoading] = useState(false)
   const handleCloseWebView = () => {
     setIsLoading(true)
-    window.postMessage('canPop')
+    postMessageCustom({ message: 'canPop' })
   }
 
   return (
@@ -403,15 +425,23 @@ const Step2End = () => {
 }
 const Step3 = ({ setActiveStep }: Step) => {
   const navigate = useNavigate()
+
   const step1 = useSelector((state: TInitState) => state.step1)
   const lang = useSelector((state: TInitState) => state.lang.lang)
+  const dispatch = useDispatch()
+
+  let token
+  if (import.meta.env.MODE === 'development') {
+    const queryParams = new URLSearchParams(location.search)
+    token = queryParams?.get('token') || ''
+  } else {
+    token = useSelector((state: TInitState) => state.token)
+  }
 
   const [onFetchingTest, setOnFetchingTest] = useState(false)
   const [onFetchingDetail, setOnFetchingDetail] = useState(false)
 
   const [dataTesting, setDataTesting] = useState<any>({})
-
-  const dispatch = useDispatch()
 
   const handleNextStep = () => {
     setOnFetchingTest(true)
@@ -448,7 +478,12 @@ const Step3 = ({ setActiveStep }: Step) => {
         payload: data?.status == status.failed
       })
 
-      navigate(handleAddLangInUrl({ mainUrl: '/testing', lang }))
+      dispatch({
+        type: 'direction',
+        payload: 'left'
+      })
+
+      navigate(handleAddLangInUrl({ mainUrl: '/testing', lang, token }))
 
       //if failed
     } catch (error) {
@@ -526,11 +561,11 @@ const BottomHanldePrevNext = ({ handlePrevStep, handleNextStep, isDisableNextBut
       style={{ transform: isStep1 ? `translateY(-${bottomPadding}px)` : '' }}
     >
       {!isHideBackButton && (
-        <PrimaryOutlineButton className={`h-12 w-full rounded-full`} onClick={handlePrevStep}>
+        <PrimaryOutlineButton className={`h-12 w-full rounded-full`} onPress={handlePrevStep}>
           Quay lại
         </PrimaryOutlineButton>
       )}
-      <PrimaryButton isLoading={isNextLoading} isDisabled={isDisableNextButton} className='h-12 w-full rounded-full' onClick={handleNextStep}>
+      <PrimaryButton isLoading={isNextLoading} isDisabled={isDisableNextButton} className='h-12 w-full rounded-full' onPress={handleNextStep}>
         Tiếp tục
       </PrimaryButton>
     </div>

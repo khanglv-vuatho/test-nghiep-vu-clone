@@ -1,20 +1,47 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
-import { useLocation } from 'react-router-dom'
-import Cookies from 'universal-cookie'
+import { useLocation, useNavigate } from 'react-router-dom'
 
-const Wrapper = ({ children, token }: { children: React.ReactNode; token: string }) => {
+const Wrapper = ({ children }: { children: React.ReactNode }) => {
+  const navigate = useNavigate()
   const location = useLocation()
   const dispatch = useDispatch()
-  const [tokenTest, setTokenTest] = useState('')
-  const cookies = new Cookies()
+  const queryParams = new URLSearchParams(location.search)
+  const token = queryParams.get('token')
 
-  const token123 = cookies.get('token')
+  const checkSession = useCallback(async () => {
+    if (token) {
+      dispatch({
+        type: 'token',
+        payload: token
+      })
+    } else {
+      navigate('/invalid')
+    }
+  }, [navigate])
+
   useEffect(() => {
-    const token1 = cookies.get('token')
-    setTokenTest(token1)
-  }, [cookies])
+    if (import.meta.env.MODE === 'development') return
 
+    if (typeof window !== 'undefined' && typeof navigator !== 'undefined') {
+      const ua = navigator.userAgent || navigator.vendor
+      const regexString = import.meta.env.VITE_API_REGEX
+      if (regexString) {
+        try {
+          const isAppWebView = regexString == ua
+          if (isAppWebView) {
+            checkSession()
+          } else {
+            navigate('/invalid')
+          }
+        } catch (error) {
+          console.log({ error })
+        }
+      } else {
+        console.error('VITE_API_REGEX is not defined')
+      }
+    }
+  }, [navigate])
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search)
 
@@ -29,11 +56,22 @@ const Wrapper = ({ children, token }: { children: React.ReactNode; token: string
     })
   }, [])
 
-  return (
-    <>
-      token:{tokenTest} test: {token123}:{token}456:{children}
-    </>
-  )
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 600) return
+
+      navigate('/invalid')
+    }
+
+    handleResize()
+
+    window.addEventListener('resize', handleResize)
+    return () => {
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [])
+
+  return <>{children}</>
 }
 
 export default Wrapper
