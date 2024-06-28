@@ -226,56 +226,69 @@ const Step1 = ({ setActiveStep }: Step) => {
     onSearching && handleSearchJob()
   }, [onSearching])
 
+  // useEffect(() => {
+  //   const handleResize = () => {
+  //     ToastComponent({ message: 'handleResize', type: 'error' })
+  //     itemRef?.current?.blur()
+
+  //     window?.scrollTo({ top: 0, behavior: 'smooth' })
+  //   }
+  //   const handleResizeBlur = () => {
+  //     itemRef?.current?.blur()
+
+  //     ToastComponent({ message: 'handleResizeBlur', type: 'error' })
+  //     // itemRef?.current?.blur()
+
+  //     window?.scrollTo({ top: 0, behavior: 'smooth' })
+  //   }
+  //   const handleResizeFocus = () => {
+  //     itemRef?.current?.focus()
+
+  //     ToastComponent({ message: 'handleResizeFocus', type: 'error' })
+  //     // itemRef?.current?.blur()
+
+  //     window?.scrollTo({ top: 0, behavior: 'smooth' })
+  //   }
+  //   const visualViewport = window?.visualViewport
+
+  //   if (visualViewport) {
+  //     visualViewport.addEventListener('resize', handleResize)
+  //     window.addEventListener('blur', handleResizeBlur)
+  //     window.addEventListener('focus', handleResizeFocus)
+
+  //     return () => {
+  //       visualViewport.removeEventListener('resize', handleResize)
+  //       window.removeEventListener('blur', handleResizeBlur)
+  //       window.removeEventListener('focus', handleResizeFocus)
+  //     }
+  //   }
+  //   window.addEventListener('resize', handleResize)
+  //   window.addEventListener('blur', handleResizeBlur)
+  //   window.addEventListener('focus', handleResize)
+
+  //   handleResize()
+  //   handleResizeBlur()
+  //   handleResizeFocus()
+
+  //   return () => {
+  //     // window.removeEventListener('resize', handleResize)
+  //     // window.removeEventListener('blur', handleResize)
+  //     window.removeEventListener('focus', handleResize)
+  //   }
+  // }, [showResult])
   useEffect(() => {
-    const handleResize = () => {
-      ToastComponent({ message: 'handleResize', type: 'error' })
-      itemRef?.current?.blur()
-
-      window?.scrollTo({ top: 0, behavior: 'smooth' })
-    }
-    const handleResizeBlur = () => {
-      itemRef?.current?.blur()
-
-      ToastComponent({ message: 'handleResizeBlur', type: 'error' })
-      // itemRef?.current?.blur()
-
-      window?.scrollTo({ top: 0, behavior: 'smooth' })
-    }
-    const handleResizeFocus = () => {
-      itemRef?.current?.focus()
-
-      ToastComponent({ message: 'handleResizeFocus', type: 'error' })
-      // itemRef?.current?.blur()
-
-      window?.scrollTo({ top: 0, behavior: 'smooth' })
-    }
-    const visualViewport = window?.visualViewport
-
-    if (visualViewport) {
-      visualViewport.addEventListener('resize', handleResize)
-      window.addEventListener('blur', handleResizeBlur)
-      window.addEventListener('focus', handleResizeFocus)
-
-      return () => {
-        visualViewport.removeEventListener('resize', handleResize)
-        window.removeEventListener('blur', handleResizeBlur)
-        window.removeEventListener('focus', handleResizeFocus)
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        itemRef?.current?.focus()
       }
     }
-    window.addEventListener('resize', handleResize)
-    window.addEventListener('blur', handleResizeBlur)
-    window.addEventListener('focus', handleResize)
 
-    handleResize()
-    handleResizeBlur()
-    handleResizeFocus()
+    document.addEventListener('visibilitychange', handleVisibilityChange)
 
     return () => {
-      // window.removeEventListener('resize', handleResize)
-      // window.removeEventListener('blur', handleResize)
-      window.removeEventListener('focus', handleResize)
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
     }
-  }, [showResult])
+  }, [])
 
   return (
     <div className='flex h-full flex-col justify-between'>
