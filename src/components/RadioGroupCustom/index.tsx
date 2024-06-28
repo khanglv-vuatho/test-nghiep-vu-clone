@@ -1,3 +1,6 @@
+import { motion } from 'framer-motion'
+import { useEffect, useRef } from 'react'
+
 type Props = {
   data: { id: number; answer: string }[]
   handleStoreAnswer: (id: number) => void
@@ -22,7 +25,7 @@ const RadioGroupCustom = ({ data, handleStoreAnswer, currentAnswerId, answerShee
         return (
           <div className={`relative z-50`}>
             <div
-              key={value.id}
+              key={value.answer}
               onClick={() => handleSelectAnswer(value.id)}
               className={`z-50 flex cursor-pointer select-none items-center gap-2 rounded-xl p-4 transition active:translate-y-1 ${isSelected ? 'bg-primary-blue text-white' : 'bg-white'}`}
             >
@@ -39,6 +42,63 @@ const RadioGroupCustom = ({ data, handleStoreAnswer, currentAnswerId, answerShee
       })}
     </div>
   )
+}
+
+type PropsRadioSelectRole = {
+  activeRadio: number
+  setActiveRadio: React.Dispatch<React.SetStateAction<number>>
+  options: {
+    value: number
+    label: React.ReactNode
+    descripton: React.ReactNode
+    comingSoon?: React.ReactNode
+  }[]
+}
+export const RadioSelectRole = ({ options, activeRadio, setActiveRadio }: PropsRadioSelectRole) => {
+  const optionRefs: any = useRef([])
+
+  useEffect(() => {
+    if (optionRefs?.current?.[activeRadio]) {
+      optionRefs?.current?.[activeRadio].scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }
+  }, [activeRadio])
+
+  return options.map((item, index) => {
+    const isActive = item.value == activeRadio
+    return (
+      <motion.div
+        initial={{
+          opacity: 0,
+          y: 100
+        }}
+        animate={{
+          opacity: 1,
+          y: 0
+        }}
+        transition={{
+          delay: (index + 0.5) * 0.1,
+          duration: 0.2
+        }}
+        ref={(el) => (optionRefs.current[index] = el)}
+        onClick={() => {
+          setActiveRadio(item.value)
+        }}
+        key={item.value}
+        className={`flex flex-col overflow-hidden rounded-xl border-1 ${isActive ? 'border-primary-blue bg-primary-light-blue' : 'border-transparent bg-primary-light-gray opacity-60'}`}
+      >
+        <div>
+          {item?.comingSoon && <div>{item?.comingSoon}</div>}
+          <div className='flex items-center gap-2 p-4 pb-0'>
+            <div className={`flex size-5 flex-shrink-0 items-center justify-center rounded-full ring-2 transition ${isActive ? 'ring-primary-blue' : 'ring-primary-gray'}`}>
+              <div className={`size-4 rounded-full transition ${isActive ? 'bg-primary-blue' : 'bg-transparent'}`}></div>
+            </div>
+            {item.label}
+          </div>
+        </div>
+        {item.descripton}
+      </motion.div>
+    )
+  })
 }
 
 export default RadioGroupCustom

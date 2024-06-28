@@ -1,0 +1,95 @@
+{
+  "Home": {
+    "Step1": {
+      "text1": "Bạn đã chọn ngành nghề này trước đó",
+      "text2": "Không tìm thấy lĩnh vực bạn tìm",
+      "text3": "Bạn đang hoạt động trong lĩnh vực nào?",
+      "text4": "Nhập ngành nghề của bạn",
+      "text5": "Đã thêm",
+      "text6": "Xin lỗi! Nghề nghiệp của bạn chưa có ở Vua Thợ, bạn có muốn gửi yêu cầu cho chúng tôi?",
+      "text7": "Chọn lại",
+      "text8": "Gửi yêu cầu",
+      "text9": "Thêm nghiệp vụ"
+    },
+    "Step2": {
+      "text1": "Thợ chính",
+      "text2": "Bắt buộc kiểm tra trình độ nghiệp vụ để kiểm định chất lượng",
+      "text3": "Có thể nhận công việc trực tiếp từ Khách hàng",
+      "text4": "Có thể đặt Thợ phụ để hỗ trợ cho công việc",
+      "text5": "Thợ phụ",
+      "text6": "Sắp ra mắt!!!",
+      "text7": "Chỉ thể nhận công việc từ Thợ chính",
+      "text8": "Không yêu cầu kiểm tra trình độ nghiệp vụ",
+      "text9": "Bạn muốn đăng ký làm thợ chính hay thợ phụ?",
+      "text10": "Cám ơn bạn đã lựa chọn Vua Thợ",
+      "text11": "Chúng tôi sẽ thông báo cho bạn biết khi tính năng mới “Thợ phụ” ra mắt.",
+      "text12": "Đã hiểu"
+    },
+    "Step3": {
+      "text1": "Đối với thợ chính, bạn cần phải làm bài kiểm tra kĩ năng trước khi bắt đầu làm việc, để đảm bảo cho khách hàng có trải nghiệm tốt và gia tăng cơ hội việc làm cho bạn."
+    }
+  },
+  "BottomhandlePrevNext": {
+    "text1": "Quay lại",
+    "text2": "Tiếp tục"
+  },
+  "Testing": {
+    "text1": "Kết quả",
+    "text2": "Bạn đã hết lượt kiểm tra, vui lòng đợi đến",
+    "text3": "Bài kiểm tra",
+    "text4": "Bộ câu hỏi đang được soạn",
+    "text5": "Kiểm tra nghiệp vụ",
+    "text6": "câu",
+    "text7": "phút",
+    "text8": "Quyền lợi",
+    "text9": "Được nhận công việc liên quan đến nghiệp vụ của bạn trên app Vua Thợ.",
+    "text10": "Được cập nhật các quy định quan trọng của Vua Thợ.",
+    "text11": "Được hướng dẫn chi tiết quy trình làm việc.",
+    "text12": "Hướng dẫn",
+    "text13": "Tổng thời gian làm bài tối đa là 15 phút.",
+    "text14": "Thợ cần trả lời tất cả câu hỏi để hoàn thành bài kiểm tra.",
+    "text15": "Làm bài kiểm tra theo thứ tự, có thể quay lại để thay đổi đáp án.",
+    "text16": "Không thể thoát ra khỏi màn hình khi làm bài, nếu thoát ra sẽ làm lại từ đầu.",
+    "text17": "Khi hết thời gian làm bài, hệ thống sẽ tự động tính điểm và thông báo kết quả.",
+    "text18": "Làm lại",
+    "text19": "Thoát",
+    "text20": "Kiểm tra lại",
+    "text21": "Bắt đầu làm",
+    "text22": "Câu",
+    "text23": "Hãy chọn 1 đáp án đúng",
+    "text24": "Trở về",
+    "text25": "Nộp bài",
+    "text26": "Tiếp tục",
+    "text27": "Xác nhận nộp bài kiểm tra",
+    "text28": "Bạn chắc chắn muốn nộp bài kiểm tra của bạn? Hành động này sẽ không thể hoàn tác!",
+    "text29": "Hủy",
+    "text30": "Xác nhận"
+  },
+  "Invalid": {
+    "text1": "Trình duyệt của bạn không được hỗ trợ",
+    "text2": "Trở về"
+  },
+  "KYC": {
+    "text1": "Chỉ còn một bước cuối để bắt đầu làm việc",
+    "text2": "Thêm nghiệp vụ",
+    "text3": "eKYC - Xác minh danh tính",
+    "text4": "Việc xác minh danh tính (KYC) là bước quan trọng để đảm bảo an toàn cho cả bạn và khách hàng.",
+    "text5": "Xác minh ngay"
+  },
+  "RequestNewJob": {
+    "text1": "Cám ơn bạn đã lựa chọn Vua Thợ",
+    "text2": "Chúng tôi sẽ thông báo cho bạn biết khi Ngành nghề",
+    "text3": "Đã hiểu"
+  },
+  "Result": {
+    "text1": "Xong",
+    "text2": "Bạn đã hết số lần làm lại bài kiểm tra, vui lòng quay lại sau",
+    "text3": "Kết quả bài kiểm tra",
+    "text4": "Hoàn thành",
+    "text5": "Chưa đạt",
+    "text6": "Chúc mừng bạn đã hoàn thành bài kiểm tra! Bạn có năng lực và tiềm năng để trở thành một chuyên gia trong lĩnh vực của mình.",
+    "text7": "Bạn chưa đạt bài kiểm tra nghiệp vụ. Hãy làm lại bài kiểm tra để cải thiện điểm nhé!",
+    "text8": "Câu trả lời của bạn",
+    "text9": "Câu trả lời chính xác"
+  }
+}

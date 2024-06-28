@@ -20,9 +20,6 @@ export type TInitState = {
       your_answer: Answer
     }[]
   }
-  lang: {
-    lang: string
-  }
   step1: {
     title: string
     thumb: string
@@ -46,9 +43,6 @@ const DefaultValueState: TInitState = {
     questions: [],
     kyc_status: 0
   },
-  lang: {
-    lang: ''
-  },
   step1: {
     title: '',
     thumb: '',
@@ -61,8 +55,6 @@ const DefaultValueState: TInitState = {
 
 function counterReducer(state: TInitState = DefaultValueState, action: { type: string; payload: any }) {
   switch (action.type) {
-    case 'lang':
-      return { ...state, lang: action.payload }
     case 'direction':
       return { ...state, direction: action.payload }
     case 'currentStep':

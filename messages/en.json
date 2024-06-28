@@ -1,0 +1,95 @@
+{
+  "Home": {
+    "Step1": {
+      "text1": "You have previously selected this profession",
+      "text2": "Cannot find the industry you are looking for",
+      "text3": "Which industry are you working in?",
+      "text4": "Enter your profession",
+      "text5": "Added",
+      "text6": "Sorry! Your profession is not yet available on Vua Thợ, would you like to send us a request?",
+      "text7": "Select again",
+      "text8": "Send request",
+      "text9": "Add professional skills"
+    },
+    "Step2": {
+      "text1": "Service Provider",
+      "text2": "Mandatory proficiency test to certify quality",
+      "text3": "Can receive jobs directly from customers",
+      "text4": "Can hire Assistant Service Providers to support the job",
+      "text5": "Assistant Service Provider",
+      "text6": "Coming soon!!!",
+      "text7": "Only can receive jobs from Service Providers",
+      "text8": "No requirement for proficiency test",
+      "text9": "Do you want to register as a Service Provider or an Assistant Service Provider?",
+      "text10": "Thank you for choosing Vua Thợ",
+      "text11": "We will inform you when the new 'Assistant Service Provider' feature launches.",
+      "text12": "Got it"
+    },
+    "Step3": {
+      "text1": "For Service Providers, you need to take a skill assessment test before starting work to ensure a good experience for customers and increase job opportunities for yourself."
+    }
+  },
+  "BottomhandlePrevNext": {
+    "text1": "Back",
+    "text2": "Continue"
+  },
+  "Testing": {
+    "text1": "Result",
+    "text2": "You have run out of test attempts, please wait until",
+    "text3": "Test",
+    "text4": "The question set is being prepared",
+    "text5": "Skill assessment",
+    "text6": "question",
+    "text7": "minute(s)",
+    "text8": "Benefits",
+    "text9": "Receive work related to your expertise on the Vua Thợ app.",
+    "text10": "Stay updated on important regulations of Vua Thợ.",
+    "text11": "Detailed guidance on the working process.",
+    "text12": "Guide",
+    "text13": "The maximum test duration is 15 minutes.",
+    "text14": "Technicians need to answer all questions to complete the test.",
+    "text15": "Take the test in order, can go back to change answers.",
+    "text16": "Cannot exit the screen during the test, exiting will restart from the beginning.",
+    "text17": "When time is up, the system will automatically score and report the result.",
+    "text18": "Retry",
+    "text19": "Exit",
+    "text20": "Review",
+    "text21": "Start",
+    "text22": "Question",
+    "text23": "Please select one correct answer",
+    "text24": "Back",
+    "text25": "Submit",
+    "text26": "Continue",
+    "text27": "Confirm submission of test",
+    "text28": "Are you sure you want to submit your test? This action cannot be undone!",
+    "text29": "Cancel",
+    "text30": "Confirm"
+  },
+  "Invalid": {
+    "text1": "Your browser is not supported",
+    "text2": "Back to"
+  },
+  "KYC": {
+    "text1": "Only one final step left to start working",
+    "text2": "Add services",
+    "text3": "eKYC - Identity verification",
+    "text4": "Identity verification (KYC) is an important step to ensure safety for both you and customers.",
+    "text5": "Verify now"
+  },
+  "RequestNewJob": {
+    "text1": "Thank you for choosing Vua Thợ",
+    "text2": "We will notify you when the profession",
+    "text3": "Got it"
+  },
+  "Result": {
+    "text1": "Done",
+    "text2": "You have exhausted the number of test attempts, please come back later",
+    "text3": "Test result",
+    "text4": "Completed",
+    "text5": "Not achieved",
+    "text6": "Congratulations on completing the test! You have the skills and potential to become an expert in your field.",
+    "text7": "You did not pass the skill assessment test. Please retake the test to improve your score!",
+    "text8": "Your answer",
+    "text9": "Correct answer"
+  }
+}

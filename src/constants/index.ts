@@ -5,3 +5,9 @@ export const status = {
   passed: 3,
   failed: 4
 }
+
+export const keyPossmessage = {
+  FINISHED_TEST: 'finishedTest',
+  CAN_POP: 'canPop',
+  DIRECT_TO_EKYC: 'directToEkyc'
+}

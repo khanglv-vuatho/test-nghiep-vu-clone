@@ -7,13 +7,16 @@ import ImageFallback from '@/components/ImageFallback'
 import WrapperBottom from '@/components/WrapperBottom'
 import { postMessageCustom } from '@/utils'
 import DefaultLayout from '@/layouts/default'
+import { translate } from '@/context/translationProvider'
+import { keyPossmessage } from '@/constants'
 
 const KYC = () => {
+  const t = translate('KYC')
   const [isLoading, setIsLoading] = useState(false)
 
   const handleKYC = () => {
     setIsLoading(true)
-    postMessageCustom({ message: 'directToEkyc' })
+    postMessageCustom({ message: keyPossmessage.DIRECT_TO_EKYC })
   }
 
   return (
@@ -23,12 +26,12 @@ const KYC = () => {
           <div className='size-[200px]'>
             <ImageFallback src='/kyc.png' alt='kyc' width={400} height={400} className='size-full' />
           </div>
-          <p className='text-center text-2xl font-bold'>Chỉ còn một bước cuối để bắt đầu làm việc</p>
+          <p className='text-center text-2xl font-bold'>{t?.text1}</p>
           <div className='flex w-full items-center gap-2 rounded-2xl border border-primary-green bg-primary-light-green p-4 font-bold text-primary-green'>
             <span>
               <TickCircle variant='Bold' />
             </span>
-            <p>Thêm nghiệp vụ</p>
+            <p>{t?.text2}</p>
           </div>
           <div className=''>
             <span>
@@ -48,14 +51,14 @@ const KYC = () => {
             <span>
               <TickCircle variant='Bold' className='text-[#E4E4E4]' />
             </span>
-            <p>eKYC - Xác minh danh tính</p>
+            <p>{t?.text3}</p>
           </motion.div>
         </div>
         <WrapperBottom className='p-4'>
           <div className='flex flex-col gap-2'>
-            <p className='text-center text-sm'>Việc xác minh danh tính (KYC) là bước quan trọng để đảm bảo an toàn cho cả bạn và khách hàng.</p>
+            <p className='text-center text-sm'>{t?.text4}</p>
             <PrimaryButton className='h-12 rounded-full' isLoading={isLoading} onPress={handleKYC}>
-              Xác minh ngay
+              {t?.text5}
             </PrimaryButton>
           </div>
         </WrapperBottom>

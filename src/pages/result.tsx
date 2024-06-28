@@ -12,8 +12,12 @@ import instance from '@/services/axiosConfig'
 import { TInitState } from '@/store'
 import { handleAddLangInUrl, postMessageCustom } from '@/utils'
 import DefaultLayout from '@/layouts/default'
+import { translate } from '@/context/translationProvider'
+import { keyPossmessage } from '@/constants'
 
 const ResultPage = () => {
+  const r = translate('Result')
+  const t = translate('Testing')
   const resultTest = useSelector((state: TInitState) => state.resultTest)
   const isPass = resultTest?.percent >= 60
   const [isLoading, setIsLoading] = useState(false)
@@ -21,21 +25,18 @@ const ResultPage = () => {
   const [isTestTriesMaxedOut, setIsTestTriesMaxedOut] = useState(false)
   const [isLoadingCloseWebView, setIsLoadingCloseWebView] = useState(false)
 
-  const lang = useSelector((state: TInitState) => state.lang.lang)
-
   const queryParams = new URLSearchParams(location.search)
   const token = queryParams?.get('token') || ''
+  const lang = queryParams?.get('lang') || 'vi'
 
   const IS_KYC_STATUS = resultTest.kyc_status != 2
-
-  console.log({ IS_KYC_STATUS })
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
   const handleCloseWebView = () => {
     setIsLoadingCloseWebView(true)
-    postMessageCustom({ message: 'canPop' })
+    postMessageCustom({ message: keyPossmessage.CAN_POP })
   }
 
   const handleNextResult = () => {
@@ -47,7 +48,7 @@ const ResultPage = () => {
       navigate(handleAddLangInUrl({ mainUrl: '/kyc', lang, token }))
     } else {
       setIsLoading(true)
-      postMessageCustom({ message: 'canPop' })
+      postMessageCustom({ message: keyPossmessage.FINISHED_TEST })
     }
   }
 
@@ -72,40 +73,41 @@ const ResultPage = () => {
 
   return (
     <DefaultLayout>
-      <div className={`flex min-h-[calc(100dvh-80px)] flex-col gap-6 bg-primary-light-blue ${isPass ? 'pb-[100px]' : 'pb-[160px]'}`}>
+      <div className={`flex min-h-[calc(100dvh-80px)] flex-col gap-6 bg-primary-light-blue`}>
         <div>
-          <p className='py-4 text-center text-xl font-bold'>Kết quả</p>
+          <p className='sticky left-0 right-0 top-0 z-50 bg-primary-light-blue py-4 text-center text-xl font-bold'>{t?.text1}</p>
           <div className='px-4'>
             <Pass />
           </div>
-          <WrapperBottom className='z-50 px-4'>
-            {isPass ? (
-              <PrimaryButton isLoading={isLoading} onPress={handleNextResult} className='h-12 w-full rounded-full font-bold'>
-                {IS_KYC_STATUS ? 'Tiếp tục' : 'Xong'}
-              </PrimaryButton>
-            ) : (
-              <div className='flex w-full flex-col gap-1'>
-                {isTestTriesMaxedOut ? (
-                  <p className='text-center font-bold text-primary-blue'>Bạn đã hết số lần làm lại bài kiểm tra, vui lòng quay lại sau</p>
-                ) : (
-                  <PrimaryButton isLoading={isTestAgain} className='h-12 w-full rounded-full font-bold' onPress={handleTestAgain}>
-                    Làm lại
-                  </PrimaryButton>
-                )}
-                <Button onPress={handleCloseWebView} isLoading={isLoadingCloseWebView} className='h-12 bg-transparent text-primary-gray'>
-                  Thoát
-                </Button>
-              </div>
-            )}
-          </WrapperBottom>
         </div>
         {resultTest?.percent === 100 ? null : <ResultArea />}
       </div>
+      <WrapperBottom className='sticky px-4'>
+        {isPass ? (
+          <PrimaryButton isLoading={isLoading} onPress={handleNextResult} className='h-12 w-full rounded-full font-bold'>
+            {IS_KYC_STATUS ? t?.text26 : r?.text1}
+          </PrimaryButton>
+        ) : (
+          <div className='flex w-full flex-col gap-1'>
+            {isTestTriesMaxedOut ? (
+              <p className='text-center font-bold text-primary-blue'>{r?.text2}</p>
+            ) : (
+              <PrimaryButton isLoading={isTestAgain} className='h-12 w-full rounded-full font-bold' onPress={handleTestAgain}>
+                {t?.text18}
+              </PrimaryButton>
+            )}
+            <Button onPress={handleCloseWebView} isLoading={isLoadingCloseWebView} className='h-12 bg-transparent text-primary-gray'>
+              {t?.text19}
+            </Button>
+          </div>
+        )}
+      </WrapperBottom>
     </DefaultLayout>
   )
 }
 
 const Pass = () => {
+  const r = translate('Result')
   const resultTest = useSelector((state: TInitState) => state.resultTest)
   const step1 = useSelector((state: TInitState) => state.step1)
 
@@ -138,17 +140,15 @@ const Pass = () => {
             <ImageFallback src={isPass ? '/pass.png' : '/nopass.png'} alt='pass' width={400} height={400} className='size-full' />
           </div>
           <div className='flex flex-col'>
-            <p className='text-center'>Kết quả bài kiểm tra {step1?.title}</p>
+            <p className='text-center'>
+              {r?.text3} {step1?.title}
+            </p>
             <p className='text-center text-3xl font-bold'>{resultTest?.percent}%</p>
           </div>
         </div>
         <div className='flex flex-col items-center gap-1'>
-          {isPass ? <p className='text-center font-bold text-primary-blue'>Hoàn thành</p> : <p className='text-center font-bold text-primary-red'>Chưa đạt</p>}
-          <p className='text-center text-sm'>
-            {isPass
-              ? 'Chúc mừng bạn đã hoàn thành bài kiểm tra! Bạn có năng lực và tiềm năng để trở thành một chuyên gia trong lĩnh vực của mình.'
-              : 'Bạn chưa đạt bài kiểm tra nghiệp vụ. Hãy làm lại bài kiểm tra để cải thiện điểm nhé!'}
-          </p>
+          {isPass ? <p className='text-center font-bold text-primary-blue'>{r?.text4}</p> : <p className='text-center font-bold text-primary-red'>{r?.text5}</p>}
+          <p className='text-center text-sm'>{isPass ? r?.text6 : r?.text7}</p>
         </div>
       </div>
     </div>
@@ -156,24 +156,26 @@ const Pass = () => {
 }
 
 const ResultArea = () => {
+  const t = translate('Testing')
+  const r = translate('Result')
   const resultTest = useSelector((state: TInitState) => state.resultTest)
   const questions = resultTest.questions
 
   return (
-    <div className='flex flex-col gap-4 px-4'>
+    <div className='flex flex-col gap-4 p-4 pt-0'>
       {questions.map((item) => {
         const correctAnswer = item.correct_answer
         const yourAnswer = item.your_answer
         return (
           <div key={item.id} className='flex flex-col gap-4 rounded-2xl bg-white p-4 shadow-[8px_8px_16px_0px_#0000000A]'>
             <p className='font-bold text-primary-blue'>
-              Câu {item.id}: {item.question}
+              {t?.text6} {item.id}: {item.question}
             </p>
             <div className='flex flex-col gap-2 px-2'>
               {!item.is_correct && (
-                <AnswerBlock title='Câu trả lời của bạn' mainColor='primary-red' answerLabel={yourAnswer} icon={<AddCircle className='rotate-45 text-primary-red' variant='Bold' size={20} />} />
+                <AnswerBlock title={r?.text8} mainColor='primary-red' answerLabel={yourAnswer} icon={<AddCircle className='rotate-45 text-primary-red' variant='Bold' size={20} />} />
               )}
-              <AnswerBlock title='Câu trả lời chính xác' mainColor='primary-green' answerLabel={correctAnswer} icon={<TickCircle className='text-primary-green' variant='Bold' size={20} />} />
+              <AnswerBlock title={r?.text9} mainColor='primary-green' answerLabel={correctAnswer} icon={<TickCircle className='text-primary-green' variant='Bold' size={20} />} />
             </div>
             <p className='text-sm font-light'>{item.explain_answer}</p>
           </div>
@@ -192,6 +194,7 @@ type PropsAnswerBlock = {
   icon: JSX.Element
   mainColor: string
 }
+
 const AnswerBlock = ({ title, answerLabel, icon, mainColor }: PropsAnswerBlock) => (
   <div className='flex flex-col gap-1 text-sm'>
     <p className={`text-${mainColor}`}>{title}</p>

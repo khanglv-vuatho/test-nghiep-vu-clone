@@ -11,13 +11,14 @@ import { DefaultModal } from '@/components/Modal'
 import RadioGroupCustom from '@/components/RadioGroupCustom'
 import TimeZone from '@/components/TimeZone'
 import WrapperBottom from '@/components/WrapperBottom'
-import { status } from '@/constants'
+import { keyPossmessage, status } from '@/constants'
 import DefaultLayout from '@/layouts/default'
 import instance from '@/services/axiosConfig'
 import { TInitState } from '@/store'
 import { Test } from '@/types'
-import { formatDDMMYYYY, formatLocalTime, handleAddLangInUrl, postMessageCustom } from '@/utils'
+import { converTimeMinutes, formatDDMMYYYY, formatLocalTime, handleAddLangInUrl, postMessageCustom } from '@/utils'
 import WrapperAnimation from '@/components/WrapperAnimation'
+import { translate } from '@/context/translationProvider'
 
 type Answer = {
   id: number
@@ -25,8 +26,9 @@ type Answer = {
 }
 
 export default function TestingPage() {
+  const t = translate('Testing')
+
   const step1 = useSelector((state: TInitState) => state.step1)
-  // const testDetail = useSelector((state: TInitState) => state.testDetail) as Test
   const isStartAgain = useSelector((state: TInitState) => state.isStartAgain)
   const testDetail = useSelector((state: TInitState) => state.testDetail) as Test
 
@@ -46,17 +48,13 @@ export default function TestingPage() {
 
   const IS_AFTER_CURRENT_TIME = targetTime.isBefore(currentTime)
 
-  const lang = useSelector((state: TInitState) => state.lang.lang)
-
   const queryParams = new URLSearchParams(location.search)
+
+  const lang = queryParams?.get('lang') || 'vi'
   const token = queryParams?.get('token') || ''
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
-
-  const converTimeMinutes = (time: string) => {
-    return moment.duration(time).asMinutes()
-  }
 
   const handleGetQuestionAndAnswer = async () => {
     try {
@@ -197,7 +195,7 @@ export default function TestingPage() {
       {testDetail?.meta?.can_retake ? (
         <div className='flex min-h-[calc(100dvh-128px)] flex-col gap-2 overflow-hidden'>
           <div className='flex items-center justify-center bg-white py-4 text-center'>
-            <div className='font-bold'>Kết quả</div>
+            <div className='font-bold'>{t?.text1}</div>
           </div>
           <div className='flex flex-col gap-4 px-4'>
             {testDetail?.results?.map((item: any, index: number) => {
@@ -226,7 +224,7 @@ export default function TestingPage() {
           {!IS_AFTER_CURRENT_TIME && (
             <div className='mt-6 flex flex-col gap-4'>
               <div className='text-center text-sm'>
-                <p>Bạn đã hết lượt kiểm tra, vui lòng đợi đến</p>
+                <p>{t?.text2}</p>
                 <p>
                   {formatLocalTime(testDetail?.meta?.can_retake?.split(' ')?.[1])} {formatDDMMYYYY(testDetail?.meta?.can_retake.split(' ')?.[0])}
                 </p>
@@ -236,10 +234,10 @@ export default function TestingPage() {
           )}
         </div>
       ) : (
-        <>
-          <div className='sticky top-0 z-50 flex flex-col gap-4 bg-white px-4'>
-            <Button startContent={<ArrowLeft2 />} className='h-14 justify-start bg-transparent px-0 text-base font-bold text-primary-black' onPress={handleBackTest}>
-              Bài kiểm tra
+        <div>
+          <div className='sticky left-0 right-0 top-0 z-50 flex w-full flex-col gap-4 bg-white'>
+            <Button startContent={<ArrowLeft2 />} className='h-14 justify-start rounded-none bg-transparent px-4 text-base font-bold text-primary-black' onPress={handleBackTest}>
+              {t?.text3}
             </Button>
           </div>
           <div className='flex flex-col gap-4 p-4'>
@@ -249,13 +247,15 @@ export default function TestingPage() {
               </div>
               {!isReady && (
                 <div className='flex flex-col gap-2'>
-                  <p className='text-primary-blue'>Bộ câu hỏi đang được soạn...</p>
+                  <p className='text-primary-blue'>{t?.text4}...</p>
                   <Progress size='md' isIndeterminate aria-label='Loading...' className='max-w-md' />
                 </div>
               )}
             </div>
             <div className='flex flex-col gap-2'>
-              <h1 className='text-center text-2xl font-semibold text-primary-blue'>Kiểm tra nghiệp vụ {dataTestingTopic?.topic?.title}</h1>
+              <h1 className='text-center text-2xl font-semibold text-primary-blue'>
+                {t?.text5} {dataTestingTopic?.topic?.title}
+              </h1>
               {!isReady ? (
                 <div className='flex items-center justify-center gap-2'>
                   <Skeleton className='h-12 w-[100px] rounded-lg' />
@@ -264,10 +264,10 @@ export default function TestingPage() {
               ) : (
                 <div className='flex items-center justify-center gap-2'>
                   <PrimaryLightButton disableRipple startContent={<DocumentText1 />}>
-                    {dataTestingTopic?.topic?.questions_length} câu
+                    {dataTestingTopic?.topic?.questions_length} {t?.text6}
                   </PrimaryLightButton>
                   <PrimaryLightButton disableRipple disableAnimation startContent={<Clock />}>
-                    {converTimeMinutes(dataTestingTopic?.topic?.time)} phút
+                    {converTimeMinutes(dataTestingTopic?.topic?.time)} {t?.text7}
                   </PrimaryLightButton>
                 </div>
               )}
@@ -277,12 +277,12 @@ export default function TestingPage() {
                 <span>
                   <Gift />
                 </span>
-                <p>Quyền lợi</p>
+                <p>{t?.text8}</p>
               </div>
               <ul className='list-inside list-disc pl-2'>
-                <li>Được nhận công việc liên quan đến nghề sửa chữa điện lạnh trên app Vua Thợ. </li>
-                <li>Được cập nhập các quy định quan trọng của Vua Thợ.</li>
-                <li>Được hướng dẫn chi tiết quy trình làm việc của dịch vụ.</li>
+                <li>{t?.text9}</li>
+                <li>{t?.text10}</li>
+                <li>{t?.text11}</li>
               </ul>
             </div>
             <div className='flex flex-col gap-2 rounded-lg bg-primary-light-gray p-4'>
@@ -290,33 +290,32 @@ export default function TestingPage() {
                 <span>
                   <MessageQuestion />
                 </span>
-                <p>Hướng dẫn</p>
+                <p>{t?.text12}</p>
               </div>
               <ul className='list-inside list-disc pl-2'>
-                <li>Tổng thời gian làm bài tối đa là 15 phút.</li>
-                <li>Thợ cần trả lời đúng tất cả câu hỏi để hoàn thành bài test.</li>
-                <li>Làm bài test theo thứ tự, có thể back chọn lại.</li>
-                <li>Không thể thoát ra khỏi màn hình khi làm bài, nếu thoát ra sẽ làm lại từ đầu.</li>
-                <li>Khi hết thời gian làm bài, hệ thống sẽ tự động tính điểm và thông báo kết quả.</li>
+                <li>{t?.text13}</li>
+                <li>{t?.text14}</li>
+                <li>{t?.text15}</li>
+                <li>{t?.text16}</li>
+                <li>{t?.text17}</li>
               </ul>
             </div>
           </div>
-        </>
+        </div>
       )}
-      <div className='fixed bottom-0 min-h-[84px] w-full bg-white p-4'>
+      <div className='sticky bottom-0 min-h-[84px] w-full bg-white p-4'>
         {testDetail?.meta?.can_retake ? (
           <div className='flex flex-col gap-2'>
             <PrimaryButton isDisabled={!IS_AFTER_CURRENT_TIME} onPress={handleStart} className='h-11 w-full rounded-full'>
-              Làm lại
+              {t?.text18}
             </PrimaryButton>
-            <Button onPress={() => postMessageCustom({ message: 'canPop' })} className='h-11 w-full rounded-full bg-transparent text-[#A6A6A6]'>
-              Thoát
+            <Button onPress={() => postMessageCustom({ message: keyPossmessage.CAN_POP })} className='h-11 w-full rounded-full bg-transparent text-[#A6A6A6]'>
+              {t?.text19}
             </Button>
-            {/* Ngày <span className='font-bold'>{moment(testDetail?.meta?.can_retake?.split(' ')?.[0]).format('DD/MM/YYYY')}</span> */}
           </div>
         ) : (
           <PrimaryButton isDisabled={!isReady} isLoading={onFetchingAnswer} onPress={handleStart} className='h-12 w-full rounded-full'>
-            {isStartAgain ? 'Kiểm tra lại' : 'Bắt đầu làm'}
+            {isStartAgain ? t?.text20 : t?.text21}
           </PrimaryButton>
         )}
       </div>
@@ -326,13 +325,14 @@ export default function TestingPage() {
 type TQuestions = { testId: number; listQuestions: any; meta: any }
 
 const Questions = ({ testId, listQuestions, meta }: TQuestions) => {
+  const t = translate('Testing')
   const navigate = useNavigate()
 
-  const lang = useSelector((state: TInitState) => state.lang.lang)
   const direction = useSelector((state: TInitState) => state.direction)
 
   const queryParams = new URLSearchParams(location.search)
   const token = queryParams?.get('token') || ''
+  const lang = queryParams?.get('lang') || 'vi'
 
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [answerSheets, setAnswerSheets] = useState<any>([])
@@ -394,6 +394,14 @@ const Questions = ({ testId, listQuestions, meta }: TQuestions) => {
         return [...prevAnswers, newAnswer]
       }
     })
+  }
+
+  const handleChangeQuestion = (index: number) => {
+    dispatch({
+      type: 'direction',
+      payload: currentQuestion < index ? 'left' : 'right'
+    })
+    setCurrentQuestion(index)
   }
 
   const handlePrevQuestion = () => {
@@ -462,12 +470,14 @@ const Questions = ({ testId, listQuestions, meta }: TQuestions) => {
       }, 1000)
 
       return () => clearInterval(timer)
+    } else {
+      handleChecking()
     }
   }, [timeLeft, totalSecondsCountdown, meta])
 
   useEffect(() => {
     if (progress > 99.4) {
-      setOnChecking(true)
+      handleChecking()
     }
   }, [progress])
 
@@ -492,8 +502,8 @@ const Questions = ({ testId, listQuestions, meta }: TQuestions) => {
 
               return (
                 <button
-                  key={question.id}
-                  onClick={() => setCurrentQuestion(index)}
+                  key={question?.id}
+                  onClick={() => handleChangeQuestion(index)}
                   className={`relative flex size-11 flex-shrink-0 select-none items-center justify-center rounded-full border font-bold transition ${isSelected ? 'border-primary-green text-primary-green' : 'border-primary-blue text-primary-blue'} ${isCurrentSelect ? '!border-primary-blue !bg-primary-blue !text-white' : ''}`}
                 >
                   <p className='z-50'>{index + 1}</p>
@@ -506,15 +516,15 @@ const Questions = ({ testId, listQuestions, meta }: TQuestions) => {
           </div>
 
           <WrapperAnimation keyRender={currentQuestion} direction={direction} duration={0.1}>
-            <div className='flex flex-col gap-4 p-4 py-2'>
+            <div className='flex flex-col gap-4 overflow-hidden p-4 py-2'>
               <h1 className='font-bold'>
-                Câu {listQuestions?.[currentQuestion]?.id}: {listQuestions?.[currentQuestion]?.question}
+                {t?.text22} {listQuestions?.[currentQuestion]?.id}: {listQuestions?.[currentQuestion]?.question}
               </h1>
-              <p className='text-primary-gray'>Hãy chọn 1 đáp án đúng</p>
+              <p className='text-primary-gray'>{t?.text23}</p>
             </div>
           </WrapperAnimation>
         </div>
-        <div className='flex-1 overflow-y-auto bg-primary-light-blue p-4 pb-[88px]'>
+        <div className='mb-[100px] flex-1 overflow-hidden overflow-y-auto bg-primary-light-blue p-4'>
           <WrapperAnimation keyRender={currentQuestion} direction={direction} duration={0.08}>
             <RadioGroupCustom
               data={listQuestions?.[currentQuestion]?.answers}
@@ -527,11 +537,10 @@ const Questions = ({ testId, listQuestions, meta }: TQuestions) => {
       </div>
       <WrapperBottom>
         <PrimaryOutlineButton isDisabled={currentQuestion === 0} onPress={handlePrevQuestion} className='z-20 h-12 w-full rounded-full bg-white'>
-          Trở về
+          {t?.text24}
         </PrimaryOutlineButton>
-
         <PrimaryButton onPress={handleNextQuestion} isDisabled={IS_FINAL_QUESTION && IS_FILL_FULL_QUESTION} className='h-12 w-full rounded-full'>
-          {IS_FINAL_QUESTION ? 'Nộp bài' : 'Tiếp tục'}
+          {IS_FINAL_QUESTION ? t?.text25 : t?.text26}
         </PrimaryButton>
       </WrapperBottom>
       <DefaultModal isOpen={isOpenModal} onOpenChange={setIsOpenModal as any}>
@@ -541,16 +550,16 @@ const Questions = ({ testId, listQuestions, meta }: TQuestions) => {
               <ImageFallback src='/test.png' alt='test' width={200} height={200} className='size-full' />
             </div>
             <div className='flex flex-col gap-1'>
-              <p className='text-center font-bold'>Xác nhận nộp bài kiểm tra</p>
-              <p className='text-center text-xs'>Bạn chắc chắn muốn nộp bài kiểm tra của bạn? Hành động này sẽ không thể hoàn tác!</p>
+              <p className='text-center font-bold'>{t?.text27}</p>
+              <p className='text-center text-xs'>{t?.text28}</p>
             </div>
           </div>
           <div className='flex items-center gap-4'>
             <PrimaryOutlineButton onPress={() => setIsOpenModal(false)} className='h-12 w-full rounded-full'>
-              Hủy
+              {t?.text29}
             </PrimaryOutlineButton>
             <PrimaryButton isLoading={onChecking} onPress={handleChecking} className='h-12 w-full rounded-full'>
-              Xác nhận
+              {t?.text30}
             </PrimaryButton>
           </div>
         </div>

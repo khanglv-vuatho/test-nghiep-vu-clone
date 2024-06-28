@@ -5,14 +5,19 @@ import { useSelector } from 'react-redux'
 import ImageFallback from '@/components/ImageFallback'
 import { TInitState } from '@/store'
 import { postMessageCustom } from '@/utils'
+import { translate } from '@/context/translationProvider'
+import { keyPossmessage } from '@/constants'
 
 const RequestNewJob = () => {
+  const r = translate('RequestNewJob')
+
   const searchValue = useSelector((state: TInitState) => state.searchValue)
+
   const [isLoading, setIsLoading] = useState(false)
 
   const handleCloseWebView = () => {
     setIsLoading(true)
-    postMessageCustom({ message: 'canPop' })
+    postMessageCustom({ message: keyPossmessage.CAN_POP })
   }
 
   return (
@@ -24,13 +29,15 @@ const RequestNewJob = () => {
           </div>
         </div>
         <div className='flex flex-col gap-2 px-8'>
-          <p className='px-4 text-center text-2xl font-bold'>Cám ơn bạn đã lựa chọn Vua Thợ</p>
-          <p className='text-center'>Chúng tôi sẽ thông báo cho bạn biết khi Ngành nghề "{searchValue || ''}".</p>
+          <p className='px-4 text-center text-2xl font-bold'>{r?.text1}</p>
+          <p className='text-center'>
+            {r?.text2} "{searchValue || ''}".
+          </p>
         </div>
       </div>
       <div className='fixed bottom-0 left-0 right-0 p-4 pb-6'>
         <Button isLoading={isLoading} className='h-12 w-full rounded-full bg-primary-blue text-base text-white' onPress={handleCloseWebView}>
-          Đã hiểu
+          {r?.text3}
         </Button>
       </div>
     </div>

@@ -38,7 +38,7 @@ const TimeZone = ({ targetDate }: { targetDate: string }) => {
 
   return (
     <div className='mx-auto grid w-fit grid-cols-4 justify-center gap-4'>
-      <TimeItem timeLeft={timeLeft.hours} name={'Ngày'} keyRender={timeLeft?.days?.toString()} />
+      <TimeItem timeLeft={timeLeft.days} name={'Ngày'} keyRender={timeLeft?.days?.toString()} />
       <TimeItem timeLeft={timeLeft.hours} name={'Giờ'} keyRender={timeLeft?.hours?.toString()} />
       <TimeItem timeLeft={timeLeft.minutes} name={'Phút'} keyRender={timeLeft?.minutes?.toString()} />
       <TimeItem timeLeft={timeLeft.seconds} name={'Giây'} keyRender={timeLeft?.seconds?.toString()} />

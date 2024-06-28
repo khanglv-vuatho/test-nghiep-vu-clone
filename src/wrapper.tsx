@@ -1,6 +1,7 @@
 import { useCallback, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { TranslationProvider } from './context/translationProvider'
 
 const Wrapper = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate()
@@ -8,12 +9,17 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => {
   const dispatch = useDispatch()
   const queryParams = new URLSearchParams(location.search)
   const token = queryParams.get('token')
+  const lang = queryParams.get('lang') || 'vi'
 
   const checkSession = useCallback(async () => {
     if (token) {
       dispatch({
         type: 'token',
         payload: token
+      })
+      dispatch({
+        type: 'lang',
+        payload: lang
       })
     } else {
       navigate('/invalid')
@@ -42,19 +48,6 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => {
       }
     }
   }, [navigate])
-  useEffect(() => {
-    const queryParams = new URLSearchParams(location.search)
-
-    // Lấy giá trị của tham số 'lang'
-    const lang = queryParams.get('lang') || 'vi'
-
-    dispatch({
-      type: 'lang',
-      payload: {
-        lang
-      }
-    })
-  }, [])
 
   useEffect(() => {
     const handleResize = () => {
@@ -71,7 +64,7 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => {
     }
   }, [])
 
-  return <>{children}</>
+  return <TranslationProvider lang={lang}>{children}</TranslationProvider>
 }
 
 export default Wrapper

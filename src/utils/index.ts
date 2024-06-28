@@ -81,13 +81,15 @@ const formatDDMMYYYY = (time: string) => {
 
 const postMessageCustom = ({ message }: { message: string }) => {
   //@ts-ignore
-  if (window?.vuatho) {
+  if (window?.vuatho?.postMessage) {
     //@ts-ignore
     window?.vuatho?.postMessage(message)
   } else {
-    if (import.meta.env.MODE === 'development') return
-    ToastComponent({ message: message || 'has bug here', type: 'error' })
+    if (import.meta.env.VITE_MODE === 'local') return
+    ToastComponent({ message: 'has bug here', type: 'error' })
   }
 }
-
-export { getCookie, useUnfocusItem, capitalizeWords, useDebounce, handleAddLangInUrl, formatLocalTime, formatDDMMYYYY, postMessageCustom }
+const converTimeMinutes = (time: string) => {
+  return moment.duration(time).asMinutes()
+}
+export { getCookie, useUnfocusItem, capitalizeWords, useDebounce, handleAddLangInUrl, formatLocalTime, formatDDMMYYYY, postMessageCustom, converTimeMinutes }
