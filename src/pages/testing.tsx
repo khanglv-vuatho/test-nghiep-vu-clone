@@ -235,11 +235,6 @@ export default function TestingPage() {
         </div>
       ) : (
         <div>
-          <div className='sticky left-0 right-0 top-0 z-50 flex w-full flex-col gap-4 bg-white'>
-            <Button startContent={<ArrowLeft2 />} className='h-14 justify-start rounded-none bg-transparent px-4 text-base font-bold text-primary-black' onPress={handleBackTest}>
-              {t?.text3}
-            </Button>
-          </div>
           <div className='flex flex-col gap-4 p-4'>
             <div className='flex flex-col items-center'>
               <div className='size-[200px]'>

@@ -16,61 +16,33 @@ import { TInitState } from '@/store'
 import { capitalizeWords, handleAddLangInUrl, postMessageCustom, useDebounce, useUnfocusItem } from '@/utils'
 import { ArrowLeft2 } from 'iconsax-react'
 
-type Step = {
-  setActiveStep: any
-}
-
 export default function Home() {
-  const t = translate('Home.Step1')
+  const currentStep = useSelector((state: TInitState) => state.currentStep)
 
-  const [activeStep, setActiveStep] = useState(0)
+  const steps = [<Step1 />, <Step2 />, <Step3 />, <Step2End />]
 
-  const steps = [<Step1 setActiveStep={setActiveStep} />, <Step2 setActiveStep={setActiveStep} />, <Step3 setActiveStep={setActiveStep} />, <Step2End />]
-
-  const isNotStep2End = activeStep < 3
-  const isStep1 = activeStep === 0
-  const isStep2 = activeStep === 1
-  const isStep3 = activeStep === 2
-
-  const handleCloseWebview = () => {
-    postMessageCustom({ message: keyPossmessage.CAN_POP })
-  }
-
-  useEffect(() => {
-    if (isStep1 || isStep3) {
-      window.scrollTo(0, 0)
-      document.body.style.overflow = 'hidden'
-    }
-
-    return () => {
-      document.body.style.overflow = 'auto'
-    }
-  }, [activeStep])
+  const isNotStep2End = currentStep < 3
+  const isStep2 = currentStep === 1
 
   return (
     <DefaultLayout>
-      <div className='fixed left-0 right-0 top-0 z-50 flex w-full flex-col gap-4 bg-white'>
-        <Button disableRipple startContent={<ArrowLeft2 />} onPress={handleCloseWebview} className='h-14 justify-start rounded-none bg-transparent px-4 text-base font-bold text-primary-black'>
-          {t?.text9}
-        </Button>
-      </div>
-      {activeStep < 3 && (
+      {currentStep < 3 && (
         <div className='flex items-center justify-center p-4'>
           <div className='grid w-full grid-cols-3 gap-2'>
             {Array(3)
               .fill(null)
               .map((_, index) => (
-                <div key={index} className={`h-1 rounded-[4px] ${activeStep === index ? 'bg-primary-blue' : 'bg-[#E4E4E4]'}`} />
+                <div key={index} className={`h-1 rounded-[4px] ${currentStep === index ? 'bg-primary-blue' : 'bg-[#E4E4E4]'}`} />
               ))}
           </div>
         </div>
       )}
-      <div className={`px-6 ${isStep2 ? '' : 'h-full'} ${isNotStep2End ? '' : 'p-4 pb-2'}`}>{steps[activeStep]}</div>
+      <div className={`px-6 ${isStep2 ? '' : 'h-full'} ${isNotStep2End ? '' : 'p-4 pb-2'}`}>{steps[currentStep]}</div>
     </DefaultLayout>
   )
 }
 
-const Step1 = ({ setActiveStep }: Step) => {
+const Step1 = () => {
   const s = translate('Home.Step1')
 
   const step1 = useSelector((state: TInitState) => state.step1)
@@ -147,7 +119,10 @@ const Step1 = ({ setActiveStep }: Step) => {
       setShowResult(false)
       setErrorJob(true)
     } else {
-      setActiveStep(1)
+      dispatch({
+        type: 'currentStep',
+        payload: 1
+      })
     }
   }
   //
@@ -284,15 +259,17 @@ const Step1 = ({ setActiveStep }: Step) => {
                     return (
                       <button key={item?.id} onClick={() => handleSelectItem(item)} className='flex items-center justify-between'>
                         <div className='flex items-center gap-2'>
-                          <div className='size-[48px] rounded-full bg-neutral-50'>
+                          <div className='size-[48px] flex-shrink-0 rounded-full bg-neutral-50'>
                             <ImageFallback src={item?.icon?.url} alt='baove' height={200} width={200} className='size-full' />{' '}
                           </div>
                           <div className='flex flex-col gap-1'>
-                            <p className='text-left'>{item?.name?.[lang]}</p>
-                            <div dangerouslySetInnerHTML={{ __html: item?.description?.[lang] }} />
+                            <div className='flex items-center gap-2'>
+                              <p className='text-left text-sm font-bold'>{item?.name?.[lang]}</p>
+                              {item?.is_added && <Chip className='h-5 bg-primary-green text-[10px] text-white *:px-0.5'>{s?.text5}</Chip>}
+                            </div>
+                            <div className='line-clamp-2 text-left text-xs text-primary-gray' dangerouslySetInnerHTML={{ __html: item?.description }} />
                           </div>
                         </div>
-                        {item?.is_added && <Chip className='h-6 bg-primary-green text-xs text-white *:px-1.5'>{s?.text5}</Chip>}
                       </button>
                     )
                   })
@@ -317,10 +294,11 @@ const Step1 = ({ setActiveStep }: Step) => {
   )
 }
 
-const Step2 = ({ setActiveStep }: Step) => {
+const Step2 = () => {
   const s = translate('Home.Step2')
 
   const step2 = useSelector((state: TInitState) => state.step2)
+  const currentStep = useSelector((state: TInitState) => state.currentStep)
 
   const [activeRadio, setActiveRadio] = useState<any>(step2)
   const dispatch = useDispatch()
@@ -390,15 +368,21 @@ const Step2 = ({ setActiveStep }: Step) => {
 
     if (activeRadio === 1) {
       // redirect to step2End
-      return setActiveStep(3)
+      dispatch({
+        type: 'currentStep',
+        payload: 3
+      })
     }
-    setActiveStep((prev: any) => {
-      return prev + 1
+
+    dispatch({
+      type: 'currentStep',
+      payload: currentStep + 1
     })
   }
   const handlePrevStep = () => {
-    setActiveStep((prev: any) => {
-      return prev - 1
+    dispatch({
+      type: 'currentStep',
+      payload: currentStep - 1
     })
   }
 
@@ -448,7 +432,7 @@ const Step2End = () => {
     </div>
   )
 }
-const Step3 = ({ setActiveStep }: Step) => {
+const Step3 = () => {
   const s = translate('Home.Step3')
 
   const navigate = useNavigate()
@@ -458,6 +442,7 @@ const Step3 = ({ setActiveStep }: Step) => {
   const step1 = useSelector((state: TInitState) => state.step1)
   const lang = queryParams?.get('lang') || 'vi'
   const dispatch = useDispatch()
+  const currentStep = useSelector((state: TInitState) => state.currentStep)
 
   let token
   if (import.meta.env.MODE === 'development') {
@@ -476,8 +461,9 @@ const Step3 = ({ setActiveStep }: Step) => {
   }
 
   const handlePrevStep = () => {
-    setActiveStep((prev: any) => {
-      return prev - 1
+    dispatch({
+      type: 'currentStep',
+      payload: currentStep - 1
     })
   }
 
