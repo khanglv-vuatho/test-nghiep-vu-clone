@@ -1,4 +1,4 @@
-import { Button, Chip, CircularProgress, Image, Input } from '@nextui-org/react'
+import { Button, Chip, CircularProgress, Input } from '@nextui-org/react'
 import { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
@@ -13,8 +13,7 @@ import { translate } from '@/context/translationProvider'
 import DefaultLayout from '@/layouts/default'
 import instance from '@/services/axiosConfig'
 import { TInitState } from '@/store'
-import { capitalizeWords, handleAddLangInUrl, postMessageCustom, useDebounce, useUnfocusItem } from '@/utils'
-import { ArrowLeft2 } from 'iconsax-react'
+import { capitalizeWords, handleAddLangInUrl, postMessageCustom, useDebounce } from '@/utils'
 
 export default function Home() {
   const currentStep = useSelector((state: TInitState) => state.currentStep)
@@ -22,7 +21,6 @@ export default function Home() {
   const steps = [<Step1 />, <Step2 />, <Step3 />, <Step2End />]
 
   const isNotStep2End = currentStep < 3
-  const isStep2 = currentStep === 1
 
   return (
     <DefaultLayout>
@@ -37,7 +35,7 @@ export default function Home() {
           </div>
         </div>
       )}
-      <div className={`px-6 ${isStep2 ? '' : 'h-full'} ${isNotStep2End ? '' : 'p-4 pb-2'}`}>{steps[currentStep]}</div>
+      <div className={`h-full px-6 ${isNotStep2End ? '' : 'p-4 pb-2'}`}>{steps[currentStep]}</div>
     </DefaultLayout>
   )
 }
@@ -393,7 +391,7 @@ const Step2 = () => {
   }, [activeRadio])
 
   return (
-    <div>
+    <div className='flex h-full flex-col justify-between'>
       <div className='flex flex-col gap-4'>
         <h1 className='text-center text-xl font-bold text-primary-black'>{s?.text9}</h1>
         <RadioSelectRole options={options} activeRadio={activeRadio} setActiveRadio={setActiveRadio} />
@@ -412,7 +410,7 @@ const Step2End = () => {
   }
 
   return (
-    <div className='flex h-[calc(100dvh-120px)] items-center justify-center'>
+    <div className='flex h-full flex-col justify-between'>
       <div className='flex flex-col gap-4'>
         <div className='mx-auto'>
           <div className='size-[200px]'>
