@@ -230,6 +230,9 @@ const Step1 = ({ setActiveStep }: Step) => {
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
         itemRef?.current?.blur()
+        setTimeout(() => {
+          itemRef?.current?.focus()
+        }, 100)
       }
     }
 
