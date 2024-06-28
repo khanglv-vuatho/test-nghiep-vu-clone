@@ -226,67 +226,39 @@ const Step1 = ({ setActiveStep }: Step) => {
     onSearching && handleSearchJob()
   }, [onSearching])
 
-  // useEffect(() => {
-  //   const handleResize = () => {
-  //     if (showResult) {
-  //       ToastComponent({ message: 'showResult', type: 'error' })
-  //       // itemRef?.current?.blur()
-
-  //       window?.scrollTo({ top: 0, behavior: 'smooth' })
-  //     }
-  //   }
-  //   const visualViewport = window?.visualViewport
-
-  //   if (visualViewport) {
-  //     // visualViewport.addEventListener('resize', handleResize)
-  //     // window.addEventListener('blur', handleResize)
-  //     // window.addEventListener('focus', handleResize)
-  //     handleResize()
-
-  //     return () => {
-  //       // visualViewport.removeEventListener('resize', handleResize)
-  //       // window.removeEventListener('blur', handleResize)
-  //       // window.removeEventListener('focus', handleResize)
-  //     }
-  //   }
-  //   // window.addEventListener('resize', handleResize)
-  //   // window.addEventListener('blur', handleResize)
-  //   // window.addEventListener('focus', handleResize)
-
-  //   window.addEventListener('focus', handleResize)
-  //   handleResize()
-
-  //   return () => {
-  //     // window.removeEventListener('resize', handleResize)
-  //     // window.removeEventListener('blur', handleResize)
-  //     window.removeEventListener('focus', handleResize)
-  //   }
-  // }, [])
   useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        alert('Tab is hidden')
-      } else {
-        alert('Tab is visible')
+    const handleResize = () => {
+      if (showResult) {
+        ToastComponent({ message: 'showResult', type: 'error' })
+        // itemRef?.current?.blur()
+
+        window?.scrollTo({ top: 0, behavior: 'smooth' })
       }
     }
+    const visualViewport = window?.visualViewport
 
-    const handleWindowBlur = () => {
-      alert('Window is blurred')
+    if (visualViewport) {
+      // visualViewport.addEventListener('resize', handleResize)
+      // window.addEventListener('blur', handleResize)
+      window.addEventListener('focus', handleResize)
+      handleResize()
+
+      return () => {
+        // visualViewport.removeEventListener('resize', handleResize)
+        // window.removeEventListener('blur', handleResize)
+        window.removeEventListener('focus', handleResize)
+      }
     }
+    // window.addEventListener('resize', handleResize)
+    // window.addEventListener('blur', handleResize)
+    window.addEventListener('focus', handleResize)
 
-    const handleWindowFocus = () => {
-      alert('Window is focused')
-    }
-
-    document.addEventListener('visibilitychange', handleVisibilityChange)
-    window.addEventListener('blur', handleWindowBlur)
-    window.addEventListener('focus', handleWindowFocus)
+    handleResize()
 
     return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange)
-      window.removeEventListener('blur', handleWindowBlur)
-      window.removeEventListener('focus', handleWindowFocus)
+      // window.removeEventListener('resize', handleResize)
+      // window.removeEventListener('blur', handleResize)
+      window.removeEventListener('focus', handleResize)
     }
   }, [])
 
