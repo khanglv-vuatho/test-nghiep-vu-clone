@@ -10,7 +10,7 @@ export default function DefaultLayout({ children }: { children: React.ReactNode 
 
   return (
     <WrapperAnimation keyRender={pathname} direction={direction}>
-      <main className='max-h-dvh'>{children}</main>
+      <main className='h-[calc(100dvh-56px)] pt-[56px]'>{children}</main>
     </WrapperAnimation>
   )
 }

@@ -49,7 +49,7 @@ export default function Home() {
 
   return (
     <DefaultLayout>
-      <div className='sticky left-0 right-0 top-0 z-50 flex w-full flex-col gap-4 bg-white'>
+      <div className='fixed left-0 right-0 top-0 z-50 flex w-full flex-col gap-4 bg-white'>
         <Button disableRipple startContent={<ArrowLeft2 />} onPress={handleCloseWebview} className='h-14 justify-start rounded-none bg-transparent px-4 text-base font-bold text-primary-black'>
           {t?.text9}
         </Button>
