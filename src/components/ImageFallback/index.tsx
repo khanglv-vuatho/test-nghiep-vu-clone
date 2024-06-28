@@ -9,7 +9,11 @@ interface ImageFallbackProps extends ImageProps {
 }
 
 const ImageFallback = forwardRef(({ src, alt, className, ...props }: ImageFallbackProps, ref: Ref<HTMLImageElement>) => {
-  return <Image removeWrapper className={twMerge('pointer-events-none select-none rounded-none', className)} ref={ref} src={src} fallbackSrc={'/test.png'} alt={alt} {...props} />
+  const [fallback, setFallback] = useState(src || '/test.png')
+  const _onError = () => {
+    setFallback('/test.png')
+  }
+  return <Image removeWrapper className={twMerge('pointer-events-none select-none rounded-none', className)} ref={ref} src={fallback} onError={_onError.bind(this)} alt={alt} {...props} />
 })
 
 export default ImageFallback

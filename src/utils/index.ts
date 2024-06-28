@@ -89,7 +89,9 @@ const postMessageCustom = ({ message }: { message: string }) => {
     ToastComponent({ message: 'has bug here', type: 'error' })
   }
 }
+
 const converTimeMinutes = (time: string) => {
   return moment.duration(time).asMinutes()
 }
+
 export { getCookie, useUnfocusItem, capitalizeWords, useDebounce, handleAddLangInUrl, formatLocalTime, formatDDMMYYYY, postMessageCustom, converTimeMinutes }

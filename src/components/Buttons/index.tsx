@@ -18,6 +18,8 @@ export function getRadiusClass(classString: string) {
   return match ? match[0] : null
 }
 
+const classForDisabled = 'cursor-not-allowed bg-primary-light-gray text-[#A6A6A6]'
+
 export const PrimaryButton = ({ className, isLoading, isDisabled, children, ...props }: Props) => {
   const radiusClass = getRadiusClass(className || '')
   return (
@@ -25,7 +27,7 @@ export const PrimaryButton = ({ className, isLoading, isDisabled, children, ...p
       <Button
         {...props}
         className={twMerge(
-          `data-[pressed=true]:scale-1 z-50 w-full select-none ${radiusClass} bg-primary-blue font-bold text-white data-[pressed=true]:translate-y-1 data-[hover=true]:opacity-100 ${isLoading ? 'translate-y-1' : ''} ${isDisabled ? 'cursor-not-allowed' : ''}`,
+          `data-[pressed=true]:scale-1 z-50 w-full select-none ${radiusClass} bg-primary-blue font-bold text-white data-[pressed=true]:translate-y-1 data-[hover=true]:opacity-100 ${isLoading ? 'translate-y-1' : ''} ${isDisabled ? classForDisabled : ''}`,
           className
         )}
         isDisabled={isDisabled}
@@ -49,7 +51,7 @@ export const PrimaryOutlineButton = ({ className, isDisabled, isLoading, childre
       <Button
         {...props}
         className={twMerge(
-          `data-[pressed=true]:scale-1 z-50 w-full select-none ${radiusClass} border border-primary-blue bg-transparent bg-white font-bold text-primary-blue data-[pressed=true]:translate-y-1 data-[hover=true]:opacity-100 ${isLoading ? 'translate-y-1' : ''}`,
+          `data-[pressed=true]:scale-1 z-50 w-full select-none ${radiusClass} border border-primary-blue bg-transparent bg-white font-bold text-primary-blue data-[pressed=true]:translate-y-1 data-[hover=true]:opacity-100 ${isDisabled ? classForDisabled : ''} ${isLoading ? 'translate-y-1' : ''}`,
           className
         )}
         isDisabled={isDisabled}

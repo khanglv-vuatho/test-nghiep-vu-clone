@@ -28,11 +28,24 @@ export default function Home() {
   const steps = [<Step1 setActiveStep={setActiveStep} />, <Step2 setActiveStep={setActiveStep} />, <Step3 setActiveStep={setActiveStep} />, <Step2End />]
 
   const isNotStep2End = activeStep < 3
+  const isStep1 = activeStep === 0
   const isStep2 = activeStep === 1
+  const isStep3 = activeStep === 2
 
   const handleCloseWebview = () => {
     postMessageCustom({ message: keyPossmessage.CAN_POP })
   }
+
+  useEffect(() => {
+    if (isStep1 || isStep3) {
+      window.scrollTo(0, 0)
+      document.body.style.overflow = 'hidden'
+    }
+
+    return () => {
+      document.body.style.overflow = 'auto'
+    }
+  }, [activeStep])
 
   return (
     <DefaultLayout>
@@ -74,15 +87,12 @@ const Step1 = ({ setActiveStep }: Step) => {
   const [onSearching, setOnSearching] = useState(false)
   const [onSendingRequest, setOnSendingRequest] = useState(false)
 
-  const exclusionRef = useRef(null)
   const debouncedSearchTerm = useDebounce(searchTempValue, 300) // Adjust the delay as needed
-
-  const itemRef = useUnfocusItem(() => {
-    setShowResult(false)
-  }, exclusionRef)
 
   const dispatch = useDispatch()
   const navigate = useNavigate()
+
+  const itemRef: any = useRef(null)
 
   const handleChange = (event: any) => {
     setErrorJob(false)
@@ -153,7 +163,8 @@ const Step1 = ({ setActiveStep }: Step) => {
         thumb: ''
       }
     })
-    itemRef.current?.focus()
+
+    itemRef?.current?.focus()
   }
 
   const handleSearchJob = async () => {
@@ -230,9 +241,6 @@ const Step1 = ({ setActiveStep }: Step) => {
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
         itemRef?.current?.blur()
-        setTimeout(() => {
-          itemRef?.current?.focus()
-        }, 100)
       }
     }
 
@@ -244,7 +252,7 @@ const Step1 = ({ setActiveStep }: Step) => {
   }, [])
 
   return (
-    <div className='flex h-full flex-col justify-between'>
+    <div className='flex h-dvh flex-col justify-between'>
       <div className='flex flex-col gap-4'>
         <h1 className='text-center text-xl font-bold text-primary-black'>{s?.text3}</h1>
         <div className='flex flex-col gap-2'>
@@ -276,10 +284,13 @@ const Step1 = ({ setActiveStep }: Step) => {
                     return (
                       <button key={item?.id} onClick={() => handleSelectItem(item)} className='flex items-center justify-between'>
                         <div className='flex items-center gap-2'>
-                          <div className='size-[48px]'>
+                          <div className='size-[48px] rounded-full bg-neutral-50'>
                             <ImageFallback src={item?.icon?.url} alt='baove' height={200} width={200} className='size-full' />{' '}
                           </div>
-                          <p className='text-left'>{item?.name?.[lang]}</p>
+                          <div className='flex flex-col gap-1'>
+                            <p className='text-left'>{item?.name?.[lang]}</p>
+                            <div dangerouslySetInnerHTML={{ __html: item?.description?.[lang] }} />
+                          </div>
                         </div>
                         {item?.is_added && <Chip className='h-6 bg-primary-green text-xs text-white *:px-1.5'>{s?.text5}</Chip>}
                       </button>

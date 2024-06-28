@@ -16,7 +16,7 @@ const BottomhandlePrevNext = ({ handlePrevStep, handleNextStep, isDisableNextBut
 
   return (
     <div
-      className={twMerge(`${isHideBackButton ? 'py-4' : 'px-2 py-4'} sticky bottom-0 left-0 z-50 flex w-full items-center gap-4 bg-white transition`, className)}
+      className={twMerge(`${isHideBackButton ? 'py-4' : 'px-2 py-4'} sticky bottom-0 left-0 z-50 flex w-full items-center gap-4 bg-white`, className)}
       // style={{ transform: isStep1 ? `translateY(-${bottomPadding}px)` : '' }}
     >
       {!isHideBackButton && (
