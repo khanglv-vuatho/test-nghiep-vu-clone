@@ -228,55 +228,50 @@ const Step1 = ({ setActiveStep }: Step) => {
 
   useEffect(() => {
     const handleResize = () => {
-      if (showResult) {
-        ToastComponent({ message: 'showResult', type: 'error' })
-        // itemRef?.current?.blur()
+      ToastComponent({ message: 'showResult', type: 'error' })
+      // itemRef?.current?.blur()
 
-        window?.scrollTo({ top: 0, behavior: 'smooth' })
-      }
+      window?.scrollTo({ top: 0, behavior: 'smooth' })
     }
     const handleResizeBlur = () => {
-      if (showResult) {
-        ToastComponent({ message: 'showResult', type: 'error' })
-        // itemRef?.current?.blur()
+      ToastComponent({ message: 'showResult', type: 'error' })
+      // itemRef?.current?.blur()
 
-        window?.scrollTo({ top: 0, behavior: 'smooth' })
-      }
+      window?.scrollTo({ top: 0, behavior: 'smooth' })
     }
     const handleResizeFocus = () => {
-      if (showResult) {
-        ToastComponent({ message: 'showResult', type: 'error' })
-        // itemRef?.current?.blur()
+      ToastComponent({ message: 'showResult', type: 'error' })
+      // itemRef?.current?.blur()
 
-        window?.scrollTo({ top: 0, behavior: 'smooth' })
-      }
+      window?.scrollTo({ top: 0, behavior: 'smooth' })
     }
     const visualViewport = window?.visualViewport
 
     if (visualViewport) {
       visualViewport.addEventListener('resize', handleResize)
-      window.addEventListener('blur', handleResize)
-      window.addEventListener('focus', handleResize)
-      handleResize()
+      window.addEventListener('blur', handleResizeBlur)
+      window.addEventListener('focus', handleResizeFocus)
 
       return () => {
         visualViewport.removeEventListener('resize', handleResize)
-        window.removeEventListener('blur', handleResize)
-        window.removeEventListener('focus', handleResize)
+        window.removeEventListener('blur', handleResizeBlur)
+        window.removeEventListener('focus', handleResizeFocus)
       }
     }
     window.addEventListener('resize', handleResize)
-    window.addEventListener('blur', handleResize)
+    window.addEventListener('blur', handleResizeBlur)
     window.addEventListener('focus', handleResize)
 
     handleResize()
+    handleResizeBlur()
+    handleResizeFocus()
 
     return () => {
       // window.removeEventListener('resize', handleResize)
       // window.removeEventListener('blur', handleResize)
       window.removeEventListener('focus', handleResize)
     }
-  }, [])
+  }, [showResult])
 
   return (
     <div className='flex h-full flex-col justify-between'>
