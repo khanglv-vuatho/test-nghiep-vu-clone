@@ -229,17 +229,21 @@ const Step1 = ({ setActiveStep }: Step) => {
   useEffect(() => {
     const handleResize = () => {
       ToastComponent({ message: 'handleResize', type: 'error' })
-      // itemRef?.current?.blur()
+      itemRef?.current?.blur()
 
       window?.scrollTo({ top: 0, behavior: 'smooth' })
     }
     const handleResizeBlur = () => {
+      itemRef?.current?.blur()
+
       ToastComponent({ message: 'handleResizeBlur', type: 'error' })
       // itemRef?.current?.blur()
 
       window?.scrollTo({ top: 0, behavior: 'smooth' })
     }
     const handleResizeFocus = () => {
+      itemRef?.current?.focus()
+
       ToastComponent({ message: 'handleResizeFocus', type: 'error' })
       // itemRef?.current?.blur()
 
