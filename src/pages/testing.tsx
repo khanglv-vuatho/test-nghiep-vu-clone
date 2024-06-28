@@ -119,7 +119,7 @@ export default function TestingPage() {
       type: 'direction',
       payload: 'left'
     })
-    navigate('/')
+    navigate(handleAddLangInUrl({ mainUrl: '/', lang, token }))
   }
 
   useEffect(() => {
