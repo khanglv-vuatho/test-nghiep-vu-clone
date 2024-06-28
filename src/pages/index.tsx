@@ -252,7 +252,7 @@ const Step1 = ({ setActiveStep }: Step) => {
   }, [])
 
   return (
-    <div className='flex h-dvh flex-col justify-between'>
+    <div className='flex max-h-dvh flex-col justify-between'>
       <div className='flex flex-col gap-4'>
         <h1 className='text-center text-xl font-bold text-primary-black'>{s?.text3}</h1>
         <div className='flex flex-col gap-2'>
