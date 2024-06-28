@@ -237,21 +237,25 @@ const Step1 = ({ setActiveStep }: Step) => {
     if (visualViewport) {
       visualViewport.addEventListener('resize', handleResize)
       window.addEventListener('blur', handleResize)
+      window.addEventListener('focus', handleResize)
       handleResize()
 
       return () => {
         visualViewport.removeEventListener('resize', handleResize)
         window.removeEventListener('blur', handleResize)
+        window.removeEventListener('focus', handleResize)
       }
     }
     window.addEventListener('resize', handleResize)
     window.addEventListener('blur', handleResize)
+    window.addEventListener('focus', handleResize)
 
     handleResize()
 
     return () => {
       window.removeEventListener('resize', handleResize)
       window.removeEventListener('blur', handleResize)
+      window.removeEventListener('focus', handleResize)
     }
   }, [])
 
