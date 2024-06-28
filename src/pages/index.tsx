@@ -228,7 +228,7 @@ const Step1 = ({ setActiveStep }: Step) => {
 
   useEffect(() => {
     const handleResize = () => {
-      ToastComponent({ message: 'resize', type: 'error' })
+      ToastComponent({ message: '123', type: 'error' })
       itemRef?.current?.blur()
       window?.scrollTo({ top: 0, behavior: 'smooth' })
     }
@@ -237,18 +237,18 @@ const Step1 = ({ setActiveStep }: Step) => {
     if (visualViewport) {
       visualViewport.addEventListener('resize', handleResize)
       // window.addEventListener('blur', handleResize)
-      window.addEventListener('focus', handleResize)
+      // window.addEventListener('focus', handleResize)
       handleResize()
 
       return () => {
         visualViewport.removeEventListener('resize', handleResize)
         // window.removeEventListener('blur', handleResize)
-        window.removeEventListener('focus', handleResize)
+        // window.removeEventListener('focus', handleResize)
       }
     }
     window.addEventListener('resize', handleResize)
     // window.addEventListener('blur', handleResize)
-    window.addEventListener('focus', handleResize)
+    // window.addEventListener('focus', handleResize)
 
     handleResize()
 
