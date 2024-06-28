@@ -67,18 +67,18 @@ export const RadioSelectRole = ({ options, activeRadio, setActiveRadio }: PropsR
     const isActive = item.value == activeRadio
     return (
       <motion.div
-        initial={{
-          opacity: 0,
-          y: 100
-        }}
-        animate={{
-          opacity: 1,
-          y: 0
-        }}
-        transition={{
-          delay: (index + 0.5) * 0.1,
-          duration: 0.2
-        }}
+        // initial={{
+        //   opacity: 0,
+        //   y: 100
+        // }}
+        // animate={{
+        //   opacity: 1,
+        //   y: 0
+        // }}
+        // transition={{
+        //   delay: (index + 0.5) * 0.1,
+        //   duration: 0.2
+        // }}
         ref={(el) => (optionRefs.current[index] = el)}
         onClick={() => {
           setActiveRadio(item.value)
