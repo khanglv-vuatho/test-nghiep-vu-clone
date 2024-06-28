@@ -235,22 +235,38 @@ const Step1 = ({ setActiveStep }: Step) => {
         window?.scrollTo({ top: 0, behavior: 'smooth' })
       }
     }
+    const handleResizeBlur = () => {
+      if (showResult) {
+        ToastComponent({ message: 'showResult', type: 'error' })
+        // itemRef?.current?.blur()
+
+        window?.scrollTo({ top: 0, behavior: 'smooth' })
+      }
+    }
+    const handleResizeFocus = () => {
+      if (showResult) {
+        ToastComponent({ message: 'showResult', type: 'error' })
+        // itemRef?.current?.blur()
+
+        window?.scrollTo({ top: 0, behavior: 'smooth' })
+      }
+    }
     const visualViewport = window?.visualViewport
 
     if (visualViewport) {
-      // visualViewport.addEventListener('resize', handleResize)
-      // window.addEventListener('blur', handleResize)
+      visualViewport.addEventListener('resize', handleResize)
+      window.addEventListener('blur', handleResize)
       window.addEventListener('focus', handleResize)
       handleResize()
 
       return () => {
-        // visualViewport.removeEventListener('resize', handleResize)
-        // window.removeEventListener('blur', handleResize)
+        visualViewport.removeEventListener('resize', handleResize)
+        window.removeEventListener('blur', handleResize)
         window.removeEventListener('focus', handleResize)
       }
     }
-    // window.addEventListener('resize', handleResize)
-    // window.addEventListener('blur', handleResize)
+    window.addEventListener('resize', handleResize)
+    window.addEventListener('blur', handleResize)
     window.addEventListener('focus', handleResize)
 
     handleResize()
