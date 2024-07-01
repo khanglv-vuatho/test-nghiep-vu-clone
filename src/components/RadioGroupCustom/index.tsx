@@ -76,8 +76,7 @@ export const RadioSelectRole = ({ options, activeRadio, setActiveRadio }: PropsR
           y: 0
         }}
         transition={{
-          // delay: (index + 0.5) * 0.1,
-          duration: 0.2
+          duration: 0.15
         }}
         ref={(el) => (optionRefs.current[index] = el)}
         onClick={() => {
