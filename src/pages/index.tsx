@@ -366,7 +366,7 @@ const Step2 = () => {
 
     if (activeRadio === 1) {
       // redirect to step2End
-      dispatch({
+      return dispatch({
         type: 'currentStep',
         payload: 3
       })

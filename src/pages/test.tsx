@@ -1,16 +1,14 @@
 import { Progress } from '@nextui-org/react'
-import { useScroll, useSpring, useTransform } from 'framer-motion'
+import { useScroll, motion, useTransform } from 'framer-motion'
 import { TickCircle } from 'iconsax-react'
 import { useEffect, useRef, useState } from 'react'
 
 const Test = () => {
   const refScroll = useRef(null)
-  const refTarget: any = useRef(null)
-  const refTargetChange: any = useRef(null)
 
-  const { scrollYProgress } = useScroll({ container: refScroll })
+  const { scrollYProgress } = useScroll({ target: refScroll })
 
-  const translate = useTransform(scrollYProgress, [0, 1], [0, 40])
+  const opacity = useTransform(scrollYProgress, [0, 0.1], [1, 0])
 
   const listQuestions = [
     {
@@ -77,31 +75,20 @@ const Test = () => {
   return (
     <div ref={refScroll} className='flex flex-col gap-4'>
       <div className='sticky top-0 flex items-center gap-2 p-4'>
-        <div className='rounded-full bg-primary-light-blue px-3 py-2 font-bold text-primary-blue'>{'12:20'}</div>
-        <div ref={refTarget} className='relative z-[-40] flex w-full items-center gap-3 overflow-hidden'>
-          {listQuestions.map((question, index) => (
-            <button
-              key={question.id}
-              className={`relative flex size-11 flex-shrink-0 select-none items-center justify-center rounded-full border font-bold opacity-0 transition ${false ? 'border-primary-green text-primary-green' : 'border-primary-blue text-primary-blue'} ${true ? '!border-primary-blue !bg-primary-blue !text-white' : ''}`}
-            >
-              <p className='z-50'>{index + 1}</p>
-              <span className='absolute bottom-0 right-0 translate-x-1/2 translate-y-[10%] text-xs font-bold'>
-                <TickCircle variant='Bold' className={`transition ${false && !true ? 'text-primary-green' : 'hidden'}`} />
-              </span>
-            </button>
-          ))}
-          <div className='absolute top-1/2 z-50 w-full -translate-y-1/2'>
-            <Progress
-              value={15}
-              classNames={{
-                indicator: 'bg-primary-blue',
-                track: 'bg-primary-light-blue'
-              }}
-            />
-          </div>
-        </div>
+        <motion.div style={{ opacity }} className='rounded-full bg-primary-light-blue px-3 py-2 font-bold text-primary-blue'>
+          {'12:20'}
+        </motion.div>
+        <motion.div style={{ opacity }} className='w-full'>
+          <Progress
+            value={15}
+            classNames={{
+              indicator: 'bg-primary-blue',
+              track: 'bg-primary-light-blue'
+            }}
+          />
+        </motion.div>
       </div>
-      <div ref={refTargetChange} className='z-50 flex w-full items-center gap-3 overflow-auto p-4 pt-0'>
+      <motion.div style={{ opacity }} className='z-50 flex w-full items-center gap-3 overflow-auto p-4 pt-0'>
         {listQuestions.map((question, index) => (
           <button
             key={question.id}
@@ -113,7 +100,7 @@ const Test = () => {
             </span>
           </button>
         ))}
-      </div>
+      </motion.div>
       <div className='mt-[2000px]' />
     </div>
   )
