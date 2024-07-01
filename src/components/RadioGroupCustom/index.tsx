@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion'
 import { useEffect, useRef } from 'react'
 
 type Props = {
@@ -66,18 +65,7 @@ export const RadioSelectRole = ({ options, activeRadio, setActiveRadio }: PropsR
   return options.map((item, index) => {
     const isActive = item.value == activeRadio
     return (
-      <motion.div
-        initial={{
-          opacity: 0,
-          y: 100
-        }}
-        animate={{
-          opacity: 1,
-          y: 0
-        }}
-        transition={{
-          duration: 0.15
-        }}
+      <div
         ref={(el) => (optionRefs.current[index] = el)}
         onClick={() => {
           setActiveRadio(item.value)
@@ -95,7 +83,7 @@ export const RadioSelectRole = ({ options, activeRadio, setActiveRadio }: PropsR
           </div>
         </div>
         {item.descripton}
-      </motion.div>
+      </div>
     )
   })
 }
