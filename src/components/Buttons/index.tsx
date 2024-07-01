@@ -2,14 +2,19 @@ import { postMessageCustom } from '@/utils'
 import { Button, ButtonProps } from '@nextui-org/react'
 import { twMerge } from 'tailwind-merge'
 
+type TFrequency = {
+  frequency?: 'low' | 'medium' | 'high'
+}
+
 type Props = {
   className?: string
   isDisabled?: boolean
   isLoading?: boolean
-} & Omit<ButtonProps, 'onClick'>
+} & TFrequency &
+  Omit<ButtonProps, 'onClick'>
 
-const handlePhoneVibration = () => {
-  postMessageCustom({ message: 'vibrate' })
+const handlePhoneVibration = ({ frequency = 'low' }: TFrequency) => {
+  postMessageCustom({ message: `vibrate-${frequency}` })
 }
 
 export function getRadiusClass(classString: string) {
@@ -20,7 +25,7 @@ export function getRadiusClass(classString: string) {
 
 const classForDisabled = 'cursor-not-allowed bg-primary-light-gray text-[#A6A6A6]'
 
-export const PrimaryButton = ({ className, isLoading, isDisabled, children, ...props }: Props) => {
+export const PrimaryButton = ({ className, isLoading, isDisabled, children, frequency, ...props }: Props) => {
   const radiusClass = getRadiusClass(className || '')
   return (
     <div className='relative w-full'>
@@ -33,7 +38,7 @@ export const PrimaryButton = ({ className, isLoading, isDisabled, children, ...p
         isDisabled={isDisabled}
         isLoading={isLoading}
         onPress={(e) => {
-          handlePhoneVibration()
+          handlePhoneVibration({ frequency })
           props?.onPress?.(e)
         }}
       >
@@ -43,11 +48,11 @@ export const PrimaryButton = ({ className, isLoading, isDisabled, children, ...p
     </div>
   )
 }
-export const PrimaryOutlineButton = ({ className, isDisabled, isLoading, children, ...props }: Props) => {
+export const PrimaryOutlineButton = ({ className, isDisabled, isLoading, children, frequency, ...props }: Props) => {
   const radiusClass = getRadiusClass(className || '')
 
   return (
-    <div className='relative w-full' onClick={handlePhoneVibration}>
+    <div className='relative w-full' onClick={() => handlePhoneVibration({ frequency })}>
       <Button
         {...props}
         className={twMerge(
@@ -57,7 +62,7 @@ export const PrimaryOutlineButton = ({ className, isDisabled, isLoading, childre
         isDisabled={isDisabled}
         isLoading={isLoading}
         onPress={(e) => {
-          handlePhoneVibration()
+          handlePhoneVibration({ frequency })
           props?.onPress?.(e)
         }}
       >
@@ -68,13 +73,13 @@ export const PrimaryOutlineButton = ({ className, isDisabled, isLoading, childre
   )
 }
 
-export const PrimaryLightButton = ({ className, children, ...props }: Props) => {
+export const PrimaryLightButton = ({ className, children, frequency, ...props }: Props) => {
   const radiusClass = getRadiusClass(className || '')
 
   return (
     <Button
       onPress={(e) => {
-        handlePhoneVibration()
+        handlePhoneVibration({ frequency })
         props?.onPress?.(e)
       }}
       className={twMerge(`${radiusClass} select-none bg-primary-light-blue font-bold text-primary-blue duration-0`, className)}

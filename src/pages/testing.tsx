@@ -553,7 +553,7 @@ const Questions = ({ testId, listQuestions, meta }: TQuestions) => {
             <PrimaryOutlineButton onPress={() => setIsOpenModal(false)} className='h-12 w-full rounded-full'>
               {t?.text29}
             </PrimaryOutlineButton>
-            <PrimaryButton isLoading={onChecking} onPress={handleChecking} className='h-12 w-full rounded-full'>
+            <PrimaryButton isLoading={onChecking} frequency='medium' onPress={handleChecking} className='h-12 w-full rounded-full'>
               {t?.text30}
             </PrimaryButton>
           </div>

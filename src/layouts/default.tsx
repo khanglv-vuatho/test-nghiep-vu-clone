@@ -36,7 +36,7 @@ export default function DefaultLayout({ children }: { children: React.ReactNode 
         </Button>
       </header>
       <WrapperAnimation keyRender={pathname} direction={direction}>
-        <main className='h-[calc(100dvh-56px)] pt-[56px]'>{children}</main>
+        <main className='h-[calc(100dvh-40px)] pt-[56px]'>{children}</main>
       </WrapperAnimation>
     </>
   )
