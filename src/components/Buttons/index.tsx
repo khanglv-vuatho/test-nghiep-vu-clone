@@ -2,18 +2,16 @@ import { postMessageCustom } from '@/utils'
 import { Button, ButtonProps } from '@nextui-org/react'
 import { twMerge } from 'tailwind-merge'
 
-type TFrequency = {
-  frequency?: 'low' | 'medium' | 'high'
-}
+type Frequency = 'low' | 'medium' | 'high'
 
 type Props = {
   className?: string
   isDisabled?: boolean
   isLoading?: boolean
-} & TFrequency &
-  Omit<ButtonProps, 'onClick'>
+  frequency?: Frequency
+} & Omit<ButtonProps, 'onClick'>
 
-const handlePhoneVibration = ({ frequency = 'low' }: TFrequency) => {
+const handlePhoneVibration = (frequency: Frequency = 'low') => {
   postMessageCustom({ message: `vibrate-${frequency}` })
 }
 
@@ -38,7 +36,7 @@ export const PrimaryButton = ({ className, isLoading, isDisabled, children, freq
         isDisabled={isDisabled}
         isLoading={isLoading}
         onPress={(e) => {
-          handlePhoneVibration({ frequency })
+          handlePhoneVibration(frequency)
           props?.onPress?.(e)
         }}
       >
@@ -52,7 +50,7 @@ export const PrimaryOutlineButton = ({ className, isDisabled, isLoading, childre
   const radiusClass = getRadiusClass(className || '')
 
   return (
-    <div className='relative w-full' onClick={() => handlePhoneVibration({ frequency })}>
+    <div className='relative w-full' onClick={() => handlePhoneVibration(frequency)}>
       <Button
         {...props}
         className={twMerge(
@@ -62,7 +60,7 @@ export const PrimaryOutlineButton = ({ className, isDisabled, isLoading, childre
         isDisabled={isDisabled}
         isLoading={isLoading}
         onPress={(e) => {
-          handlePhoneVibration({ frequency })
+          handlePhoneVibration(frequency)
           props?.onPress?.(e)
         }}
       >
@@ -79,7 +77,7 @@ export const PrimaryLightButton = ({ className, children, frequency, ...props }:
   return (
     <Button
       onPress={(e) => {
-        handlePhoneVibration({ frequency })
+        handlePhoneVibration(frequency)
         props?.onPress?.(e)
       }}
       className={twMerge(`${radiusClass} select-none bg-primary-light-blue font-bold text-primary-blue duration-0`, className)}
