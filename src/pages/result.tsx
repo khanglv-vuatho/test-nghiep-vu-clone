@@ -29,8 +29,7 @@ const ResultPage = () => {
   const token = queryParams?.get('token') || ''
   const lang = queryParams?.get('lang') || 'vi'
 
-  // const IS_KYC_STATUS = resultTest.kyc_status != 2
-  const IS_KYC_STATUS = resultTest.kyc_status == 2
+  const IS_KYC_STATUS = resultTest.kyc_status != 2
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
