@@ -13,7 +13,7 @@ import { translate } from '@/context/translationProvider'
 import DefaultLayout from '@/layouts/default'
 import instance from '@/services/axiosConfig'
 import { TInitState } from '@/store'
-import { capitalizeWords, handleAddLangInUrl, postMessageCustom, useDebounce } from '@/utils'
+import { capitalizeWords, formatNumber, handleAddLangInUrl, postMessageCustom, useDebounce } from '@/utils'
 
 export default function Home() {
   const currentStep = useSelector((state: TInitState) => state.currentStep)
@@ -251,7 +251,7 @@ const Step1 = () => {
             onFocus={handleFocusInput}
           />
           {searchValue?.length > 0 && showResult && (
-            <div className='z-20 flex max-h-[320px] flex-col gap-2 overflow-auto rounded-xl bg-white p-4 shadow-[8px_8px_16px_0px_#0000000A]'>
+            <div className='z-20 flex max-h-[400px] flex-col gap-2 overflow-auto rounded-xl bg-white p-4 shadow-[8px_8px_16px_0px_#0000000A]'>
               {dataJob?.length > 0
                 ? dataJob?.map((item: any) => {
                     return (
@@ -520,7 +520,7 @@ const Step3 = () => {
 
   return (
     <div className='flex h-full flex-col justify-between'>
-      <div className='flex flex-col gap-4'>
+      <div className='flex h-full flex-col gap-4'>
         <div className='mx-auto'>
           <div className='size-[200px]'>
             <ImageFallback src={step1?.thumb} alt={step1?.thumb} height={400} width={400} className='size-full' />
@@ -531,7 +531,9 @@ const Step3 = () => {
           <p className='text-base-black text-center text-sm'>{s?.text1}</p>
         </div>
       </div>
-      <BottomhandlePrevNext handleNextStep={handleNextStep} handlePrevStep={handlePrevStep} isNextLoading={onFetchingTest} />
+      <div className='-mb-1'>
+        <BottomhandlePrevNext handleNextStep={handleNextStep} handlePrevStep={handlePrevStep} isNextLoading={onFetchingTest} />
+      </div>
     </div>
   )
 }

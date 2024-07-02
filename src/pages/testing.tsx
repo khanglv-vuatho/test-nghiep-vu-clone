@@ -1,7 +1,7 @@
 import { Button, Progress, Skeleton } from '@nextui-org/react'
 import { AddCircle, ArrowLeft2, Clock, DocumentText1, Gift, MessageQuestion, TickCircle } from 'iconsax-react'
 import moment from 'moment'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
@@ -19,6 +19,7 @@ import { Test } from '@/types'
 import { converTimeMinutes, formatDDMMYYYY, formatLocalTime, handleAddLangInUrl, postMessageCustom } from '@/utils'
 import WrapperAnimation from '@/components/WrapperAnimation'
 import { translate } from '@/context/translationProvider'
+import { useScroll, useTransform, motion, useSpring } from 'framer-motion'
 
 type Answer = {
   id: number
@@ -325,6 +326,25 @@ const Questions = ({ testId, listQuestions, meta }: TQuestions) => {
 
   const direction = useSelector((state: TInitState) => state.direction)
 
+  const refScroll = useRef(null)
+
+  const { scrollYProgress } = useScroll({ target: refScroll })
+
+  let opacity, scale, translateX
+
+  const smoothScrollYProgress = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 10
+  })
+
+  const isCanActiveMotion = window.innerHeight > 1000
+  if (isCanActiveMotion) {
+    opacity = useTransform(smoothScrollYProgress, [0.01, 0.02], [1, 0])
+    scale = useTransform(smoothScrollYProgress, [0.01, 0.02], [1, 0.9])
+    translateX = useTransform(smoothScrollYProgress, [0.01, 0.02], [0, 60])
+  }
+  //isHeightWindow && isHeightWindow
+
   const queryParams = new URLSearchParams(location.search)
   const token = queryParams?.get('token') || ''
   const lang = queryParams?.get('lang') || 'vi'
@@ -480,17 +500,21 @@ const Questions = ({ testId, listQuestions, meta }: TQuestions) => {
     <div className='w-full'>
       <div className='flex min-h-dvh flex-col gap-4'>
         <div className='flex flex-col gap-4'>
-          <div className='flex items-center gap-2 p-4'>
-            <div className='rounded-full bg-primary-light-blue px-3 py-2 font-bold text-primary-blue'>{moment(timeLeft * 1000).format('mm:ss')}</div>
-            <Progress
-              value={progress}
-              classNames={{
-                indicator: 'bg-primary-blue',
-                track: 'bg-primary-light-blue'
-              }}
-            />
+          <div className={`${isCanActiveMotion ? 'sticky top-0' : ''} z-50 flex items-center gap-2 bg-white p-4`}>
+            <motion.div style={{ scale }} className={`${isCanActiveMotion ? 'sticky top-0' : ''} rounded-full bg-primary-light-blue px-3 py-2 font-bold text-primary-blue`}>
+              {moment(timeLeft * 1000).format('mm:ss')}
+            </motion.div>
+            <motion.div style={{ opacity }} className='w-full'>
+              <Progress
+                value={progress}
+                classNames={{
+                  indicator: 'bg-primary-blue',
+                  track: 'bg-primary-light-blue'
+                }}
+              />
+            </motion.div>
           </div>
-          <div className='z-50 flex w-full items-center gap-3 overflow-auto p-4 pt-0'>
+          <motion.div style={{ translateX, scale }} className={`${isCanActiveMotion ? 'sticky top-3.5' : ''} z-50 flex w-fit items-center gap-3 overflow-auto p-4 pt-0`}>
             {listQuestions.map((question: any, index: number) => {
               const isCurrentSelect = index === currentQuestion
               const isSelected = answerSheets.some((answer: any) => answer.id == question.id)
@@ -508,8 +532,7 @@ const Questions = ({ testId, listQuestions, meta }: TQuestions) => {
                 </button>
               )
             })}
-          </div>
-
+          </motion.div>
           <WrapperAnimation keyRender={currentQuestion} direction={direction} duration={0.1}>
             <div className='flex flex-col gap-4 overflow-hidden p-4 py-2'>
               <h1 className='font-bold'>
@@ -519,7 +542,8 @@ const Questions = ({ testId, listQuestions, meta }: TQuestions) => {
             </div>
           </WrapperAnimation>
         </div>
-        <div className='mb-[100px] flex-1 overflow-hidden overflow-y-auto bg-primary-light-blue p-4'>
+
+        <div className='mb-[100px] flex-1 overflow-hidden overflow-y-auto bg-primary-light-blue p-4 py-10'>
           <WrapperAnimation keyRender={currentQuestion} direction={direction} duration={0.08}>
             <RadioGroupCustom
               data={listQuestions?.[currentQuestion]?.answers}
@@ -528,6 +552,7 @@ const Questions = ({ testId, listQuestions, meta }: TQuestions) => {
               handleStoreAnswer={handleStoreAnswer}
             />
           </WrapperAnimation>
+          {isCanActiveMotion && <div className='mt-[200px]' />}
         </div>
       </div>
       <WrapperBottom>

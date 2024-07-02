@@ -1,14 +1,16 @@
 import { Progress } from '@nextui-org/react'
 import { useScroll, motion, useTransform } from 'framer-motion'
 import { TickCircle } from 'iconsax-react'
-import { useEffect, useRef, useState } from 'react'
+import { useRef } from 'react'
 
 const Test = () => {
   const refScroll = useRef(null)
 
   const { scrollYProgress } = useScroll({ target: refScroll })
 
-  const opacity = useTransform(scrollYProgress, [0, 0.1], [1, 0])
+  const opacity = useTransform(scrollYProgress, [0, 0.05], [1, 0])
+  const scale = useTransform(scrollYProgress, [0, 0.05], [1, 0.9])
+  const translateX = useTransform(scrollYProgress, [0, 0.05], [0, 60])
 
   const listQuestions = [
     {
@@ -75,7 +77,7 @@ const Test = () => {
   return (
     <div ref={refScroll} className='flex flex-col gap-4'>
       <div className='sticky top-0 flex items-center gap-2 p-4'>
-        <motion.div style={{ opacity }} className='rounded-full bg-primary-light-blue px-3 py-2 font-bold text-primary-blue'>
+        <motion.div style={{ scale }} className='rounded-full bg-primary-light-blue px-3 py-2 font-bold text-primary-blue'>
           {'12:20'}
         </motion.div>
         <motion.div style={{ opacity }} className='w-full'>
@@ -88,7 +90,7 @@ const Test = () => {
           />
         </motion.div>
       </div>
-      <motion.div style={{ opacity }} className='z-50 flex w-full items-center gap-3 overflow-auto p-4 pt-0'>
+      <motion.div style={{ translateX, scale }} className='sticky top-3.5 z-50 flex w-fit items-center gap-3 overflow-auto p-4 pt-0'>
         {listQuestions.map((question, index) => (
           <button
             key={question.id}

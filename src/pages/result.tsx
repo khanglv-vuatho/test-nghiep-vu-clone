@@ -10,7 +10,7 @@ import ImageFallback from '@/components/ImageFallback'
 import WrapperBottom from '@/components/WrapperBottom'
 import instance from '@/services/axiosConfig'
 import { TInitState } from '@/store'
-import { handleAddLangInUrl, postMessageCustom } from '@/utils'
+import { formatNumber, handleAddLangInUrl, postMessageCustom } from '@/utils'
 import DefaultLayout from '@/layouts/default'
 import { translate } from '@/context/translationProvider'
 import { keyPossmessage } from '@/constants'
@@ -143,7 +143,7 @@ const Pass = () => {
             <p className='text-center'>
               {r?.text3} {step1?.title}
             </p>
-            <p className='text-center text-3xl font-bold'>{resultTest?.percent}%</p>
+            <p className='text-center text-3xl font-bold'>{formatNumber(resultTest?.percent)}%</p>
           </div>
         </div>
         <div className='flex flex-col items-center gap-1'>

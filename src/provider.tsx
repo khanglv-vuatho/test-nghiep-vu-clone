@@ -4,8 +4,6 @@ import { Provider as ReduxProvider, useSelector } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 import Wrapper from './wrapper'
-import WrapperAnimation from './components/WrapperAnimation'
-
 export function Provider({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate()
 

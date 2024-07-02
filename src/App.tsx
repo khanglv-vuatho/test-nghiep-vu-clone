@@ -7,6 +7,7 @@ import ResultPage from './pages/result'
 import KYC from './pages/kyc'
 import RequestNewJob from './pages/request-new-job'
 import Test from './pages/test'
+import './style.css'
 
 const routes = [
   { path: '/', element: <IndexPage /> },

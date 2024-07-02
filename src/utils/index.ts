@@ -94,4 +94,13 @@ const converTimeMinutes = (time: string) => {
   return moment.duration(time).asMinutes()
 }
 
-export { getCookie, useUnfocusItem, capitalizeWords, useDebounce, handleAddLangInUrl, formatLocalTime, formatDDMMYYYY, postMessageCustom, converTimeMinutes }
+const formatNumber = (number: number) => {
+  if (isNaN(number)) {
+    return 0
+  }
+
+  const result = number % 1 === 0 ? number.toString() : number.toFixed(2).replace(/\.?0+$/, '')
+
+  return result
+}
+export { getCookie, useUnfocusItem, capitalizeWords, useDebounce, handleAddLangInUrl, formatLocalTime, formatDDMMYYYY, postMessageCustom, converTimeMinutes, formatNumber }

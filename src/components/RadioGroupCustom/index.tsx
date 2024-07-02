@@ -70,7 +70,7 @@ export const RadioSelectRole = ({ options, activeRadio, setActiveRadio }: PropsR
         onClick={() => {
           setActiveRadio(item.value)
         }}
-        key={item.value}
+        key={`radio-${item.value}`}
         className={`flex flex-col overflow-hidden rounded-xl border-1 ${isActive ? 'border-primary-blue bg-primary-light-blue' : 'border-transparent bg-primary-light-gray opacity-60'}`}
       >
         <div>

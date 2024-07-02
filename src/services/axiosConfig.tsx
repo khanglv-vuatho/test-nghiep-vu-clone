@@ -24,7 +24,7 @@ const authorization = async () => {
   let token
   if (import.meta.env.MODE === 'development') {
     token =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZnVsbF9uYW1lIjoiTkdVWeG7hE4gVFLDgCBUSEFOSCBIVVkgIiwicHJvZmlsZV9waWN0dXJlIjoiaHR0cHM6Ly9jZG4tc2FuZGJveC52dWF0aG8uY29tL2ZhYWIzNmJmLTgxNTYtNDgyNC1iMWFmLWFiMGVjZTA0ODQ3NV8xNzAwMDQwMDY0MDExIiwicmVmX2lkIjpudWxsLCJreWNfc3RhdHVzIjoyLCJ3b3JrZXJfc3RhdHVzIjoyLCJzZXNzaW9uX2xvZ2lucyI6W3siSVAiOiIxOTIuMTY4LjAuNzciLCJkZXZpY2UiOiIxNzE4MDE0NjYzMzE2IiwidGltZSI6MTcxODAxNDY2MzMxNn1dLCJpYXQiOjE3MTgwMTQ2NjN9.ZuS9BXibaYkBAPoQeRDIR5dSaXg6WLgEHfEKgOivTxw'
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiZnVsbF9uYW1lIjoiVGVzdCBhbGwiLCJwcm9maWxlX3BpY3R1cmUiOiJodHRwczovL2Nkbi1zYW5kYm94LnZ1YXRoby5jb20vYzBmYTI2M2QtOGFhYi00NzM5LWE5NmYtNjNhMjJkNGM5YmQ0XzE3MTg2OTQ2NTQ0MzAiLCJyZWZfaWQiOjIsImt5Y19zdGF0dXMiOjIsIndvcmtlcl9zdGF0dXMiOjIsInNlc3Npb25fbG9naW5zIjpbeyJkZXZpY2UiOiIxNzE5NjQzOTA4OTg1IiwidGltZSI6MTcxOTY0MzkwODk4NX1dLCJpYXQiOjE3MTk2NDM5MDh9.Wpw1KhPUhXHRKLTYM7czWva6z-dQ3ZdRiA7eEBNJq_s'
   } else {
     const queryParams = new URLSearchParams(location.search)
     token = queryParams?.get('token')
