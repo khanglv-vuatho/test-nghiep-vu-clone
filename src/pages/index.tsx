@@ -35,7 +35,7 @@ export default function Home() {
           </div>
         </div>
       )}
-      <div className={`h-full px-6 ${isNotStep2End ? '' : 'p-4 pb-2'}`}>{steps[currentStep]}</div>
+      <div className={`px-6 ${isNotStep2End ? 'h-full' : 'h-[calc(100dvh-56px)] p-4 pb-2'}`}>{steps[currentStep]}</div>
     </DefaultLayout>
   )
 }
@@ -422,7 +422,7 @@ const Step2End = () => {
           <p className='text-center'>{s?.text11}</p>
         </div>
       </div>
-      <div className='fixed bottom-0 left-0 right-0 p-4 pb-6'>
+      <div className='sticky bottom-0 left-0 right-0 py-2'>
         <Button isLoading={isLoading} onPress={handleCloseWebView} className='h-12 w-full rounded-full bg-primary-blue text-base text-white'>
           {s?.text12}
         </Button>
