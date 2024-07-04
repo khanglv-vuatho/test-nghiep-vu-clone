@@ -1,5 +1,5 @@
 html {
-  @apply scroll-smooth;
+  @apply overscroll-none scroll-smooth;
 }
 
 html *::-webkit-scrollbar {
