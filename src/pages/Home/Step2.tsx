@@ -110,7 +110,7 @@ const Step2 = () => {
         <h1 className='text-center text-xl font-bold text-primary-black'>{s?.text9}</h1>
         <RadioSelectRole options={options} activeRadio={activeRadio} setActiveRadio={setActiveRadio} />
       </div>
-      <BottomhandlePrevNext isDisableNextButton={activeRadio === null} handleNextStep={handleNextStep} handlePrevStep={handlePrevStep} />
+      <BottomhandlePrevNext isDisableNextButton={activeRadio === null} handleNextStep={handleNextStep} handlePrevStep={handlePrevStep} className='py-6' />
     </div>
   )
 }
