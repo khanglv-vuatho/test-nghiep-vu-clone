@@ -110,9 +110,7 @@ const Step3 = () => {
           <p className='text-base-black text-center text-sm'>{s?.text1}</p>
         </div>
       </div>
-      <div className='-mb-1'>
-        <BottomhandlePrevNext handleNextStep={handleNextStep} handlePrevStep={handlePrevStep} isNextLoading={onFetchingTest} />
-      </div>
+      <BottomhandlePrevNext handleNextStep={handleNextStep} handlePrevStep={handlePrevStep} isNextLoading={onFetchingTest} />
     </div>
   )
 }
