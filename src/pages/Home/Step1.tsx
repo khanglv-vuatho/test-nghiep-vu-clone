@@ -254,7 +254,7 @@ const Step1 = () => {
             onFocus={handleFocusInput}
           />
           {searchValue?.length > 0 && showResult && (
-            <div className='z-20 flex max-h-[calc(100dvh-300px)] flex-col gap-2 overflow-auto rounded-xl bg-white p-4 shadow-[8px_8px_16px_0px_#0000000A]'>
+            <div className='z-20 flex max-h-[calc(100dvh-320px)] flex-col gap-2 overflow-auto rounded-xl bg-white p-4 shadow-[8px_8px_16px_0px_#0000000A]'>
               {dataJob?.length > 0
                 ? dataJob?.map((item: any) => {
                     return (
