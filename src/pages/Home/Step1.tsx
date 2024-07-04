@@ -86,9 +86,10 @@ const Step1 = () => {
     if (searchValue.trim() === '') return
 
     if (step1.title.trim() === '') {
-      setShowResult(false)
-      if (dataJob.length === 0) {
+      if (dataJob?.length === 0) {
+        setShowResult(false)
         setErrorJob(true)
+      } else {
         setShowResult(true)
       }
     } else {
