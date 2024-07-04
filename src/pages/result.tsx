@@ -9,7 +9,7 @@ import { PrimaryButton } from '@/components/Buttons'
 import ImageFallback from '@/components/ImageFallback'
 import WrapperBottom from '@/components/WrapperBottom'
 import instance from '@/services/axiosConfig'
-import { TInitState } from '@/store'
+import { ActionTypes, TInitState } from '@/store'
 import { formatNumber, handleAddLangInUrl, postMessageCustom } from '@/utils'
 import DefaultLayout from '@/layouts/default'
 import { translate } from '@/context/translationProvider'
@@ -41,7 +41,7 @@ const ResultPage = () => {
 
   const handleNextResult = () => {
     dispatch({
-      type: 'direction',
+      type: ActionTypes.DIRECTION,
       payload: 'left'
     })
     if (IS_KYC_STATUS) {

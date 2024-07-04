@@ -1,9 +1,8 @@
 import { useCallback, useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { TranslationProvider } from './context/translationProvider'
-import { TInitState } from './store'
-import WrapperAnimation from './components/WrapperAnimation'
+import { ActionTypes } from './store'
 
 const Wrapper = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate()
@@ -16,12 +15,8 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => {
   const checkSession = useCallback(async () => {
     if (token) {
       dispatch({
-        type: 'token',
+        type: ActionTypes.TOKEN,
         payload: token
-      })
-      dispatch({
-        type: 'lang',
-        payload: lang
       })
     } else {
       navigate('/invalid')

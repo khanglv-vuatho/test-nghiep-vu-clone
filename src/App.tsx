@@ -1,7 +1,7 @@
 import { Route, Routes } from 'react-router-dom'
 
-import IndexPage from '@/pages/index'
-import TestingPage from './pages/testing'
+import IndexPage from '@/pages/Home'
+import TestingPage from '@/pages/Testing'
 import InvalidPage from './pages/invalid'
 import ResultPage from './pages/result'
 import KYC from './pages/kyc'

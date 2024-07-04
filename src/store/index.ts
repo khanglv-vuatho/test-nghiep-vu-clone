@@ -1,6 +1,18 @@
 import { Test, direction } from '@/types'
 import { createStore } from 'redux'
 
+export const ActionTypes = {
+  DIRECTION: 'direction',
+  CURRENT_STEP: 'currentStep',
+  RESULT_TEST: 'resultTest',
+  STEP1: 'step1',
+  STEP2: 'step2',
+  TOKEN: 'token',
+  TEST_DETAIL: 'testDetail',
+  IS_START_AGAIN: 'isStartAgain',
+  SEARCH_VALUE: 'searchValue'
+}
+
 type Answer = {
   label: string
   letter: string
@@ -55,23 +67,23 @@ const DefaultValueState: TInitState = {
 
 function counterReducer(state: TInitState = DefaultValueState, action: { type: string; payload: any }) {
   switch (action.type) {
-    case 'direction':
+    case ActionTypes.DIRECTION:
       return { ...state, direction: action.payload }
-    case 'currentStep':
+    case ActionTypes.CURRENT_STEP:
       return { ...state, currentStep: action.payload }
-    case 'resultTest':
+    case ActionTypes.RESULT_TEST:
       return { ...state, resultTest: action.payload }
-    case 'step1':
+    case ActionTypes.STEP1:
       return { ...state, step1: action.payload }
-    case 'step2':
+    case ActionTypes.STEP2:
       return { ...state, step2: action.payload }
-    case 'token':
+    case ActionTypes.TOKEN:
       return { ...state, token: action.payload }
-    case 'testDetail':
+    case ActionTypes.TEST_DETAIL:
       return { ...state, testDetail: action.payload }
-    case 'isStartAgain':
+    case ActionTypes.IS_START_AGAIN:
       return { ...state, isStartAgain: action.payload }
-    case 'searchValue':
+    case ActionTypes.SEARCH_VALUE:
       return { ...state, searchValue: action.payload }
     default:
       return state
