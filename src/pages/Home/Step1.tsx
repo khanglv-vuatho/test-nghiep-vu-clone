@@ -85,9 +85,12 @@ const Step1 = () => {
   const handleNextStep = () => {
     if (searchValue.trim() === '') return
 
-    if (step1.title.trim() === '' || dataJob.length === 0) {
+    if (step1.title.trim() === '') {
       setShowResult(false)
-      return setErrorJob(true)
+      if (dataJob.length === 0) {
+        setErrorJob(true)
+        setShowResult(true)
+      }
     } else {
       dispatch({
         type: ActionTypes.CURRENT_STEP,
