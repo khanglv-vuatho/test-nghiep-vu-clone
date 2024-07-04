@@ -15,6 +15,8 @@ import { handleAddLangInUrl, useDebounce } from '@/utils'
 const Step1 = () => {
   const s = translate('Home.Step1')
 
+  const sendRef = useRef<HTMLDivElement | null>(null)
+
   const step1 = useSelector((state: TInitState) => state.step1)
   const queryParams = new URLSearchParams(location.search)
 
@@ -199,6 +201,29 @@ const Step1 = () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange)
     }
   }, [])
+  useEffect(() => {
+    // const inputEl: any = inputRef?.current
+    const sendEl = sendRef.current
+
+    // if (!inputEl) returnx
+    if (!sendEl) return
+
+    const handleClick = (e: any) => {
+      if (!sendEl.contains(e.relatedTarget)) {
+        alert('123')
+        // inputRef?.current?.blur()
+      } else {
+        // inputEl?.focus()
+        alert('456')
+      }
+    }
+
+    document?.addEventListener('onClick', handleClick)
+
+    return () => {
+      document?.removeEventListener('onClick', handleClick)
+    }
+  }, [sendRef])
 
   return (
     <div className='flex h-full flex-col justify-between'>
@@ -263,7 +288,9 @@ const Step1 = () => {
           </div>
         )}
       </div>
-      <BottomhandlePrevNext isHideBackButton={true} handleNextStep={handleNextStep} handlePrevStep={handlePrevStep} />
+      <div ref={sendRef}>
+        <BottomhandlePrevNext isHideBackButton={true} handleNextStep={handleNextStep} handlePrevStep={handlePrevStep} className='z-[100]' />
+      </div>
     </div>
   )
 }
