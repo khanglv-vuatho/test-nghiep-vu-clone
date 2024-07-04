@@ -204,11 +204,13 @@ const Step1 = () => {
   useEffect(() => {
     // const inputEl: any = inputRef?.current
     const sendEl = sendRef.current
+    console.log({ sendEl })
 
     // if (!inputEl) returnx
     if (!sendEl) return
 
     const handleClick = (e: any) => {
+      console.log('123')
       if (!sendEl.contains(e.relatedTarget)) {
         alert('123')
         // inputRef?.current?.blur()
@@ -218,10 +220,10 @@ const Step1 = () => {
       }
     }
 
-    document?.addEventListener('onClick', handleClick)
+    sendEl?.addEventListener('onClick', handleClick)
 
     return () => {
-      document?.removeEventListener('onClick', handleClick)
+      sendEl?.removeEventListener('onClick', handleClick)
     }
   }, [sendRef])
 

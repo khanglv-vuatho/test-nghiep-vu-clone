@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux'
-
+import { AnimatePresence, motion } from 'framer-motion'
 import DefaultLayout from '@/layouts/default'
 import Step1 from '@/pages/Home/Step1'
 import Step2 from '@/pages/Home/Step2'
@@ -22,7 +22,10 @@ export default function Home() {
             {Array(3)
               .fill(null)
               .map((_, index) => (
-                <div key={index} className={`h-1 rounded-[4px] ${currentStep === index ? 'bg-primary-blue' : 'bg-[#E4E4E4]'}`} />
+                <div key={index} className='relative'>
+                  <motion.div layout className={`absolute inset-0 h-1 rounded-[4px] bg-[#E4E4E4]`} />
+                  {currentStep === index && <motion.div transition={{ duration: 0.15, type: 'tween' }} layoutId='active' className='absolute inset-0 h-1 rounded-[4px] bg-primary-blue' />}
+                </div>
               ))}
           </div>
         </div>
