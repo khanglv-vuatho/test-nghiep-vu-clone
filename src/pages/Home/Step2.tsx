@@ -3,7 +3,7 @@ import ImageFallback from '@/components/ImageFallback'
 import { RadioSelectRole } from '@/components/RadioGroupCustom'
 import { translate } from '@/context/translationProvider'
 import { TInitState, ActionTypes } from '@/store'
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, memo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 const Step2 = () => {
@@ -91,6 +91,7 @@ const Step2 = () => {
       payload: currentStep + 1
     })
   }
+
   const handlePrevStep = () => {
     dispatch({
       type: ActionTypes.CURRENT_STEP,
@@ -115,4 +116,4 @@ const Step2 = () => {
   )
 }
 
-export default Step2
+export default memo(Step2)

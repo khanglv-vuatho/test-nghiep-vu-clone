@@ -1,16 +1,17 @@
-import { Chip, CircularProgress, Input } from '@nextui-org/react'
-import { useEffect, useRef, useState } from 'react'
+import { CircularProgress, Input } from '@nextui-org/react'
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
 import BottomhandlePrevNext from '@/components/BottomhandlePrevNext'
 import { PrimaryButton, PrimaryOutlineButton } from '@/components/Buttons'
-import ImageFallback from '@/components/ImageFallback'
 import ToastComponent from '@/components/ToastComponent'
 import { translate } from '@/context/translationProvider'
 import instance from '@/services/axiosConfig'
 import { ActionTypes, TInitState } from '@/store'
+import { JobType } from '@/types'
 import { handleAddLangInUrl, useDebounce } from '@/utils'
+import SearchResult from './SearchResult'
 
 const Step1 = () => {
   const s = translate('Home.Step1')
@@ -27,12 +28,11 @@ const Step1 = () => {
   const [searchTempValue, setSearchTempValue] = useState(step1?.title)
   const [errorJob, setErrorJob] = useState(false)
   const [showResult, setShowResult] = useState(false)
-  const [dataJob, setDataJob] = useState([])
+  const [dataJob, setDataJob] = useState<JobType[]>([])
   const [onSearching, setOnSearching] = useState(false)
   const [onSendingRequest, setOnSendingRequest] = useState(false)
 
   const debouncedSearchTerm = useDebounce(searchTempValue, 300) // Adjust the delay as needed
-
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
@@ -59,7 +59,7 @@ const Step1 = () => {
     setShowResult(true)
   }
 
-  const handleSelectItem = (item: any) => {
+  const handleSelectItem = useCallback((item: any) => {
     if (item?.is_added) {
       ToastComponent({
         message: s?.text1,
@@ -82,9 +82,9 @@ const Step1 = () => {
         id
       }
     })
-  }
+  }, [])
 
-  const handleNextStep = () => {
+  const handleNextStep = useCallback(() => {
     if (searchValue.trim() === '') return
 
     if (step1.title.trim() === '') {
@@ -100,7 +100,7 @@ const Step1 = () => {
         payload: 1
       })
     }
-  }
+  }, [])
   //
   const handleReset = () => {
     setShowResult(false)
@@ -129,7 +129,7 @@ const Step1 = () => {
     }
   }
 
-  const handlePrevStep = () => {}
+  const handlePrevStep = useCallback(() => {}, [])
 
   const handleRequestJob = async () => {
     try {
@@ -153,8 +153,6 @@ const Step1 = () => {
       type: ActionTypes.SEARCH_VALUE,
       payload: searchValue
     })
-    // khang
-
     if (searchValue.length <= 4) return navigate(handleAddLangInUrl({ mainUrl: '/request-new-job', lang, token }))
 
     setOnSendingRequest(true)
@@ -228,30 +226,7 @@ const Step1 = () => {
             }}
             onFocus={handleFocusInput}
           />
-          {searchValue?.length > 0 && showResult && (
-            <div className='z-20 flex max-h-[calc(100dvh-320px)] flex-col gap-2 overflow-auto rounded-xl bg-white p-4 shadow-[8px_8px_16px_0px_#0000000A]'>
-              {dataJob?.length > 0
-                ? dataJob?.map((item: any) => {
-                    return (
-                      <button key={item?.id} onClick={() => handleSelectItem(item)} className='flex items-center justify-between'>
-                        <div className='flex items-center gap-2'>
-                          <div className='size-[48px] flex-shrink-0 rounded-full bg-neutral-50'>
-                            <ImageFallback src={item?.icon?.url} alt='baove' height={200} width={200} className='size-full' />{' '}
-                          </div>
-                          <div className='flex flex-col gap-1'>
-                            <div className='flex items-center gap-2'>
-                              <p className='text-left text-sm font-bold'>{item?.name?.[lang]}</p>
-                              {item?.is_added && <Chip className='h-5 bg-primary-green text-[10px] text-white *:px-0.5'>{s?.text5}</Chip>}
-                            </div>
-                            <div className='line-clamp-2 text-left text-xs text-primary-gray' dangerouslySetInnerHTML={{ __html: item?.description }} />
-                          </div>
-                        </div>
-                      </button>
-                    )
-                  })
-                : shoudleRenderResult()}
-            </div>
-          )}
+          {searchValue?.length > 0 && showResult && <SearchResult dataJob={dataJob} handleSelectItem={handleSelectItem} onSearching={onSearching} />}
           {errorJob && <span className='text-center text-sm text-[#FF3131]'>{s?.text6}</span>}
         </div>
         {errorJob && (
@@ -271,5 +246,4 @@ const Step1 = () => {
     </div>
   )
 }
-
-export default Step1
+export default memo(Step1)

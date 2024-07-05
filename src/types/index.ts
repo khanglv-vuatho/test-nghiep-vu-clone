@@ -44,4 +44,51 @@ export type Test = {
   meta: Meta
 }
 
+export type LanguageCode =
+  | 'ar'
+  | 'bg'
+  | 'bn'
+  | 'cs'
+  | 'de'
+  | 'el'
+  | 'en'
+  | 'es'
+  | 'fr'
+  | 'hi'
+  | 'id'
+  | 'it'
+  | 'ja'
+  | 'km'
+  | 'kr'
+  | 'lo'
+  | 'lv'
+  | 'ms'
+  | 'my'
+  | 'pl'
+  | 'ro'
+  | 'ru'
+  | 'sk'
+  | 'sl'
+  | 'sv'
+  | 'th'
+  | 'tl'
+  | 'tr'
+  | 'uk'
+  | 'ur'
+  | 'vi'
+  | 'zh'
+  | 'fil'
+  | 'fr-AF'
+  | 'pt-BR'
+  | 'pt-PT'
+  | 'zh-TW'
+
+export type JobType = {
+  id: number
+  name: Partial<Record<LanguageCode, string>>
+  icon: string | null
+  is_added: boolean
+  description: string
+}
+
 export type direction = 'left' | 'right' | 'up' | 'down'

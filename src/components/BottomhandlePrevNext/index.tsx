@@ -1,5 +1,6 @@
 import { PrimaryButton, PrimaryOutlineButton } from '@/components/Buttons'
 import { translate } from '@/context/translationProvider'
+import { memo } from 'react'
 import { twMerge } from 'tailwind-merge'
 
 type PropsBottomHandlePrevNext = {
@@ -15,10 +16,7 @@ const BottomhandlePrevNext = ({ handlePrevStep, handleNextStep, isDisableNextBut
   const b = translate('BottomhandlePrevNext')
 
   return (
-    <div
-      className={twMerge(`${isHideBackButton ? '' : 'px-2'} sticky bottom-0 left-0 z-50 flex w-full items-center gap-4 bg-white py-4`, className)}
-      // style={{ transform: isStep1 ? `translateY(-${bottomPadding}px)` : '' }}
-    >
+    <div className={twMerge(`${isHideBackButton ? '' : 'px-2'} sticky bottom-0 left-0 z-50 flex w-full items-center gap-4 bg-white py-4`, className)}>
       {!isHideBackButton && (
         <PrimaryOutlineButton className={`h-12 w-full rounded-full`} onPress={handlePrevStep}>
           {b?.text1}
@@ -30,4 +28,4 @@ const BottomhandlePrevNext = ({ handlePrevStep, handleNextStep, isDisableNextBut
     </div>
   )
 }
-export default BottomhandlePrevNext
+export default memo(BottomhandlePrevNext)

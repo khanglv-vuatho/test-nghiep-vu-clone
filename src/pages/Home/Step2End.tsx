@@ -3,7 +3,7 @@ import { keyPossmessage } from '@/constants'
 import { translate } from '@/context/translationProvider'
 import { postMessageCustom } from '@/utils'
 import { Button } from '@nextui-org/react'
-import { useState } from 'react'
+import { memo, useState } from 'react'
 
 const Step2End = () => {
   const s = translate('Home.Step2')
@@ -35,4 +35,4 @@ const Step2End = () => {
   )
 }
 
-export default Step2End
+export default memo(Step2End)

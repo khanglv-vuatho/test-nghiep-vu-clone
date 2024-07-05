@@ -6,6 +6,7 @@ import { translate } from '@/context/translationProvider'
 import { TInitState } from '@/store'
 import { Test } from '@/types'
 import { formatDDMMYYYY, formatLocalTime } from '@/utils'
+import { memo } from 'react'
 
 const CanRetake = ({ testDetail, IS_AFTER_CURRENT_TIME }: { testDetail: Test; IS_AFTER_CURRENT_TIME: boolean }) => {
   const t = translate('Testing')
@@ -52,4 +53,4 @@ const CanRetake = ({ testDetail, IS_AFTER_CURRENT_TIME }: { testDetail: Test; IS
   )
 }
 
-export default CanRetake
+export default memo(CanRetake)

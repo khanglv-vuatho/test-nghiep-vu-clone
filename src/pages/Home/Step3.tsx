@@ -5,7 +5,7 @@ import { translate } from '@/context/translationProvider'
 import instance from '@/services/axiosConfig'
 import { TInitState, ActionTypes } from '@/store'
 import { handleAddLangInUrl, capitalizeWords } from '@/utils'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, memo, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
@@ -33,16 +33,16 @@ const Step3 = () => {
 
   const [dataTesting, setDataTesting] = useState<any>({})
 
-  const handleNextStep = () => {
+  const handleNextStep = useCallback(() => {
     setOnFetchingTest(true)
-  }
+  }, [])
 
-  const handlePrevStep = () => {
+  const handlePrevStep = useCallback(() => {
     dispatch({
       type: ActionTypes.CURRENT_STEP,
       payload: currentStep - 1
     })
-  }
+  }, [])
 
   const handleFetchingTest = async () => {
     try {
@@ -115,4 +115,4 @@ const Step3 = () => {
   )
 }
 
-export default Step3
+export default memo(Step3)

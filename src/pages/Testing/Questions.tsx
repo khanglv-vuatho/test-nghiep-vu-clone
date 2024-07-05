@@ -12,7 +12,7 @@ import { Progress } from '@nextui-org/react'
 import { useScroll, useSpring, useTransform, motion } from 'framer-motion'
 import { TickCircle } from 'iconsax-react'
 import moment from 'moment'
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState, useEffect, memo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
@@ -290,4 +290,4 @@ const Questions = ({ testId, listQuestions, meta }: TQuestions) => {
   )
 }
 
-export default Questions
+export default memo(Questions)

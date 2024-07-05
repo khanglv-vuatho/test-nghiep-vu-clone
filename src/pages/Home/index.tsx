@@ -6,6 +6,7 @@ import Step2 from '@/pages/Home/Step2'
 import Step2End from '@/pages/Home/Step2End'
 import Step3 from '@/pages/Home/Step3'
 import { TInitState } from '@/store'
+import { useMemo } from 'react'
 
 export default function Home() {
   const currentStep = useSelector((state: TInitState) => state.currentStep)
