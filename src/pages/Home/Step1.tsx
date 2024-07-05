@@ -201,31 +201,6 @@ const Step1 = () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange)
     }
   }, [])
-  useEffect(() => {
-    // const inputEl: any = inputRef?.current
-    const sendEl = sendRef.current
-    console.log({ sendEl })
-
-    // if (!inputEl) returnx
-    if (!sendEl) return
-
-    const handleClick = (e: any) => {
-      console.log('123')
-      if (!sendEl.contains(e.relatedTarget)) {
-        alert('123')
-        // inputRef?.current?.blur()
-      } else {
-        // inputEl?.focus()
-        alert('456')
-      }
-    }
-
-    sendEl?.addEventListener('onClick', handleClick)
-
-    return () => {
-      sendEl?.removeEventListener('onClick', handleClick)
-    }
-  }, [sendRef])
 
   return (
     <div className='flex h-full flex-col justify-between'>

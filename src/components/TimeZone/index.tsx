@@ -1,3 +1,4 @@
+import { formatLocalTime, formatLocalTimeWithOriginType } from '@/utils'
 import moment from 'moment'
 import { useEffect, useState } from 'react'
 
@@ -10,7 +11,7 @@ type TTimeLeft = {
 const TimeZone = ({ targetDate }: { targetDate: string }) => {
   const calculateTimeLeft = () => {
     const now = moment()
-    const target = moment(targetDate)
+    const target = formatLocalTimeWithOriginType(targetDate)
     const duration = moment.duration(target.diff(now))
 
     return {

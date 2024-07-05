@@ -75,6 +75,12 @@ const formatLocalTime = (time: string) => {
   return localTime
 }
 
+const formatLocalTimeWithOriginType = (time: string) => {
+  const utcMoment = moment.utc(time)
+  const localTime = utcMoment.local()
+  return localTime
+}
+
 const formatDDMMYYYY = (time: string) => {
   return moment(time).format('DD/MM/YYYY')
 }
@@ -103,4 +109,16 @@ const formatNumber = (number: number) => {
 
   return result
 }
-export { getCookie, useUnfocusItem, capitalizeWords, useDebounce, handleAddLangInUrl, formatLocalTime, formatDDMMYYYY, postMessageCustom, converTimeMinutes, formatNumber }
+export {
+  getCookie,
+  useUnfocusItem,
+  capitalizeWords,
+  useDebounce,
+  handleAddLangInUrl,
+  formatLocalTime,
+  formatDDMMYYYY,
+  postMessageCustom,
+  converTimeMinutes,
+  formatNumber,
+  formatLocalTimeWithOriginType
+}
