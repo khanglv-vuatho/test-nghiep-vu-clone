@@ -100,7 +100,7 @@ const Step1 = () => {
         payload: 1
       })
     }
-  }, [])
+  }, [step1])
   //
   const handleReset = () => {
     setShowResult(false)
