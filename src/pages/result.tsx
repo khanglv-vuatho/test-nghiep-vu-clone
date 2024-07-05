@@ -30,6 +30,7 @@ const ResultPage = () => {
   const lang = queryParams?.get('lang') || 'vi'
 
   const IS_KYC_STATUS = resultTest.kyc_status != 2
+  const IS_KYC_STATUS_PENDING = resultTest.kyc_status == 1
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -44,6 +45,8 @@ const ResultPage = () => {
       type: ActionTypes.DIRECTION,
       payload: 'left'
     })
+
+    if (IS_KYC_STATUS_PENDING) return handleCloseWebView()
     if (IS_KYC_STATUS) {
       navigate(handleAddLangInUrl({ mainUrl: '/kyc', lang, token }))
     } else {
