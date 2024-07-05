@@ -47,7 +47,7 @@ const ResultPage = () => {
       payload: 'left'
     })
 
-    if (IS_KYC_STATUS_PENDING) return handleCloseWebView()
+    // if (IS_KYC_STATUS_PENDING) return handleCloseWebView()
     if (IS_KYC_STATUS_APPROVED) {
       navigate(handleAddLangInUrl({ mainUrl: '/kyc', lang, token }))
     } else {
