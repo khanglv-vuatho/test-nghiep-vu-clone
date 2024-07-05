@@ -15,6 +15,5 @@ export const statusKyc = {
 export const keyPossmessage = {
   FINISHED_TEST: 'finishedTest',
   CAN_POP: 'canPop',
-  DIRECT_TO_EKYC: 'directToEkyc',
-  IS_PENDING_KYC: 'isPendingKyc'
+  DIRECT_TO_EKYC: 'directToEkyc'
 }
