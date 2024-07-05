@@ -182,7 +182,7 @@ export default function TestingPage() {
         <div>
           <div className='flex flex-col gap-4 p-4'>
             <div className='flex flex-col items-center'>
-              <div className='h-[200px]'>
+              <div className='w-[200px]'>
                 <ImageFallback src='/robot.png' alt='hero' height={400} width={400} className='size-full' />
               </div>
               {!isReady && (
