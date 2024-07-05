@@ -6,6 +6,12 @@ export const status = {
   failed: 4
 }
 
+export const statusKyc = {
+  PENDING: 1,
+  APPROVED: 2,
+  REJECTED: 3
+}
+
 export const keyPossmessage = {
   FINISHED_TEST: 'finishedTest',
   CAN_POP: 'canPop',

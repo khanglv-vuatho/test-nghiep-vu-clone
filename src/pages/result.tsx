@@ -13,7 +13,7 @@ import { ActionTypes, TInitState } from '@/store'
 import { formatNumber, handleAddLangInUrl, postMessageCustom } from '@/utils'
 import DefaultLayout from '@/layouts/default'
 import { translate } from '@/context/translationProvider'
-import { keyPossmessage } from '@/constants'
+import { keyPossmessage, statusKyc } from '@/constants'
 
 const ResultPage = () => {
   const r = translate('Result')
@@ -29,8 +29,8 @@ const ResultPage = () => {
   const token = queryParams?.get('token') || ''
   const lang = queryParams?.get('lang') || 'vi'
 
-  const IS_KYC_STATUS = resultTest.kyc_status != 2
-  const IS_KYC_STATUS_PENDING = resultTest.kyc_status == 1
+  const IS_KYC_STATUS = resultTest.kyc_status != statusKyc?.APPROVED
+  const IS_KYC_STATUS_PENDING = resultTest.kyc_status == statusKyc?.PENDING
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -88,7 +88,7 @@ const ResultPage = () => {
       <WrapperBottom className='sticky px-4'>
         {isPass ? (
           <PrimaryButton isLoading={isLoading} onPress={handleNextResult} className='h-12 w-full rounded-full font-bold'>
-            {IS_KYC_STATUS ? t?.text26 : r?.text1}
+            {IS_KYC_STATUS_PENDING ? r?.text10 : IS_KYC_STATUS ? t?.text26 : r?.text1}
           </PrimaryButton>
         ) : (
           <div className='flex w-full flex-col gap-1'>
