@@ -41,7 +41,7 @@ export default function TestingPage() {
   const IS_AFTER_CURRENT_TIME = targetTime.isBefore(currentTime)
 
   const queryParams = new URLSearchParams(location.search)
-
+  const IS_TEST_FAILED = statusTest == status.failed
   const lang = queryParams?.get('lang') || 'vi'
   const token = queryParams?.get('token') || ''
 
@@ -81,7 +81,7 @@ export default function TestingPage() {
   }
   const handleGetListQuestions = async () => {
     try {
-      const { data }: any = await instance.post(`/webview/skill-tests/${dataTesting?.id}/${statusTest == status.failed ? 'again' : 'start'}`)
+      const { data }: any = await instance.post(`/webview/skill-tests/${dataTesting?.id}/${IS_TEST_FAILED ? 'again' : 'start'}`)
 
       setListQuestions(data?.topic?.questions)
       setMeta(data?.meta)

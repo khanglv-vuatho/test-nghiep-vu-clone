@@ -29,8 +29,9 @@ const ResultPage = () => {
   const token = queryParams?.get('token') || ''
   const lang = queryParams?.get('lang') || 'vi'
 
-  const IS_KYC_STATUS = resultTest.kyc_status != statusKyc?.APPROVED
-  const IS_KYC_STATUS_PENDING = resultTest.kyc_status == statusKyc?.PENDING
+  const IS_KYC_STATUS = resultTest.kyc_status
+  const IS_KYC_STATUS_APPROVED = IS_KYC_STATUS != statusKyc?.APPROVED
+  const IS_KYC_STATUS_PENDING = IS_KYC_STATUS == statusKyc?.PENDING
 
   const navigate = useNavigate()
   const dispatch = useDispatch()
@@ -47,7 +48,7 @@ const ResultPage = () => {
     })
 
     if (IS_KYC_STATUS_PENDING) return handleCloseWebView()
-    if (IS_KYC_STATUS) {
+    if (IS_KYC_STATUS_APPROVED) {
       navigate(handleAddLangInUrl({ mainUrl: '/kyc', lang, token }))
     } else {
       setIsLoading(true)
@@ -88,7 +89,7 @@ const ResultPage = () => {
       <WrapperBottom className='sticky px-4'>
         {isPass ? (
           <PrimaryButton isLoading={isLoading} onPress={handleNextResult} className='h-12 w-full rounded-full font-bold'>
-            {IS_KYC_STATUS_PENDING ? r?.text10 : IS_KYC_STATUS ? t?.text26 : r?.text1}
+            {IS_KYC_STATUS_PENDING ? r?.text10 : IS_KYC_STATUS_APPROVED ? t?.text26 : r?.text1}
           </PrimaryButton>
         ) : (
           <div className='flex w-full flex-col gap-1'>
