@@ -1,6 +1,6 @@
 import { Button } from '@nextui-org/react'
 import { AddCircle, TickCircle } from 'iconsax-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import confetti from 'canvas-confetti'
@@ -167,7 +167,10 @@ const ResultArea = () => {
   const t = translate('Testing')
   const r = translate('Result')
   const resultTest = useSelector((state: TInitState) => state.resultTest)
-  const questions = resultTest.questions
+
+  const questions = useMemo(() => {
+    return resultTest.questions.sort((a, b) => a.id - b.id)
+  }, [resultTest.questions])
 
   return (
     <div className='flex flex-col gap-4 p-4 pt-0'>
