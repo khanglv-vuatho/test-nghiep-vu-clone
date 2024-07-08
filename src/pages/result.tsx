@@ -92,7 +92,7 @@ const ResultPage = () => {
       </div>
       <WrapperBottom className='sticky px-4'>
         {isPass ? (
-          <PrimaryButton isLoading={isLoading} onPress={handleNextResult} className='h-12 w-full rounded-full font-bold'>
+          <PrimaryButton isLoading={isLoading} onClick={handleNextResult} className='h-12 w-full rounded-full font-bold'>
             {IS_KYC_STATUS_PENDING ? r?.text10 : IS_KYC_STATUS_APPROVED ? t?.text26 : r?.text1}
           </PrimaryButton>
         ) : (
@@ -100,11 +100,11 @@ const ResultPage = () => {
             {isTestTriesMaxedOut ? (
               <p className='text-center font-bold text-primary-blue'>{r?.text2}</p>
             ) : (
-              <PrimaryButton isLoading={isTestAgain} className='h-12 w-full rounded-full font-bold' onPress={handleTestAgain}>
+              <PrimaryButton isLoading={isTestAgain} className='h-12 w-full rounded-full font-bold' onClick={handleTestAgain}>
                 {t?.text18}
               </PrimaryButton>
             )}
-            <Button onPress={handleCloseWebView} isLoading={isLoadingCloseWebView} className='h-12 bg-transparent text-primary-gray'>
+            <Button onClick={handleCloseWebView} isLoading={isLoadingCloseWebView} className='h-12 bg-transparent text-primary-gray'>
               {t?.text19}
             </Button>
           </div>

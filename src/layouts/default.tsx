@@ -31,7 +31,7 @@ export default function DefaultLayout({ children }: { children: React.ReactNode 
   return (
     <>
       <header className='fixed left-0 right-0 top-0 z-50 flex w-full transform-none flex-col gap-4 bg-white'>
-        <Button disableRipple startContent={<ArrowLeft2 />} onPress={handleCloseWebview} className='h-14 justify-start rounded-none bg-transparent px-4 text-base font-bold text-primary-black'>
+        <Button disableRipple startContent={<ArrowLeft2 />} onClick={handleCloseWebview} className='h-14 justify-start rounded-none bg-transparent px-4 text-base font-bold text-primary-black'>
           {title}
         </Button>
       </header>

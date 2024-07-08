@@ -231,10 +231,10 @@ const Step1 = () => {
         </div>
         {errorJob && (
           <div className='flex items-center justify-center gap-2'>
-            <PrimaryOutlineButton className='h-12 rounded-full px-6' onPress={handleReset}>
+            <PrimaryOutlineButton className='h-12 rounded-full px-6' onClick={handleReset}>
               {s?.text7}
             </PrimaryOutlineButton>
-            <PrimaryButton isLoading={onSendingRequest} onPress={handleRequestNewJob} className='h-12 rounded-full px-6'>
+            <PrimaryButton isLoading={onSendingRequest} onClick={handleRequestNewJob} className='h-12 rounded-full px-6'>
               {s?.text8}
             </PrimaryButton>
           </div>

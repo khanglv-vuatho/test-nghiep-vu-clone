@@ -246,15 +246,15 @@ export default function TestingPage() {
       <div className='sticky bottom-0 min-h-[84px] w-full bg-white p-4'>
         {testDetail?.meta?.can_retake ? (
           <div className='flex flex-col gap-2'>
-            <PrimaryButton isDisabled={!IS_AFTER_CURRENT_TIME} onPress={handleStart} className='h-11 w-full rounded-full'>
+            <PrimaryButton isDisabled={!IS_AFTER_CURRENT_TIME} onClick={handleStart} className='h-11 w-full rounded-full'>
               {t?.text18}
             </PrimaryButton>
-            <Button onPress={() => postMessageCustom({ message: keyPossmessage.CAN_POP })} className='h-11 w-full rounded-full bg-transparent text-[#A6A6A6]'>
+            <Button onClick={() => postMessageCustom({ message: keyPossmessage.CAN_POP })} className='h-11 w-full rounded-full bg-transparent text-[#A6A6A6]'>
               {t?.text19}
             </Button>
           </div>
         ) : (
-          <PrimaryButton isDisabled={!isReady} isLoading={onFetchingAnswer} onPress={handleStart} className='h-12 w-full rounded-full'>
+          <PrimaryButton isDisabled={!isReady} isLoading={onFetchingAnswer} onClick={handleStart} className='h-12 w-full rounded-full'>
             {isStartAgain ? t?.text20 : t?.text21}
           </PrimaryButton>
         )}

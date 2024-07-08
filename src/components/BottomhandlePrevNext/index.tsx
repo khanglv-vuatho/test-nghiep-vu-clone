@@ -18,11 +18,11 @@ const BottomhandlePrevNext = ({ handlePrevStep, handleNextStep, isDisableNextBut
   return (
     <div className={twMerge(`${isHideBackButton ? '' : 'px-2'} sticky bottom-0 left-0 z-50 flex w-full items-center gap-4 bg-white py-4`, className)}>
       {!isHideBackButton && (
-        <PrimaryOutlineButton className={`h-12 w-full rounded-full`} onPress={handlePrevStep}>
+        <PrimaryOutlineButton className={`h-12 w-full rounded-full`} onClick={handlePrevStep}>
           {b?.text1}
         </PrimaryOutlineButton>
       )}
-      <PrimaryButton isLoading={isNextLoading} isDisabled={isDisableNextButton} className='h-12 w-full rounded-full' onPress={handleNextStep}>
+      <PrimaryButton isLoading={isNextLoading} isDisabled={isDisableNextButton} className='h-12 w-full rounded-full' onClick={handleNextStep}>
         {b?.text2}
       </PrimaryButton>
     </div>

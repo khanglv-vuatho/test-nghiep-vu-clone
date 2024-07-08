@@ -9,7 +9,7 @@ type Props = {
   isDisabled?: boolean
   isLoading?: boolean
   frequency?: Frequency
-} & Omit<ButtonProps, 'onClick'>
+} & Omit<ButtonProps, 'onPress'>
 
 const handlePhoneVibration = (frequency: Frequency = 'low') => {
   postMessageCustom({ message: `vibrate-${frequency}` })
@@ -35,9 +35,9 @@ export const PrimaryButton = ({ className, isLoading, isDisabled, children, freq
         )}
         isDisabled={isDisabled}
         isLoading={isLoading}
-        onPress={(e) => {
+        onClick={(e) => {
           handlePhoneVibration(frequency)
-          props?.onPress?.(e)
+          props?.onClick?.(e)
         }}
       >
         {children}
@@ -59,9 +59,9 @@ export const PrimaryOutlineButton = ({ className, isDisabled, isLoading, childre
         )}
         isDisabled={isDisabled}
         isLoading={isLoading}
-        onPress={(e) => {
+        onClick={(e) => {
           handlePhoneVibration(frequency)
-          props?.onPress?.(e)
+          props?.onClick?.(e)
         }}
       >
         {children}
@@ -76,9 +76,9 @@ export const PrimaryLightButton = ({ className, children, frequency, ...props }:
 
   return (
     <Button
-      onPress={(e) => {
+      onClick={(e) => {
         handlePhoneVibration(frequency)
-        props?.onPress?.(e)
+        props?.onClick?.(e)
       }}
       className={twMerge(`${radiusClass} select-none bg-primary-light-blue font-bold text-primary-blue duration-0`, className)}
       {...props}

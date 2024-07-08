@@ -36,7 +36,7 @@ const RequestNewJob = () => {
         </div>
       </div>
       <div className='fixed bottom-0 left-0 right-0 p-4 pb-6'>
-        <Button isLoading={isLoading} className='h-12 w-full rounded-full bg-primary-blue text-base text-white' onPress={handleCloseWebView}>
+        <Button isLoading={isLoading} className='h-12 w-full rounded-full bg-primary-blue text-base text-white' onClick={handleCloseWebView}>
           {r?.text3}
         </Button>
       </div>

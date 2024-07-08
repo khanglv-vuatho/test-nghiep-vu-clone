@@ -27,7 +27,7 @@ const Step2End = () => {
         </div>
       </div>
       <div className='sticky bottom-0 left-0 right-0 w-full py-2'>
-        <Button isLoading={isLoading} onPress={handleCloseWebView} className='h-12 w-full rounded-full bg-primary-blue text-base text-white'>
+        <Button isLoading={isLoading} onClick={handleCloseWebView} className='h-12 w-full rounded-full bg-primary-blue text-base text-white'>
           {s?.text12}
         </Button>
       </div>

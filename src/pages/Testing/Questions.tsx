@@ -258,10 +258,10 @@ const Questions = ({ testId, listQuestions, meta }: TQuestions) => {
         </div>
       </div>
       <WrapperBottom>
-        <PrimaryOutlineButton isDisabled={currentQuestion === 0} onPress={handlePrevQuestion} className='z-20 h-12 w-full rounded-full bg-white'>
+        <PrimaryOutlineButton isDisabled={currentQuestion === 0} onClick={handlePrevQuestion} className='z-20 h-12 w-full rounded-full bg-white'>
           {t?.text24}
         </PrimaryOutlineButton>
-        <PrimaryButton onPress={handleNextQuestion} isDisabled={IS_FINAL_QUESTION && IS_FILL_FULL_QUESTION} className='h-12 w-full rounded-full'>
+        <PrimaryButton onClick={handleNextQuestion} isDisabled={IS_FINAL_QUESTION && IS_FILL_FULL_QUESTION} className='h-12 w-full rounded-full'>
           {IS_FINAL_QUESTION ? t?.text25 : t?.text26}
         </PrimaryButton>
       </WrapperBottom>
@@ -277,10 +277,10 @@ const Questions = ({ testId, listQuestions, meta }: TQuestions) => {
             </div>
           </div>
           <div className='flex items-center gap-4'>
-            <PrimaryOutlineButton onPress={() => setIsOpenModal(false)} className='h-12 w-full rounded-full'>
+            <PrimaryOutlineButton onClick={() => setIsOpenModal(false)} className='h-12 w-full rounded-full'>
               {t?.text29}
             </PrimaryOutlineButton>
-            <PrimaryButton isLoading={onChecking} frequency='medium' onPress={handleChecking} className='h-12 w-full rounded-full'>
+            <PrimaryButton isLoading={onChecking} frequency='medium' onClick={handleChecking} className='h-12 w-full rounded-full'>
               {t?.text30}
             </PrimaryButton>
           </div>
