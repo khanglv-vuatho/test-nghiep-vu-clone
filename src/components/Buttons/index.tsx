@@ -30,7 +30,7 @@ export const PrimaryButton = ({ className, isLoading, isDisabled, children, freq
       <Button
         {...props}
         className={twMerge(
-          `data-[pressed=true]:scale-1 z-50 w-full select-none duration-0 ${radiusClass} bg-primary-blue font-bold text-white data-[pressed=true]:translate-y-1 data-[hover=true]:opacity-100 ${isLoading ? 'translate-y-1' : ''} ${isDisabled ? classForDisabled : ''}`,
+          `data-[pressed=true]:scale-1 [focus-visible=true]:outline-offset-0 z-50 w-full select-none outline-none duration-0 data-[focus-visible=true]:outline-none ${radiusClass} bg-primary-blue font-bold text-white data-[pressed=true]:translate-y-1 data-[hover=true]:opacity-100 ${isLoading ? 'translate-y-1' : ''} ${isDisabled ? classForDisabled : ''}`,
           className
         )}
         isDisabled={isDisabled}
@@ -54,7 +54,7 @@ export const PrimaryOutlineButton = ({ className, isDisabled, isLoading, childre
       <Button
         {...props}
         className={twMerge(
-          `data-[pressed=true]:scale-1 z-50 w-full select-none duration-0 ${radiusClass} border border-primary-blue bg-transparent bg-white font-bold text-primary-blue data-[pressed=true]:translate-y-1 data-[hover=true]:opacity-100 ${isDisabled ? classForDisabled : ''} ${isLoading ? 'translate-y-1' : ''}`,
+          `data-[pressed=true]:scale-1 [focus-visible=true]:outline-offset-0 z-50 w-full select-none outline-none duration-0 data-[focus-visible=true]:outline-none ${radiusClass} border border-primary-blue bg-transparent bg-white font-bold text-primary-blue data-[pressed=true]:translate-y-1 data-[hover=true]:opacity-100 ${isDisabled ? classForDisabled : ''} ${isLoading ? 'translate-y-1' : ''}`,
           className
         )}
         isDisabled={isDisabled}
@@ -80,7 +80,10 @@ export const PrimaryLightButton = ({ className, children, frequency, ...props }:
         handlePhoneVibration(frequency)
         props?.onClick?.(e)
       }}
-      className={twMerge(`${radiusClass} select-none bg-primary-light-blue font-bold text-primary-blue duration-0`, className)}
+      className={twMerge(
+        `${radiusClass} [focus-visible=true]:outline-offset-0 select-none bg-primary-light-blue font-bold text-primary-blue outline-none duration-0 data-[focus-visible=true]:outline-none`,
+        className
+      )}
       {...props}
     >
       {children}
