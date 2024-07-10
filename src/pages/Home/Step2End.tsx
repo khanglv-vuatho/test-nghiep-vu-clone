@@ -13,7 +13,7 @@ const Step2End = () => {
   const s = translate('Home.Step2')
   const r = translate('Result')
   const t = translate('Testing')
-  const kyc_status = useSelector((state: TInitState) => state.kyc_status)
+  const kyc_status = useSelector((state: any) => state.kyc_status.kyc_status)
   const queryParams = new URLSearchParams(location.search)
 
   const token = queryParams?.get('token') || ''
@@ -22,9 +22,9 @@ const Step2End = () => {
   const navigate = useNavigate()
 
   const IS_KYC_STATUS_APPROVED = kyc_status == statusKyc?.APPROVED
-
-  console.log({ IS_KYC_STATUS_APPROVED, kyc_status, a: statusKyc?.APPROVED })
   const IS_KYC_STATUS_PENDING = kyc_status == statusKyc?.PENDING
+
+  console.log(kyc_status)
 
   const [isLoading, setIsLoading] = useState(false)
   const handleCloseWebView = () => {
