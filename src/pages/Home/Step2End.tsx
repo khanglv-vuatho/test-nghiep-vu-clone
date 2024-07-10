@@ -21,7 +21,7 @@ const Step2End = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  const IS_KYC_STATUS_APPROVED = kyc_status !== statusKyc?.APPROVED
+  const IS_KYC_STATUS_APPROVED = kyc_status == statusKyc?.APPROVED
 
   console.log({ IS_KYC_STATUS_APPROVED, kyc_status, a: statusKyc?.APPROVED })
   const IS_KYC_STATUS_PENDING = kyc_status == statusKyc?.PENDING

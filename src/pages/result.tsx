@@ -30,7 +30,8 @@ const ResultPage = () => {
   const lang = queryParams?.get('lang') || 'vi'
 
   const IS_KYC_STATUS = resultTest.kyc_status
-  const IS_KYC_STATUS_APPROVED = IS_KYC_STATUS != statusKyc?.APPROVED
+
+  const IS_KYC_STATUS_APPROVED = IS_KYC_STATUS == statusKyc?.APPROVED
   const IS_KYC_STATUS_PENDING = IS_KYC_STATUS == statusKyc?.PENDING
 
   const navigate = useNavigate()
