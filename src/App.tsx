@@ -1,13 +1,15 @@
 import { Route, Routes } from 'react-router-dom'
 
-import IndexPage from '@/pages/Home'
-import TestingPage from '@/pages/Testing'
-import InvalidPage from './pages/invalid'
-import ResultPage from './pages/result'
-import KYC from './pages/kyc'
-import RequestNewJob from './pages/request-new-job'
-import Test from './pages/test'
 import './style.css'
+import { lazy, Suspense } from 'react'
+import { CircularProgress } from '@nextui-org/react'
+
+const IndexPage = lazy(() => import('./pages/Home'))
+const InvalidPage = lazy(() => import('./pages/invalid'))
+const ResultPage = lazy(() => import('./pages/result'))
+const RequestNewJob = lazy(() => import('./pages/request-new-job'))
+const TestingPage = lazy(() => import('./pages/Testing'))
+const KYC = lazy(() => import('./pages/kyc'))
 
 const routes = [
   { path: '/', element: <IndexPage /> },
@@ -15,17 +17,28 @@ const routes = [
   { path: '/invalid', element: <InvalidPage /> },
   { path: '/result', element: <ResultPage /> },
   { path: '/request-new-job', element: <RequestNewJob /> },
-  { path: '/test', element: <Test /> },
   { path: '/kyc', element: <KYC /> }
 ]
 
 function App() {
   return (
-    <Routes>
-      {routes.map(({ path, element }, index) => (
-        <Route key={index} path={path} element={element} />
-      ))}
-    </Routes>
+    <Suspense
+      fallback={
+        <div className='flex h-dvh w-full items-center justify-center'>
+          <CircularProgress
+            classNames={{
+              svg: 'h-8 w-8 text-primary-blue'
+            }}
+          />
+        </div>
+      }
+    >
+      <Routes>
+        {routes.map(({ path, element }, index) => (
+          <Route key={index} path={path} element={element} />
+        ))}
+      </Routes>
+    </Suspense>
   )
 }
 
