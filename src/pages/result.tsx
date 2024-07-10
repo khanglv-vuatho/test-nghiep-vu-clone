@@ -218,4 +218,5 @@ const AnswerBlock = ({ title, answerLabel, icon, mainColor }: PropsAnswerBlock) 
     </div>
   </div>
 )
+
 export default ResultPage

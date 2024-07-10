@@ -1,18 +1,22 @@
 import BottomhandlePrevNext from '@/components/BottomhandlePrevNext'
 import ImageFallback from '@/components/ImageFallback'
 import { RadioSelectRole } from '@/components/RadioGroupCustom'
+import { statusKyc } from '@/constants'
 import { translate } from '@/context/translationProvider'
+import instance from '@/services/axiosConfig'
 import { TInitState, ActionTypes } from '@/store'
-import { useState, useRef, useEffect, memo } from 'react'
+import { useState, useRef, useEffect, memo, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 const Step2 = () => {
   const s = translate('Home.Step2')
 
   const step2 = useSelector((state: TInitState) => state.step2)
+  const step1 = useSelector((state: TInitState) => state.step1)
   const currentStep = useSelector((state: TInitState) => state.currentStep)
 
   const [activeRadio, setActiveRadio] = useState<any>(step2)
+  const [isLoading, setIsLoading] = useState(false)
   const dispatch = useDispatch()
 
   const optionRefs: any = useRef([])
@@ -80,10 +84,7 @@ const Step2 = () => {
 
     if (activeRadio === 1) {
       // redirect to step2End
-      return dispatch({
-        type: ActionTypes.CURRENT_STEP,
-        payload: 3
-      })
+      return setIsLoading(true)
     }
 
     dispatch({
@@ -99,11 +100,37 @@ const Step2 = () => {
     })
   }
 
+  const handleApiAssitantWorker = useCallback(async () => {
+    try {
+      const { data } = await instance.post('/webview/set-assistant-worker', {
+        industry_id: step1.id
+      })
+
+      dispatch({
+        type: ActionTypes.KYC_STATUS,
+        payload: data
+      })
+
+      return dispatch({
+        type: ActionTypes.CURRENT_STEP,
+        payload: 3
+      })
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setIsLoading(false)
+    }
+  }, [step1.id])
+
   useEffect(() => {
     if (optionRefs?.current?.[activeRadio]) {
       optionRefs?.current?.[activeRadio].scrollIntoView({ behavior: 'smooth', block: 'center' })
     }
   }, [activeRadio])
+
+  useEffect(() => {
+    isLoading && handleApiAssitantWorker()
+  }, [isLoading])
 
   return (
     <div className='flex h-full flex-col justify-between'>
@@ -111,7 +138,7 @@ const Step2 = () => {
         <h1 className='text-center text-xl font-bold text-primary-black'>{s?.text9}</h1>
         <RadioSelectRole options={options} activeRadio={activeRadio} setActiveRadio={setActiveRadio} />
       </div>
-      <BottomhandlePrevNext isDisableNextButton={activeRadio === null} handleNextStep={handleNextStep} handlePrevStep={handlePrevStep} className='bg-white py-6 pt-4' />
+      <BottomhandlePrevNext isNextLoading={isLoading} isDisableNextButton={activeRadio === null} handleNextStep={handleNextStep} handlePrevStep={handlePrevStep} className='bg-white py-6 pt-4' />
     </div>
   )
 }

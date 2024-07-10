@@ -10,7 +10,8 @@ export const ActionTypes = {
   TOKEN: 'token',
   TEST_DETAIL: 'testDetail',
   IS_START_AGAIN: 'isStartAgain',
-  SEARCH_VALUE: 'searchValue'
+  SEARCH_VALUE: 'searchValue',
+  KYC_STATUS: 'kyc_status'
 }
 
 type Answer = {
@@ -43,6 +44,7 @@ export type TInitState = {
   isStartAgain: boolean
   searchValue: string
   direction: direction
+  kyc_status: number | null
 }
 const DefaultValueState: TInitState = {
   searchValue: '',
@@ -62,7 +64,8 @@ const DefaultValueState: TInitState = {
   },
   step2: null,
   token: '',
-  direction: 'right'
+  direction: 'right',
+  kyc_status: null
 }
 
 function counterReducer(state: TInitState = DefaultValueState, action: { type: string; payload: any }) {
@@ -85,6 +88,8 @@ function counterReducer(state: TInitState = DefaultValueState, action: { type: s
       return { ...state, isStartAgain: action.payload }
     case ActionTypes.SEARCH_VALUE:
       return { ...state, searchValue: action.payload }
+    case ActionTypes.KYC_STATUS:
+      return { ...state, kyc_status: action.payload }
     default:
       return state
   }
