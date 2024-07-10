@@ -21,7 +21,9 @@ const Step2End = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  const IS_KYC_STATUS_APPROVED = kyc_status != statusKyc?.APPROVED
+  const IS_KYC_STATUS_APPROVED = kyc_status !== statusKyc?.APPROVED
+
+  console.log({ IS_KYC_STATUS_APPROVED, kyc_status, a: statusKyc?.APPROVED })
   const IS_KYC_STATUS_PENDING = kyc_status == statusKyc?.PENDING
 
   const [isLoading, setIsLoading] = useState(false)
@@ -42,12 +44,13 @@ const Step2End = () => {
       return
     }
     if (IS_KYC_STATUS_APPROVED) {
-      navigate(handleAddLangInUrl({ mainUrl: '/kyc', lang, token }))
-    } else {
       setIsLoading(true)
       postMessageCustom({ message: keyPossmessage.FINISHED_TEST })
+    } else {
+      navigate(handleAddLangInUrl({ mainUrl: '/kyc', lang, token }))
     }
   }
+
   return (
     <div className='flex h-full flex-col justify-between'>
       <div className='flex flex-col gap-4'>

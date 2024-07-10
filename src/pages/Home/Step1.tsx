@@ -158,20 +158,6 @@ const Step1 = () => {
     setOnSendingRequest(true)
   }
 
-  const shoudleRenderResult = () => {
-    return onSearching ? (
-      <div className='flex w-full justify-center'>
-        <CircularProgress
-          classNames={{
-            svg: 'h-8 w-8 text-primary-blue'
-          }}
-        />
-      </div>
-    ) : (
-      <p className='text-center'>{s?.text2}</p>
-    )
-  }
-
   useEffect(() => {
     if (debouncedSearchTerm) {
       setOnSearching(true)

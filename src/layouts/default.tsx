@@ -1,12 +1,14 @@
-import WrapperAnimation from '@/components/WrapperAnimation'
 import { keyPossmessage } from '@/constants'
 import { translate } from '@/context/translationProvider'
 import { TInitState } from '@/store'
 import { handleAddLangInUrl, postMessageCustom } from '@/utils'
-import { Button } from '@nextui-org/react'
+import { Button, CircularProgress } from '@nextui-org/react'
 import { ArrowLeft2 } from 'iconsax-react'
 import { useSelector } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { lazy, Suspense } from 'react'
+
+const WrapperAnimation = lazy(() => import('@/components/WrapperAnimation'))
 
 export default function DefaultLayout({ children }: { children: React.ReactNode }) {
   const t = translate('Home.Step1')
@@ -35,9 +37,22 @@ export default function DefaultLayout({ children }: { children: React.ReactNode 
           {title}
         </Button>
       </header>
-      <WrapperAnimation keyRender={pathname} direction={direction}>
-        <main className='h-[calc(100dvh-40px)] pt-[56px]'>{children}</main>
-      </WrapperAnimation>
+
+      <Suspense
+        fallback={
+          <div className='flex w-full justify-center'>
+            <CircularProgress
+              classNames={{
+                svg: 'h-8 w-8 text-primary-blue'
+              }}
+            />
+          </div>
+        }
+      >
+        <WrapperAnimation keyRender={pathname} direction={direction}>
+          <main className='h-[calc(100dvh-40px)] pt-[56px]'>{children}</main>
+        </WrapperAnimation>
+      </Suspense>
     </>
   )
 }

@@ -53,10 +53,10 @@ const ResultPage = () => {
       return
     }
     if (IS_KYC_STATUS_APPROVED) {
-      navigate(handleAddLangInUrl({ mainUrl: '/kyc', lang, token }))
-    } else {
       setIsLoading(true)
       postMessageCustom({ message: keyPossmessage.FINISHED_TEST })
+    } else {
+      navigate(handleAddLangInUrl({ mainUrl: '/kyc', lang, token }))
     }
   }
 
