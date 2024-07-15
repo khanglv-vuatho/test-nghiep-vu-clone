@@ -8,7 +8,12 @@ import { Test } from '@/types'
 import { formatDDMMYYYY, formatLocalTime } from '@/utils'
 import { memo } from 'react'
 
-const CanRetake = ({ testDetail, IS_AFTER_CURRENT_TIME }: { testDetail: Test; IS_AFTER_CURRENT_TIME: boolean }) => {
+type CanRetakeProps = {
+  testDetail: Test
+  IS_AFTER_CURRENT_TIME: boolean
+}
+
+const CanRetake: React.FC<CanRetakeProps> = ({ testDetail, IS_AFTER_CURRENT_TIME }) => {
   const t = translate('Testing')
   const step1 = useSelector((state: TInitState) => state.step1)
 
@@ -23,7 +28,7 @@ const CanRetake = ({ testDetail, IS_AFTER_CURRENT_TIME }: { testDetail: Test; IS
           return (
             <div key={item?.finish_time} className={`relative flex items-center gap-4 rounded-2xl bg-white p-4 shadow-[8px_8px_16px_0px_#0000000A] ${isLastItem ? 'w-[calc(100%-4px)]' : 'w-full'}`}>
               {isLastItem && <div className='absolute inset-0 z-[-10] translate-x-1 rounded-2xl bg-primary-red' />}
-              <div className='flex size-8 items-center justify-center rounded-full bg-primary-blue text-sm font-bold text-white'>{index + 1}</div>
+              <div className='flex size-8 items-center justify-center rounded-full bg-primary-blue text-base font-bold text-white'>{index + 1}</div>
               <div className='flex flex-1 flex-col gap-1'>
                 <p className='font-bold'>{step1?.title}</p>
                 <p>{formatDDMMYYYY(item.finish_time.split(' ')?.[0])}</p>
@@ -40,7 +45,7 @@ const CanRetake = ({ testDetail, IS_AFTER_CURRENT_TIME }: { testDetail: Test; IS
       </div>
       {!IS_AFTER_CURRENT_TIME && (
         <div className='mt-6 flex flex-col gap-4'>
-          <div className='text-center text-sm'>
+          <div className='text-center text-base'>
             <p>{t?.text2}</p>
             <p>
               {formatLocalTime(testDetail?.meta?.can_retake?.split(' ')?.[1])} {formatDDMMYYYY(testDetail?.meta?.can_retake.split(' ')?.[0])}

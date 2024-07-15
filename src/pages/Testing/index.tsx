@@ -179,67 +179,65 @@ export default function TestingPage() {
       {testDetail?.meta?.can_retake ? (
         <CanRetake testDetail={testDetail} IS_AFTER_CURRENT_TIME={IS_AFTER_CURRENT_TIME} />
       ) : (
-        <div>
-          <div className='flex flex-col gap-4 p-4'>
-            <div className='flex flex-col items-center'>
-              <div className='w-[200px]'>
-                <ImageFallback src='/robot.png' alt='hero' height={400} width={400} className='size-full' />
+        <div className='flex flex-col gap-4 p-4'>
+          <div className='flex flex-col items-center'>
+            <div className='w-[200px]'>
+              <ImageFallback src='/robot.png' alt='hero' height={400} width={400} className='size-full' />
+            </div>
+            {!isReady && (
+              <div className='flex flex-col gap-2'>
+                <p className='text-primary-blue'>{t?.text4}...</p>
+                <Progress size='md' isIndeterminate aria-label='Loading...' className='max-w-md' />
               </div>
-              {!isReady && (
-                <div className='flex flex-col gap-2'>
-                  <p className='text-primary-blue'>{t?.text4}...</p>
-                  <Progress size='md' isIndeterminate aria-label='Loading...' className='max-w-md' />
-                </div>
-              )}
-            </div>
-            <div className='flex flex-col gap-2'>
-              <h1 className='text-center text-2xl font-semibold text-primary-blue'>
-                {t?.text5} {dataTestingTopic?.topic?.title}
-              </h1>
-              {!isReady ? (
-                <div className='flex items-center justify-center gap-2'>
-                  <Skeleton className='h-12 w-[100px] rounded-lg' />
-                  <Skeleton className='h-12 w-[100px] rounded-lg' />
-                </div>
-              ) : (
-                <div className='flex items-center justify-center gap-2'>
-                  <PrimaryLightButton disableRipple startContent={<DocumentText1 />}>
-                    {dataTestingTopic?.topic?.questions_length} {t?.text6}
-                  </PrimaryLightButton>
-                  <PrimaryLightButton disableRipple disableAnimation startContent={<Clock />}>
-                    {converTimeMinutes(dataTestingTopic?.topic?.time)} {t?.text7}
-                  </PrimaryLightButton>
-                </div>
-              )}
-            </div>
-            <div className='flex flex-col gap-2 rounded-lg bg-primary-light-gray p-4'>
-              <div className='flex items-center gap-2 font-semibold text-primary-blue'>
-                <span>
-                  <Gift />
-                </span>
-                <p>{t?.text8}</p>
+            )}
+          </div>
+          <div className='flex flex-col gap-2'>
+            <h1 className='text-center text-2xl font-semibold text-primary-blue'>
+              {t?.text5} {dataTestingTopic?.topic?.title}
+            </h1>
+            {!isReady ? (
+              <div className='flex items-center justify-center gap-2'>
+                <Skeleton className='h-12 w-[100px] rounded-lg' />
+                <Skeleton className='h-12 w-[100px] rounded-lg' />
               </div>
-              <ul className='list-inside list-disc pl-2'>
-                <li>{t?.text9}</li>
-                <li>{t?.text10}</li>
-                <li>{t?.text11}</li>
-              </ul>
-            </div>
-            <div className='flex flex-col gap-2 rounded-lg bg-primary-light-gray p-4'>
-              <div className='flex items-center gap-2 font-semibold text-primary-blue'>
-                <span>
-                  <MessageQuestion />
-                </span>
-                <p>{t?.text12}</p>
+            ) : (
+              <div className='flex items-center justify-center gap-2'>
+                <PrimaryLightButton disableRipple startContent={<DocumentText1 />}>
+                  {dataTestingTopic?.topic?.questions_length} {t?.text6}
+                </PrimaryLightButton>
+                <PrimaryLightButton disableRipple disableAnimation startContent={<Clock />}>
+                  {converTimeMinutes(dataTestingTopic?.topic?.time)} {t?.text7}
+                </PrimaryLightButton>
               </div>
-              <ul className='list-inside list-disc pl-2'>
-                <li>{t?.text13}</li>
-                <li>{t?.text14}</li>
-                <li>{t?.text15}</li>
-                <li>{t?.text16}</li>
-                <li>{t?.text17}</li>
-              </ul>
+            )}
+          </div>
+          <div className='flex flex-col gap-2 rounded-lg bg-primary-light-gray p-4'>
+            <div className='flex items-center gap-2 font-semibold text-primary-blue'>
+              <span>
+                <Gift />
+              </span>
+              <p>{t?.text8}</p>
             </div>
+            <ul className='list-inside list-disc pl-2'>
+              <li>{t?.text9}</li>
+              <li>{t?.text10}</li>
+              <li>{t?.text11}</li>
+            </ul>
+          </div>
+          <div className='flex flex-col gap-2 rounded-lg bg-primary-light-gray p-4'>
+            <div className='flex items-center gap-2 font-semibold text-primary-blue'>
+              <span>
+                <MessageQuestion />
+              </span>
+              <p>{t?.text12}</p>
+            </div>
+            <ul className='list-inside list-disc pl-2'>
+              <li>{t?.text13}</li>
+              <li>{t?.text14}</li>
+              <li>{t?.text15}</li>
+              <li>{t?.text16}</li>
+              <li>{t?.text17}</li>
+            </ul>
           </div>
         </div>
       )}

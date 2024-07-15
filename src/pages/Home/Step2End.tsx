@@ -26,10 +26,6 @@ const Step2End = () => {
   console.log(kyc_status)
 
   const [isLoading, setIsLoading] = useState(false)
-  const handleCloseWebView = () => {
-    setIsLoading(true)
-    postMessageCustom({ message: keyPossmessage.CAN_POP })
-  }
 
   const handleNextResult = () => {
     dispatch({

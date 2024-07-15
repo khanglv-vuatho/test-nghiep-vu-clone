@@ -157,7 +157,7 @@ const Pass = () => {
         </div>
         <div className='flex flex-col items-center gap-1'>
           {isPass ? <p className='text-center font-bold text-primary-blue'>{r?.text4}</p> : <p className='text-center font-bold text-primary-red'>{r?.text5}</p>}
-          <p className='text-center text-sm'>{isPass ? r?.text6 : r?.text7}</p>
+          <p className='text-center text-base'>{isPass ? r?.text6 : r?.text7}</p>
         </div>
       </div>
     </div>
@@ -189,7 +189,7 @@ const ResultArea = () => {
               )}
               <AnswerBlock title={r?.text9} mainColor='primary-green' answerLabel={correctAnswer} icon={<TickCircle className='text-primary-green' variant='Bold' size={20} />} />
             </div>
-            <p className='text-sm font-light'>{item.explain_answer}</p>
+            <p className='text-base font-light'>{item.explain_answer}</p>
           </div>
         )
       })}
@@ -208,7 +208,7 @@ type PropsAnswerBlock = {
 }
 
 const AnswerBlock = ({ title, answerLabel, icon, mainColor }: PropsAnswerBlock) => (
-  <div className='flex flex-col gap-1 text-sm'>
+  <div className='flex flex-col gap-1 text-base'>
     <p className={`text-${mainColor}`}>{title}</p>
     <div className={`flex items-center justify-between gap-1 rounded-xl border-1.5 border-${mainColor} bg-light-${mainColor} px-2 py-3 pr-1`}>
       <div className='flex items-center gap-2'>

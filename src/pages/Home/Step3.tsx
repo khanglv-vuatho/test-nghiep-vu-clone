@@ -107,7 +107,7 @@ const Step3 = () => {
         </div>
         <div className='flex flex-col items-center gap-2'>
           <p className='text-center text-2xl font-bold text-primary-blue'>{capitalizeWords(step1?.title)}</p>
-          <p className='text-base-black text-center text-sm'>{s?.text1}</p>
+          <p className='text-base-black text-center text-base'>{s?.text1}</p>
         </div>
       </div>
       <BottomhandlePrevNext handleNextStep={handleNextStep} handlePrevStep={handlePrevStep} isNextLoading={onFetchingTest} />

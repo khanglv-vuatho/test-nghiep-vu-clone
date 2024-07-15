@@ -92,5 +92,11 @@
     "text8": "Your answer",
     "text9": "Correct answer",
     "text10": "Completed"
+  },
+  "TimeZone": {
+    "text1": "Day",
+    "text2": "Hour",
+    "text3": "Minute",
+    "text4": "Second"
   }
 }

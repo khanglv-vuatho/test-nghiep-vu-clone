@@ -1,7 +1,6 @@
 import BottomhandlePrevNext from '@/components/BottomhandlePrevNext'
 import ImageFallback from '@/components/ImageFallback'
 import { RadioSelectRole } from '@/components/RadioGroupCustom'
-import { statusKyc } from '@/constants'
 import { translate } from '@/context/translationProvider'
 import instance from '@/services/axiosConfig'
 import { TInitState, ActionTypes } from '@/store'
@@ -27,7 +26,7 @@ const Step2 = () => {
       label: <p className={`font-bold ${activeRadio === 0 ? 'text-primary-blue' : 'text-primary-black'}`}>{s?.text1}</p>,
       descripton: (
         <div className='flex flex-col gap-4'>
-          <ul className='p-4 *:text-sm'>
+          <ul className='p-4 *:text-base'>
             <li>
               <span className='text-2xl leading-none'>• </span>
               <span>{s?.text2}</span>
@@ -56,10 +55,10 @@ const Step2 = () => {
           <p className={`font-bold ${activeRadio === 1 ? 'text-primary-blue' : 'text-primary-black'}`}>{s?.text5}</p>
         </div>
       ),
-      comingSoon: <div className='m-4 mb-0 mr-0 w-fit rounded-lg bg-primary-red p-2 text-sm text-white'>{s?.text6}</div>,
+      comingSoon: <div className='m-4 mb-0 mr-0 w-fit rounded-lg bg-primary-red p-2 text-base text-white'>{s?.text6}</div>,
       descripton: (
         <div className='flex flex-col gap-4'>
-          <ul className='p-4 *:text-sm'>
+          <ul className='p-4 *:text-base'>
             <li>
               <span className='text-2xl leading-none'>• </span>
               <span>{s?.text7}</span>

@@ -54,7 +54,7 @@ const KYC = () => {
       </div>
       <WrapperBottom className='p-4'>
         <div className='flex flex-col gap-2'>
-          <p className='text-center text-sm'>{t?.text4}</p>
+          <p className='text-center text-base'>{t?.text4}</p>
           <PrimaryButton className='h-12 rounded-full' isLoading={isLoading} onClick={handleKYC}>
             {t?.text5}
           </PrimaryButton>

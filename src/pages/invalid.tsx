@@ -21,7 +21,7 @@ const InvalidPage = () => {
         <div className='h-[122px] w-[132px]'>
           <ImageFallback src='/invalid.png' height={400} width={400} className='size-full' />
         </div>
-        <p className='text-sm'>{i?.text1}</p>
+        <p className='text-base'>{i?.text1}</p>
         <PrimaryOutlineButton isLoading={isLoading} onClick={handleCloseWebView} className='w-full rounded-full'>
           {i?.text2} App
         </PrimaryOutlineButton>

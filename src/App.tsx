@@ -2,7 +2,7 @@ import { Route, Routes } from 'react-router-dom'
 
 import './style.css'
 import { lazy, Suspense } from 'react'
-import { CircularProgress } from '@nextui-org/react'
+import Fallback from './components/Fallback'
 
 const IndexPage = lazy(() => import('./pages/Home'))
 const InvalidPage = lazy(() => import('./pages/invalid'))
@@ -22,17 +22,7 @@ const routes = [
 
 function App() {
   return (
-    <Suspense
-      fallback={
-        <div className='flex h-dvh w-full items-center justify-center'>
-          <CircularProgress
-            classNames={{
-              svg: 'h-8 w-8 text-primary-blue'
-            }}
-          />
-        </div>
-      }
-    >
+    <Suspense fallback={<Fallback />}>
       <Routes>
         {routes.map(({ path, element }, index) => (
           <Route key={index} path={path} element={element} />

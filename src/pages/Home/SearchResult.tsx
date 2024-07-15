@@ -42,7 +42,7 @@ const SearchResult: React.FC<SearchResultType> = ({ dataJob, handleSelectItem, o
                   </div>
                   <div className='flex flex-col gap-1'>
                     <div className='flex items-center gap-2'>
-                      <p className='text-left text-sm font-bold'>{item?.name?.[lang]}</p>
+                      <p className='text-left text-base font-bold'>{item?.name?.[lang]}</p>
                       {item?.is_added && <Chip className='h-5 bg-primary-green text-[10px] text-white *:px-0.5'>{s?.text5}</Chip>}
                     </div>
                     <div className='line-clamp-2 text-left text-xs text-primary-gray' dangerouslySetInnerHTML={{ __html: item?.description }} />

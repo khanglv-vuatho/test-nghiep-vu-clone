@@ -92,5 +92,11 @@
     "text8": "Câu trả lời của bạn",
     "text9": "Câu trả lời chính xác",
     "text10": "Hoàn tất"
+  },
+  "TimeZone": {
+    "text1": "Ngày",
+    "text2": "Giờ",
+    "text3": "Phút",
+    "text4": "Giây"
   }
 }

@@ -1,22 +1,21 @@
 import { CircularProgress, Input } from '@nextui-org/react'
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
-import BottomhandlePrevNext from '@/components/BottomhandlePrevNext'
-import { PrimaryButton, PrimaryOutlineButton } from '@/components/Buttons'
-import ToastComponent from '@/components/ToastComponent'
-import { translate } from '@/context/translationProvider'
 import instance from '@/services/axiosConfig'
+import { translate } from '@/context/translationProvider'
 import { ActionTypes, TInitState } from '@/store'
 import { JobType } from '@/types'
 import { handleAddLangInUrl, useDebounce } from '@/utils'
+
+import ToastComponent from '@/components/ToastComponent'
+import BottomhandlePrevNext from '@/components/BottomhandlePrevNext'
+import { PrimaryButton, PrimaryOutlineButton } from '@/components/Buttons'
 import SearchResult from './SearchResult'
 
 const Step1 = () => {
   const s = translate('Home.Step1')
-
-  const sendRef = useRef<HTMLDivElement | null>(null)
 
   const step1 = useSelector((state: TInitState) => state.step1)
   const queryParams = new URLSearchParams(location.search)
@@ -101,7 +100,7 @@ const Step1 = () => {
       })
     }
   }, [step1])
-  //
+
   const handleReset = () => {
     setShowResult(false)
     setErrorJob(false)
@@ -213,7 +212,7 @@ const Step1 = () => {
             onFocus={handleFocusInput}
           />
           {searchValue?.length > 0 && showResult && <SearchResult dataJob={dataJob} handleSelectItem={handleSelectItem} onSearching={onSearching} />}
-          {errorJob && <span className='text-center text-sm text-[#FF3131]'>{s?.text6}</span>}
+          {errorJob && <span className='text-center text-base text-[#FF3131]'>{s?.text6}</span>}
         </div>
         {errorJob && (
           <div className='flex items-center justify-center gap-2'>
@@ -226,9 +225,7 @@ const Step1 = () => {
           </div>
         )}
       </div>
-      <div ref={sendRef}>
-        <BottomhandlePrevNext isHideBackButton={true} handleNextStep={handleNextStep} handlePrevStep={handlePrevStep} className='z-[100]' />
-      </div>
+      <BottomhandlePrevNext isHideBackButton={true} handleNextStep={handleNextStep} handlePrevStep={handlePrevStep} className='z-[100]' />
     </div>
   )
 }

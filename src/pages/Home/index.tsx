@@ -1,9 +1,9 @@
-import { useSelector } from 'react-redux'
-import { AnimatePresence, motion } from 'framer-motion'
+import Fallback from '@/components/Fallback'
 import DefaultLayout from '@/layouts/default'
 import { TInitState } from '@/store'
+import { motion } from 'framer-motion'
 import { lazy, Suspense } from 'react'
-import { CircularProgress } from '@nextui-org/react'
+import { useSelector } from 'react-redux'
 
 const Step1 = lazy(() => import('./Step1'))
 const Step2 = lazy(() => import('./Step2'))
@@ -12,9 +12,7 @@ const Step2End = lazy(() => import('./Step2End'))
 
 export default function Home() {
   const currentStep = useSelector((state: TInitState) => state.currentStep)
-
-  const steps = [<Step1 key='step1' />, <Step2 key='step2' />, <Step3 key='step3' />, <Step2End key='step2end' />]
-
+  const steps = [<Step1 />, <Step2 />, <Step3 />, <Step2End />]
   const isNotStep2End = currentStep < 3
 
   return (
@@ -34,19 +32,7 @@ export default function Home() {
         </div>
       )}
       <div className={`px-6 ${isNotStep2End ? 'h-full' : 'h-[calc(100dvh-56px)] p-4 pb-2'}`}>
-        <Suspense
-          fallback={
-            <div className='flex w-full justify-center'>
-              <CircularProgress
-                classNames={{
-                  svg: 'h-8 w-8 text-primary-blue'
-                }}
-              />
-            </div>
-          }
-        >
-          {steps[currentStep]}
-        </Suspense>
+        <Suspense fallback={<Fallback />}>{steps[currentStep]}</Suspense>
       </div>
     </DefaultLayout>
   )

@@ -46,6 +46,7 @@ export type TInitState = {
   direction: direction
   kyc_status: number | null
 }
+
 const DefaultValueState: TInitState = {
   searchValue: '',
   currentStep: 0,
