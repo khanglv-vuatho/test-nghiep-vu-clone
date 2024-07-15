@@ -190,18 +190,27 @@ const Step1 = () => {
 
   const div1Ref: any = useRef(null)
   const div2Ref: any = useRef(null)
+  const div3Ref: any = useRef(null)
 
   useEffect(() => {
     const handlePointerDown1 = () => {
       setState1((prev) => prev + 1)
+      handleClickHolder()
     }
 
     const handlePointerDown2 = () => {
       setState2((prev) => prev + 1)
+      handleClickHolder()
+    }
+
+    const handleClickHolder = () => {
+      div3Ref.current.click()
+      console.log('123')
     }
 
     const div1: any = div1Ref.current
     const div2: any = div2Ref.current
+    const div3: any = div3Ref.current
 
     div1.addEventListener('pointerdown', handlePointerDown1)
     div2.addEventListener('pointerdown', handlePointerDown2)
@@ -271,6 +280,9 @@ const Step1 = () => {
         >
           111123{state2}
         </div>
+      </div>
+      <div className='opacity-0' ref={div3Ref}>
+        place holder div
       </div>
       <BottomhandlePrevNext isHideBackButton={true} handleNextStep={handleNextStep} handlePrevStep={handlePrevStep} className='z-[100]' />
     </div>
