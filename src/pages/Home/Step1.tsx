@@ -185,6 +185,8 @@ const Step1 = () => {
     }
   }, [])
 
+  const [state1, setState1] = useState(1)
+  const [state2, setState2] = useState(1)
   return (
     <div className='flex h-full flex-col justify-between'>
       <div className='flex flex-col gap-4'>
@@ -226,8 +228,12 @@ const Step1 = () => {
         )}
       </div>
       <div className='items-cenrter flex gap-2'>
-        <div className='h-12 w-full bg-blue-200 transition-none duration-0 active:scale-85'>123a</div>
-        <div className='h-12 w-full bg-red-200 transition-none duration-0 active:scale-85'>456b</div>
+        <div onClick={() => setState1((prev) => prev + 1)} className='h-12 w-full bg-blue-200 transition-none duration-0'>
+          123a{state1}
+        </div>
+        <div onClick={() => setState2((prev) => prev + 1)} className='h-12 w-full bg-red-200 transition-none duration-0'>
+          456b{state2}
+        </div>
       </div>
       <BottomhandlePrevNext isHideBackButton={true} handleNextStep={handleNextStep} handlePrevStep={handlePrevStep} className='z-[100]' />
     </div>
