@@ -226,8 +226,8 @@ const Step1 = () => {
         )}
       </div>
       <div className='items-cenrter flex gap-2'>
-        <Button className='h-12 w-full'>123</Button>
-        <Button className='h-12 w-full'>456</Button>
+        <Button className='h-12 w-full transition-none duration-0'>123</Button>
+        <Button className='h-12 w-full transition-none duration-0'>456</Button>
       </div>
       <BottomhandlePrevNext isHideBackButton={true} handleNextStep={handleNextStep} handlePrevStep={handlePrevStep} className='z-[100]' />
     </div>
