@@ -231,19 +231,25 @@ const Step1 = () => {
           style={{
             touchAction: 'manipulation'
           }}
-          onTouchStart={() => setState1((prev) => prev + 1)}
+          onTouchStart={(e) => {
+            setState2((prev) => prev + 1)
+            e.preventDefault()
+          }}
           className='h-12 w-full bg-blue-200 transition-none duration-0'
         >
-          abc{state1}
+          qwe{state1}
         </div>
         <div
           style={{
             touchAction: 'manipulation'
           }}
-          onTouchStart={() => setState2((prev) => prev + 1)}
+          onTouchStart={(e) => {
+            setState2((prev) => prev + 1)
+            e.preventDefault()
+          }}
           className='h-12 w-full bg-red-200 transition-none duration-0'
         >
-          asd{state2}
+          zxc{state2}
         </div>
       </div>
       <BottomhandlePrevNext isHideBackButton={true} handleNextStep={handleNextStep} handlePrevStep={handlePrevStep} className='z-[100]' />
