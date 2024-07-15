@@ -2,7 +2,6 @@ import { Button, CircularProgress, Input } from '@nextui-org/react'
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import fastclick from 'fastclick'
 import instance from '@/services/axiosConfig'
 import { translate } from '@/context/translationProvider'
 import { ActionTypes, TInitState } from '@/store'
@@ -16,11 +15,6 @@ import SearchResult from './SearchResult'
 
 const Step1 = () => {
   const s = translate('Home.Step1')
-
-  useEffect(() => {
-    const fastclickLib: any = fastclick
-    fastclickLib?.attach?.(document.body)
-  }, [])
 
   const step1 = useSelector((state: TInitState) => state.step1)
   const queryParams = new URLSearchParams(location.search)
