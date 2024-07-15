@@ -58,7 +58,7 @@ export const RadioSelectRole = ({ options, activeRadio, setActiveRadio }: PropsR
 
   useEffect(() => {
     if (optionRefs?.current?.[activeRadio]) {
-      optionRefs?.current?.[activeRadio].scrollIntoView({ behavior: 'smooth', block: 'center' })
+      optionRefs?.current?.[activeRadio].scrollIntoView({ block: 'center' })
     }
   }, [activeRadio])
 
