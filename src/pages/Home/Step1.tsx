@@ -240,7 +240,7 @@ const Step1 = () => {
           onTouchStart={() => setState1((prev) => prev + 1)}
           className='h-12 w-full bg-blue-200 transition-none duration-0'
         >
-          53a{state1}
+          abc{state1}
         </div>
         <div
           style={{
@@ -249,7 +249,7 @@ const Step1 = () => {
           onTouchStart={() => setState2((prev) => prev + 1)}
           className='h-12 w-full bg-red-200 transition-none duration-0'
         >
-          16b{state2}
+          asd{state2}
         </div>
       </div>
       <BottomhandlePrevNext isHideBackButton={true} handleNextStep={handleNextStep} handlePrevStep={handlePrevStep} className='z-[100]' />
