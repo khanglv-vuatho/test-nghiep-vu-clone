@@ -17,6 +17,7 @@ export default function DefaultLayout({ children }: { children: React.ReactNode 
   return (
     <>
       <Header />
+      123
       <Suspense fallback={<Fallback />}>
         <WrapperAnimation keyRender={direction} direction={direction}>
           <main className='h-[calc(100dvh-40px)] pt-[56px]'>{children}</main>
