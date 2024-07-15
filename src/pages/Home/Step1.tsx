@@ -188,59 +188,28 @@ const Step1 = () => {
   const [state1, setState1] = useState(1)
   const [state2, setState2] = useState(1)
 
-  const div1Ref = useRef(null)
-  const div2Ref = useRef(null)
+  const div1Ref: any = useRef(null)
+  const div2Ref: any = useRef(null)
 
   useEffect(() => {
-    let requestId1: any = null
-    let requestId2: any = null
-
-    const handleTouchStart1 = () => {
-      if (!requestId1) {
-        requestId1 = requestAnimationFrame(() => {
-          setState1((prev) => prev + 1)
-          requestId1 = null
-        })
-      }
+    const handlePointerDown1 = () => {
+      setState1((prev) => prev + 1)
     }
 
-    const handleTouchEnd1 = () => {
-      if (requestId1) {
-        cancelAnimationFrame(requestId1)
-        requestId1 = null
-      }
-    }
-
-    const handleTouchStart2 = () => {
-      if (!requestId2) {
-        requestId2 = requestAnimationFrame(() => {
-          setState2((prev) => prev + 1)
-          requestId2 = null
-        })
-      }
-    }
-
-    const handleTouchEnd2 = () => {
-      if (requestId2) {
-        cancelAnimationFrame(requestId2)
-        requestId2 = null
-      }
+    const handlePointerDown2 = () => {
+      setState2((prev) => prev + 1)
     }
 
     const div1: any = div1Ref.current
     const div2: any = div2Ref.current
 
-    div1.addEventListener('touchstart', handleTouchStart1)
-    div1.addEventListener('touchend', handleTouchEnd1)
-    div2.addEventListener('touchstart', handleTouchStart2)
-    div2.addEventListener('touchend', handleTouchEnd2)
+    div1.addEventListener('pointerdown', handlePointerDown1)
+    div2.addEventListener('pointerdown', handlePointerDown2)
 
     // Cleanup event listeners on component unmount
     return () => {
-      div1.removeEventListener('touchstart', handleTouchStart1)
-      div1.removeEventListener('touchend', handleTouchEnd1)
-      div2.removeEventListener('touchstart', handleTouchStart2)
-      div2.removeEventListener('touchend', handleTouchEnd2)
+      div1.removeEventListener('pointerdown', handlePointerDown1)
+      div2.removeEventListener('pointerdown', handlePointerDown2)
     }
   }, [])
   return (
