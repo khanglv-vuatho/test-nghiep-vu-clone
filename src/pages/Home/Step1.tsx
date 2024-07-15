@@ -2,7 +2,7 @@ import { Button, CircularProgress, Input } from '@nextui-org/react'
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-
+import fastclick from 'fastclick'
 import instance from '@/services/axiosConfig'
 import { translate } from '@/context/translationProvider'
 import { ActionTypes, TInitState } from '@/store'
@@ -16,6 +16,11 @@ import SearchResult from './SearchResult'
 
 const Step1 = () => {
   const s = translate('Home.Step1')
+
+  useEffect(() => {
+    const fastclickLib: any = fastclick
+    fastclickLib?.attach?.(document.body)
+  }, [])
 
   const step1 = useSelector((state: TInitState) => state.step1)
   const queryParams = new URLSearchParams(location.search)
@@ -235,7 +240,7 @@ const Step1 = () => {
           onTouchStart={() => setState1((prev) => prev + 1)}
           className='h-12 w-full bg-blue-200 transition-none duration-0'
         >
-          123a{state1}
+          53a{state1}
         </div>
         <div
           style={{
@@ -244,7 +249,7 @@ const Step1 = () => {
           onTouchStart={() => setState2((prev) => prev + 1)}
           className='h-12 w-full bg-red-200 transition-none duration-0'
         >
-          456b{state2}
+          16b{state2}
         </div>
       </div>
       <BottomhandlePrevNext isHideBackButton={true} handleNextStep={handleNextStep} handlePrevStep={handlePrevStep} className='z-[100]' />
