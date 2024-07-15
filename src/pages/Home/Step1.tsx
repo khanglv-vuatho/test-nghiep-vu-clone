@@ -228,10 +228,22 @@ const Step1 = () => {
         )}
       </div>
       <div className='items-cenrter flex gap-2'>
-        <div onTouchStart={() => setState1((prev) => prev + 1)} className='h-12 w-full bg-blue-200 transition-none duration-0'>
+        <div
+          style={{
+            touchAction: 'manipulation'
+          }}
+          onTouchStart={() => setState1((prev) => prev + 1)}
+          className='h-12 w-full bg-blue-200 transition-none duration-0'
+        >
           123a{state1}
         </div>
-        <div onTouchStart={() => setState2((prev) => prev + 1)} className='h-12 w-full bg-red-200 transition-none duration-0'>
+        <div
+          style={{
+            touchAction: 'manipulation'
+          }}
+          onTouchStart={() => setState2((prev) => prev + 1)}
+          className='h-12 w-full bg-red-200 transition-none duration-0'
+        >
           456b{state2}
         </div>
       </div>
