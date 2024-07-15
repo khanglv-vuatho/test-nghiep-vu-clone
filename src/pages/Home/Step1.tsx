@@ -1,4 +1,4 @@
-import { Button, CircularProgress, Input } from '@nextui-org/react'
+import { CircularProgress, Input } from '@nextui-org/react'
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
@@ -7,6 +7,7 @@ import { translate } from '@/context/translationProvider'
 import { ActionTypes, TInitState } from '@/store'
 import { JobType } from '@/types'
 import { handleAddLangInUrl, useDebounce } from '@/utils'
+import _ from 'lodash'
 
 import ToastComponent from '@/components/ToastComponent'
 import BottomhandlePrevNext from '@/components/BottomhandlePrevNext'
@@ -186,6 +187,62 @@ const Step1 = () => {
 
   const [state1, setState1] = useState(1)
   const [state2, setState2] = useState(1)
+
+  const div1Ref = useRef(null)
+  const div2Ref = useRef(null)
+
+  useEffect(() => {
+    let requestId1: any = null
+    let requestId2: any = null
+
+    const handleTouchStart1 = () => {
+      if (!requestId1) {
+        requestId1 = requestAnimationFrame(() => {
+          setState1((prev) => prev + 1)
+          requestId1 = null
+        })
+      }
+    }
+
+    const handleTouchEnd1 = () => {
+      if (requestId1) {
+        cancelAnimationFrame(requestId1)
+        requestId1 = null
+      }
+    }
+
+    const handleTouchStart2 = () => {
+      if (!requestId2) {
+        requestId2 = requestAnimationFrame(() => {
+          setState2((prev) => prev + 1)
+          requestId2 = null
+        })
+      }
+    }
+
+    const handleTouchEnd2 = () => {
+      if (requestId2) {
+        cancelAnimationFrame(requestId2)
+        requestId2 = null
+      }
+    }
+
+    const div1: any = div1Ref.current
+    const div2: any = div2Ref.current
+
+    div1.addEventListener('touchstart', handleTouchStart1)
+    div1.addEventListener('touchend', handleTouchEnd1)
+    div2.addEventListener('touchstart', handleTouchStart2)
+    div2.addEventListener('touchend', handleTouchEnd2)
+
+    // Cleanup event listeners on component unmount
+    return () => {
+      div1.removeEventListener('touchstart', handleTouchStart1)
+      div1.removeEventListener('touchend', handleTouchEnd1)
+      div2.removeEventListener('touchstart', handleTouchStart2)
+      div2.removeEventListener('touchend', handleTouchEnd2)
+    }
+  }, [])
   return (
     <div className='flex h-full flex-col justify-between'>
       <div className='flex flex-col gap-4'>
@@ -231,9 +288,7 @@ const Step1 = () => {
           style={{
             touchAction: 'manipulation'
           }}
-          onTouchStart={() => {
-            setState1((prev) => prev + 1)
-          }}
+          ref={div1Ref}
           className='h-12 w-full bg-blue-200 transition-none duration-0'
         >
           das{state1}
@@ -242,9 +297,7 @@ const Step1 = () => {
           style={{
             touchAction: 'manipulation'
           }}
-          onTouchStart={() => {
-            setState2((prev) => prev + 1)
-          }}
+          ref={div2Ref}
           className='h-12 w-full bg-red-200 transition-none duration-0'
         >
           111123{state2}
