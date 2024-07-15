@@ -233,11 +233,11 @@ const Step1 = () => {
           }}
           onTouchStart={(e) => {
             setState2((prev) => prev + 1)
-            e.preventDefault()
+            e.stopPropagation()
           }}
           className='h-12 w-full bg-blue-200 transition-none duration-0'
         >
-          qwe{state1}
+          asfv{state1}
         </div>
         <div
           style={{
@@ -245,11 +245,11 @@ const Step1 = () => {
           }}
           onTouchStart={(e) => {
             setState2((prev) => prev + 1)
-            e.preventDefault()
+            e.stopPropagation()
           }}
           className='h-12 w-full bg-red-200 transition-none duration-0'
         >
-          zxc{state2}
+          as{state2}
         </div>
       </div>
       <BottomhandlePrevNext isHideBackButton={true} handleNextStep={handleNextStep} handlePrevStep={handlePrevStep} className='z-[100]' />
