@@ -1,4 +1,4 @@
-import { CircularProgress, Input } from '@nextui-org/react'
+import { Button, CircularProgress, Input } from '@nextui-org/react'
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
@@ -224,6 +224,10 @@ const Step1 = () => {
             </PrimaryButton>
           </div>
         )}
+      </div>
+      <div className='items-cenrter flex gap-2'>
+        <Button className='h-12 w-full'>123</Button>
+        <Button className='h-12 w-full'>456</Button>
       </div>
       <BottomhandlePrevNext isHideBackButton={true} handleNextStep={handleNextStep} handlePrevStep={handlePrevStep} className='z-[100]' />
     </div>
