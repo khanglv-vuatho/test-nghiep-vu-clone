@@ -232,8 +232,8 @@ const Step1 = () => {
             touchAction: 'manipulation'
           }}
           onTouchStart={(e) => {
-            setState2((prev) => prev + 1)
-            e.stopPropagation()
+            setState1((prev) => prev + 1)
+            e.preventDefault()
           }}
           className='h-12 w-full bg-blue-200 transition-none duration-0'
         >
@@ -245,7 +245,7 @@ const Step1 = () => {
           }}
           onTouchStart={(e) => {
             setState2((prev) => prev + 1)
-            e.stopPropagation()
+            e.preventDefault()
           }}
           className='h-12 w-full bg-red-200 transition-none duration-0'
         >
