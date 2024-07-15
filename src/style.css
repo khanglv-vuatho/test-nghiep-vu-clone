@@ -1,5 +1,5 @@
 html {
-  @apply pointer-events-none select-none overscroll-none scroll-smooth;
+  @apply select-none overscroll-none scroll-smooth;
 }
 
 html *::-webkit-scrollbar {

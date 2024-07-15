@@ -3,5 +3,5 @@
 @tailwind utilities;
 
 body {
-  @apply pointer-events-none select-none text-primary-black;
+  @apply select-none text-primary-black;
 }
