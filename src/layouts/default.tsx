@@ -11,8 +11,11 @@ export default function DefaultLayout({ children }: { children: React.ReactNode 
   const direction = useSelector((state: TInitState) => state.direction)
 
   useEffect(() => {
-    document.addEventListener('DOMContentLoaded', () => (FastClick as any).attach(document.body), { passive: true })
+    if (typeof document !== 'undefined') {
+      ;(FastClick as any).attach(document.body)
+    }
   }, [])
+
   return (
     <>
       <Header />
