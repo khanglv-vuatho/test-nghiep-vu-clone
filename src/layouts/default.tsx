@@ -1,7 +1,7 @@
 import Fallback from '@/components/Fallback'
 import Header from '@/components/Header'
 import { TInitState } from '@/store'
-import { lazy, Suspense, useEffect } from 'react'
+import { lazy, Suspense } from 'react'
 import { useSelector } from 'react-redux'
 
 const WrapperAnimation = lazy(() => import('@/components/WrapperAnimation'))
