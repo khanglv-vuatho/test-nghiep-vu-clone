@@ -7,12 +7,13 @@ import { translate } from '@/context/translationProvider'
 import { ActionTypes, TInitState } from '@/store'
 import { JobType } from '@/types'
 import { handleAddLangInUrl, useDebounce } from '@/utils'
-import _ from 'lodash'
 
 import ToastComponent from '@/components/ToastComponent'
 import BottomhandlePrevNext from '@/components/BottomhandlePrevNext'
 import { PrimaryButton, PrimaryOutlineButton } from '@/components/Buttons'
 import SearchResult from './SearchResult'
+
+FastClick.attach(document.body)
 
 const Step1 = () => {
   const s = translate('Home.Step1')
@@ -242,7 +243,7 @@ const Step1 = () => {
           style={{
             touchAction: 'manipulation'
           }}
-          onTouchEnd={handlePointerDown1}
+          onClick={handlePointerDown1}
           className='h-12 w-full bg-blue-200 transition-none duration-0'
         >
           das{state1}
@@ -251,7 +252,7 @@ const Step1 = () => {
           style={{
             touchAction: 'manipulation'
           }}
-          onTouchEnd={handlePointerDown2}
+          onClick={handlePointerDown2}
           className='h-12 w-full bg-red-200 transition-none duration-0'
         >
           111123{state2}
