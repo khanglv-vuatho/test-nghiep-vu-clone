@@ -190,27 +190,12 @@ const Step1 = () => {
 
   const placeHolderDiv: any = useRef(null)
 
-  const timeoutId1: any = useRef(null)
-  const timeoutId2: any = useRef(null)
-
   const handlePointerDown1 = () => {
     setState1((prev) => prev + 1)
-    if (timeoutId1.current) {
-      clearTimeout(timeoutId1.current)
-    }
-    timeoutId1.current = setTimeout(() => {
-      placeHolderDiv.current.click()
-    }, 100) // Độ trễ 0.1 giây
   }
 
   const handlePointerDown2 = () => {
     setState2((prev) => prev + 1)
-    if (timeoutId2.current) {
-      clearTimeout(timeoutId2.current)
-    }
-    timeoutId2.current = setTimeout(() => {
-      placeHolderDiv.current.click()
-    }, 100) // Độ trễ 0.1 giây
   }
   return (
     <div className='flex h-full flex-col justify-between'>
@@ -257,7 +242,7 @@ const Step1 = () => {
           style={{
             touchAction: 'manipulation'
           }}
-          onPointerDown={handlePointerDown1}
+          onTouchStart={handlePointerDown1}
           className='h-12 w-full bg-blue-200 transition-none duration-0'
         >
           das{state1}
@@ -266,7 +251,7 @@ const Step1 = () => {
           style={{
             touchAction: 'manipulation'
           }}
-          onPointerDown={handlePointerDown2}
+          onTouchStart={handlePointerDown2}
           className='h-12 w-full bg-red-200 transition-none duration-0'
         >
           111123{state2}
