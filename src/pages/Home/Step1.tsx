@@ -184,21 +184,6 @@ const Step1 = () => {
     }
   }, [])
 
-  const [state1, setState1] = useState(1)
-  const [state2, setState2] = useState(1)
-
-  const placeHolderDiv: any = useRef(null)
-
-  const handlePointerDown1 = (e: React.TouchEvent) => {
-    e.preventDefault()
-    setState1((prev) => prev + 1)
-  }
-
-  const handlePointerDown2 = (e: React.TouchEvent) => {
-    e.preventDefault()
-
-    setState2((prev) => prev + 1)
-  }
   return (
     <div className='flex h-full flex-col justify-between'>
       <div className='flex flex-col gap-4'>
@@ -239,29 +224,7 @@ const Step1 = () => {
           </div>
         )}
       </div>
-      <div className='items-cenrter flex gap-2'>
-        <div
-          style={{
-            touchAction: 'manipulation'
-          }}
-          onTouchStart={handlePointerDown1}
-          className='h-12 w-full bg-blue-200 transition-none duration-0'
-        >
-          das{state1}
-        </div>
-        <div
-          style={{
-            touchAction: 'manipulation'
-          }}
-          onTouchStart={handlePointerDown2}
-          className='h-12 w-full bg-red-200 transition-none duration-0'
-        >
-          111123{state2}
-        </div>
-      </div>
-      <div className='opacity-0' ref={placeHolderDiv}>
-        place holder div
-      </div>
+
       <BottomhandlePrevNext isHideBackButton={true} handleNextStep={handleNextStep} handlePrevStep={handlePrevStep} className='z-[100]' />
     </div>
   )
