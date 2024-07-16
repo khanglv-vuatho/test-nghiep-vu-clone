@@ -188,39 +188,14 @@ const Step1 = () => {
   const [state1, setState1] = useState(1)
   const [state2, setState2] = useState(1)
 
-  const div1Ref: any = useRef(null)
-  const div2Ref: any = useRef(null)
-  const div3Ref: any = useRef(null)
+  const handlePoiterDown1 = () => {
+    setState1((prev) => prev + 1)
+  }
 
-  useEffect(() => {
-    const handlePointerDown1 = () => {
-      setState1((prev) => prev + 1)
-      handleClickHolder()
-    }
+  const handlePoiterDown2 = () => {
+    setState2((prev) => prev + 1)
+  }
 
-    const handlePointerDown2 = () => {
-      setState2((prev) => prev + 1)
-      handleClickHolder()
-    }
-
-    const handleClickHolder = () => {
-      div3Ref.current.click()
-      console.log('123')
-    }
-
-    const div1: any = div1Ref.current
-    const div2: any = div2Ref.current
-    const div3: any = div3Ref.current
-
-    div1.addEventListener('pointerdown', handlePointerDown1)
-    div2.addEventListener('pointerdown', handlePointerDown2)
-
-    // Cleanup event listeners on component unmount
-    return () => {
-      div1.removeEventListener('pointerdown', handlePointerDown1)
-      div2.removeEventListener('pointerdown', handlePointerDown2)
-    }
-  }, [])
   return (
     <div className='flex h-full flex-col justify-between'>
       <div className='flex flex-col gap-4'>
@@ -266,7 +241,7 @@ const Step1 = () => {
           style={{
             touchAction: 'manipulation'
           }}
-          ref={div1Ref}
+          onPointerDown={handlePoiterDown1}
           className='h-12 w-full bg-blue-200 transition-none duration-0'
         >
           das{state1}
@@ -275,15 +250,13 @@ const Step1 = () => {
           style={{
             touchAction: 'manipulation'
           }}
-          ref={div2Ref}
+          onPointerDown={handlePoiterDown2}
           className='h-12 w-full bg-red-200 transition-none duration-0'
         >
           111123{state2}
         </div>
       </div>
-      <div className='opacity-0' ref={div3Ref}>
-        place holder div
-      </div>
+      <div className='opacity-0'>place holder div</div>
       <BottomhandlePrevNext isHideBackButton={true} handleNextStep={handleNextStep} handlePrevStep={handlePrevStep} className='z-[100]' />
     </div>
   )
