@@ -242,7 +242,7 @@ const Step1 = () => {
           style={{
             touchAction: 'manipulation'
           }}
-          onTouchStart={handlePointerDown1}
+          onTouchEnd={handlePointerDown1}
           className='h-12 w-full bg-blue-200 transition-none duration-0'
         >
           das{state1}
@@ -251,7 +251,7 @@ const Step1 = () => {
           style={{
             touchAction: 'manipulation'
           }}
-          onTouchStart={handlePointerDown2}
+          onTouchEnd={handlePointerDown2}
           className='h-12 w-full bg-red-200 transition-none duration-0'
         >
           111123{state2}
