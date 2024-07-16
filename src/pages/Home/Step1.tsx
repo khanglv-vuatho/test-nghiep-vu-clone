@@ -189,11 +189,14 @@ const Step1 = () => {
 
   const placeHolderDiv: any = useRef(null)
 
-  const handlePointerDown1 = () => {
+  const handlePointerDown1 = (e: React.TouchEvent) => {
+    e.preventDefault()
     setState1((prev) => prev + 1)
   }
 
-  const handlePointerDown2 = () => {
+  const handlePointerDown2 = (e: React.TouchEvent) => {
+    e.preventDefault()
+
     setState2((prev) => prev + 1)
   }
   return (
@@ -241,7 +244,7 @@ const Step1 = () => {
           style={{
             touchAction: 'manipulation'
           }}
-          onClick={handlePointerDown1}
+          onTouchStart={handlePointerDown1}
           className='h-12 w-full bg-blue-200 transition-none duration-0'
         >
           das{state1}
@@ -250,7 +253,7 @@ const Step1 = () => {
           style={{
             touchAction: 'manipulation'
           }}
-          onClick={handlePointerDown2}
+          onTouchStart={handlePointerDown2}
           className='h-12 w-full bg-red-200 transition-none duration-0'
         >
           111123{state2}
