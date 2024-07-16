@@ -13,8 +13,6 @@ import BottomhandlePrevNext from '@/components/BottomhandlePrevNext'
 import { PrimaryButton, PrimaryOutlineButton } from '@/components/Buttons'
 import SearchResult from './SearchResult'
 
-FastClick.attach(document.body)
-
 const Step1 = () => {
   const s = translate('Home.Step1')
 
