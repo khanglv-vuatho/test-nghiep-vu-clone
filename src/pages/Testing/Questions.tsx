@@ -1,4 +1,4 @@
-import { PrimaryOutlineButton, PrimaryButton } from '@/components/Buttons'
+import { PrimaryButton, PrimaryOutlineButton } from '@/components/Buttons'
 import ImageFallback from '@/components/ImageFallback'
 import { DefaultModal } from '@/components/Modal'
 import RadioGroupCustom from '@/components/RadioGroupCustom'
@@ -6,14 +6,14 @@ import WrapperAnimation from '@/components/WrapperAnimation'
 import WrapperBottom from '@/components/WrapperBottom'
 import { translate } from '@/context/translationProvider'
 import instance from '@/services/axiosConfig'
-import { TInitState, ActionTypes } from '@/store'
+import { ActionTypes, TInitState } from '@/store'
 import { handleAddLangInUrl } from '@/utils'
 import { Progress } from '@nextui-org/react'
-import { useScroll, useSpring, useTransform, motion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { TickCircle } from 'iconsax-react'
 import moment from 'moment'
-import { useRef, useState, useEffect, memo } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { memo, useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 
 type TQuestions = { testId: number; listQuestions: any; meta: any }
@@ -27,25 +27,6 @@ const Questions = ({ testId, listQuestions, meta }: TQuestions) => {
   const navigate = useNavigate()
 
   const direction = useSelector((state: TInitState) => state.direction)
-
-  const refScroll = useRef(null)
-
-  const { scrollYProgress } = useScroll({ target: refScroll })
-
-  let opacity, scale, translateX
-
-  const smoothScrollYProgress = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 10
-  })
-
-  const isCanActiveMotion = window.innerHeight > 1000
-  if (isCanActiveMotion) {
-    opacity = useTransform(smoothScrollYProgress, [0.01, 0.02], [1, 0])
-    scale = useTransform(smoothScrollYProgress, [0.01, 0.02], [1, 0.9])
-    translateX = useTransform(smoothScrollYProgress, [0.01, 0.02], [0, 60])
-  }
-  //isHeightWindow && isHeightWindow
 
   const queryParams = new URLSearchParams(location.search)
   const token = queryParams?.get('token') || ''
@@ -112,7 +93,6 @@ const Questions = ({ testId, listQuestions, meta }: TQuestions) => {
       }
     })
   }
-
   const handleChangeQuestion = (index: number) => {
     dispatch({
       type: ActionTypes.DIRECTION,
@@ -202,11 +182,9 @@ const Questions = ({ testId, listQuestions, meta }: TQuestions) => {
     <div className='w-full'>
       <div className='flex min-h-dvh flex-col gap-4'>
         <div className='flex flex-col gap-4'>
-          <div className={`${isCanActiveMotion ? 'sticky top-0' : ''} z-50 flex items-center gap-2 bg-white p-4`}>
-            <motion.div style={{ scale }} className={`${isCanActiveMotion ? 'sticky top-0' : ''} rounded-full bg-primary-light-blue px-3 py-2 font-bold text-primary-blue`}>
-              {moment(timeLeft * 1000).format('mm:ss')}
-            </motion.div>
-            <motion.div style={{ opacity }} className='w-full'>
+          <div className={`z-50 flex items-center gap-2 bg-white p-4`}>
+            <motion.div className={`rounded-full bg-primary-light-blue px-3 py-2 font-bold text-primary-blue`}>{moment(timeLeft * 1000).format('mm:ss')}</motion.div>
+            <motion.div className='w-full'>
               <Progress
                 value={progress}
                 classNames={{
@@ -216,7 +194,7 @@ const Questions = ({ testId, listQuestions, meta }: TQuestions) => {
               />
             </motion.div>
           </div>
-          <motion.div style={{ translateX, scale }} className={`${isCanActiveMotion ? 'sticky top-3.5' : ''} z-50 flex w-fit items-center gap-3 overflow-auto p-4 pt-0`}>
+          <motion.div className={`z-50 flex w-fit items-center gap-3 overflow-auto p-4 pt-0`}>
             {listQuestions.map((question: any, index: number) => {
               const isCurrentSelect = index === currentQuestion
               const isSelected = answerSheets.some((answer: any) => answer.id == question.id)
@@ -254,7 +232,6 @@ const Questions = ({ testId, listQuestions, meta }: TQuestions) => {
               handleStoreAnswer={handleStoreAnswer}
             />
           </WrapperAnimation>
-          {isCanActiveMotion && <div className='mt-[200px]' />}
         </div>
       </div>
       <WrapperBottom>
