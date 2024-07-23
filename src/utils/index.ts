@@ -85,17 +85,20 @@ const formatDDMMYYYY = (time: string) => {
   return moment(time).format('DD/MM/YYYY')
 }
 
-const postMessageCustom = ({ message }: { message: string }) => {
+const postMessageCustom = ({ message, data }: { message: string; data?: any }) => {
   //@ts-ignore
-  if (window?.vuatho?.postMessage) {
+  if (window?.vuatho) {
     //@ts-ignore
-    window?.vuatho?.postMessage(message)
+    window?.vuatho?.postMessage(
+      JSON.stringify({
+        message,
+        data
+      })
+    )
   } else {
-    if (import.meta.env.VITE_MODE === 'local') return
-    ToastComponent({ message: 'has bug here', type: 'error' })
+    ToastComponent({ message: message || 'has bug here', type: 'error' })
   }
 }
-
 const converTimeMinutes = (time: string) => {
   return moment.duration(time).asMinutes()
 }
