@@ -86,6 +86,13 @@ const formatDDMMYYYY = (time: string) => {
 }
 
 const postMessageCustom = ({ message, data = '' }: { message: string; data?: any }) => {
+  ToastComponent({
+    message: JSON.stringify({
+      message,
+      data
+    }),
+    type: 'info'
+  })
   //@ts-ignore
   if (window?.vuatho) {
     //@ts-ignore
