@@ -187,7 +187,6 @@ const Step1 = () => {
   return (
     <div className='flex h-full flex-col justify-between'>
       <div className='flex flex-col gap-4'>
-        123
         <h1 className='text-center text-xl font-bold text-primary-black'>{s?.text3}</h1>
         <div className='flex flex-col gap-2'>
           <Input
