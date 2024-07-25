@@ -1,4 +1,5 @@
 import ToastComponent from '@/components/ToastComponent'
+import { TPostMessage } from '@/types'
 import moment from 'moment'
 import { useEffect, useRef, useState } from 'react'
 
@@ -85,7 +86,7 @@ const formatDDMMYYYY = (time: string) => {
   return moment(time).format('DD/MM/YYYY')
 }
 
-const postMessageCustom = ({ message, data = {} }: { message: string; data?: any }) => {
+const postMessageCustom = ({ message, data = {} }: TPostMessage) => {
   //@ts-ignore
   if (window?.vuatho) {
     //@ts-ignore

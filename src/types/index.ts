@@ -90,5 +90,6 @@ export type JobType = {
   is_added: boolean
   description: string
 }
+export type TPostMessage = { message: string; data?: any }
 
 export type direction = 'left' | 'right' | 'up' | 'down'
