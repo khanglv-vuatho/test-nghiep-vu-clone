@@ -1,6 +1,7 @@
 import { postMessageCustom } from '@/utils'
 import { Button, ButtonProps } from '@nextui-org/react'
 import { twMerge } from 'tailwind-merge'
+
 type Frequency = 'low' | 'medium' | 'high'
 
 type Props = {
