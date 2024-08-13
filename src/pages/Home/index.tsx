@@ -32,7 +32,6 @@ export default function Home() {
         </div>
       )}
       <div className={`px-6 ${isNotStep2End ? 'h-full' : 'h-[calc(100dvh-56px)] p-4 pb-2'}`}>
-        123
         <Suspense fallback={<Fallback />}>{steps[currentStep]}</Suspense>
       </div>
     </DefaultLayout>
