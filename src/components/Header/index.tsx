@@ -23,7 +23,7 @@ const Header = () => {
     if (pathname.includes('testing')) {
       navigate(handleAddLangInUrl({ mainUrl: '/', lang, token }))
     } else {
-      postMessageCustom({ message: keyPossmessage.CAN_POP })
+      // postMessageCustom({ message: keyPossmessage.CAN_POP })
     }
   }
 
