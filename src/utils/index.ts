@@ -135,7 +135,7 @@ function getMobileOperatingSystem() {
     return ToastComponent({ message: message || 'has bug here', type: 'error' })
   }
 
-  return ToastComponent({ message: "can't detect" || 'has bug here', type: 'error' })
+  return ToastComponent({ message: `can't detect ${window.navigator.userAgent}` || 'has bug here', type: 'error' })
 }
 
 export {
