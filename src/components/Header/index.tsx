@@ -1,6 +1,6 @@
 import { keyPossmessage } from '@/constants'
 import { translate } from '@/context/translationProvider'
-import { getMobileOperatingSystem, handleAddLangInUrl, postMessageCustom } from '@/utils'
+import { handleAddLangInUrl, postMessageCustom } from '@/utils'
 import { Button } from '@nextui-org/react'
 import { ArrowLeft2 } from 'iconsax-react'
 import { useLocation, useNavigate } from 'react-router-dom'
@@ -19,11 +19,10 @@ const Header = () => {
   let title = pathname.includes('testing') ? tt?.text3 : t?.text9
 
   const handleCloseWebview = () => {
-    getMobileOperatingSystem()
     if (pathname.includes('testing')) {
       navigate(handleAddLangInUrl({ mainUrl: '/', lang, token }))
     } else {
-      // postMessageCustom({ message: keyPossmessage.CAN_POP })
+      postMessageCustom({ message: keyPossmessage.CAN_POP })
     }
   }
 
