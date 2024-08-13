@@ -89,7 +89,12 @@ const postMessageCustom = ({ message, data = {} }: { message: string; data?: any
   //@ts-ignore
   if (window?.vuatho) {
     //@ts-ignore
-    window?.vuatho?.postMessage(message)
+    window?.vuatho?.postMessage(
+      JSON.stringify({
+        message,
+        data
+      })
+    )
   } else {
     ToastComponent({ message: message || 'has bug here', type: 'error' })
   }
