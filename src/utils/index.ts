@@ -112,6 +112,32 @@ const formatNumber = (number: number) => {
 
   return result
 }
+
+function getMobileOperatingSystem() {
+  //@ts-ignore
+  var userAgent = navigator.userAgent || navigator.vendor || window?.opera
+  let message = 'unknown'
+  // Windows Phone must come first because its UA also contains "Android"
+  if (/windows phone/i.test(userAgent)) {
+    message = 'Windows Phone'
+    return ToastComponent({ message: message || 'has bug here', type: 'error' })
+  }
+
+  if (/android/i.test(userAgent)) {
+    message = 'Android'
+    return ToastComponent({ message: message || 'has bug here', type: 'error' })
+  }
+
+  // iOS detection from: http://stackoverflow.com/a/9039885/177710
+  //@ts-ignore
+  if (/iPad|iPhone|iPod/.test(userAgent) && !window?.MSStream) {
+    message = 'iOS'
+    return ToastComponent({ message: message || 'has bug here', type: 'error' })
+  }
+
+  return ToastComponent({ message: 'hohoasdasdsa' || 'has bug here', type: 'error' })
+}
+
 export {
   getCookie,
   useUnfocusItem,
@@ -123,5 +149,6 @@ export {
   postMessageCustom,
   converTimeMinutes,
   formatNumber,
-  formatLocalTimeWithOriginType
+  formatLocalTimeWithOriginType,
+  getMobileOperatingSystem
 }
