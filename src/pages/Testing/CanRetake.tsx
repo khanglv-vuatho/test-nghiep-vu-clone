@@ -10,19 +10,19 @@ import { memo } from 'react'
 
 type CanRetakeProps = {
   testDetail: Test
-  IS_AFTER_CURRENT_TIME: boolean
 }
 
-const CanRetake: React.FC<CanRetakeProps> = ({ testDetail, IS_AFTER_CURRENT_TIME }) => {
+const CanRetake: React.FC<CanRetakeProps> = ({ testDetail }) => {
   const t = translate('Testing')
   const step1 = useSelector((state: TInitState) => state.step1)
+  const canRetake = useSelector((state: TInitState) => state.canRetake)
 
   return (
     <div className='flex min-h-[calc(100dvh-128px)] flex-col gap-2 overflow-hidden'>
       <div className='flex items-center justify-center bg-white py-4 text-center'>
         <div className='font-bold'>{t?.text1}</div>
       </div>
-      <div className='flex flex-col gap-4 px-4'>
+      <div className='flex flex-col gap-4 px-4 pb-10'>
         {testDetail?.results?.map((item: any, index: number) => {
           const isLastItem = index == testDetail?.results?.length - 1
           return (
@@ -43,8 +43,8 @@ const CanRetake: React.FC<CanRetakeProps> = ({ testDetail, IS_AFTER_CURRENT_TIME
           )
         })}
       </div>
-      {!IS_AFTER_CURRENT_TIME && (
-        <div className='mt-6 flex flex-col gap-4'>
+      {!canRetake && (
+        <div className='mt-6 flex flex-col gap-4 pb-10'>
           <div className='text-center text-base'>
             <p>{t?.text2}</p>
             <p>

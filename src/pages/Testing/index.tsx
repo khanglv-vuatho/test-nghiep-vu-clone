@@ -23,6 +23,7 @@ export default function TestingPage() {
   const step1 = useSelector((state: TInitState) => state.step1)
   const isStartAgain = useSelector((state: TInitState) => state.isStartAgain)
   const testDetail = useSelector((state: TInitState) => state.testDetail) as Test
+  const canRetake = useSelector((state: TInitState) => state.canRetake)
 
   const [onFetching, setOnFetching] = useState(false)
   const [onStart, setOnStart] = useState(false)
@@ -34,11 +35,12 @@ export default function TestingPage() {
   const [listQuestions, setListQuestions] = useState<any>([])
   const [meta, setMeta] = useState<any>({})
   const [isReady, setIsReady] = useState(false)
+  // retake when user failed 3 times
+  const [isHasCanRetake, setIsHasCanRetake] = useState(!!testDetail?.meta?.can_retake)
+  const [isRetake, setIsRetake] = useState(false)
 
   const targetTime = moment.utc(testDetail?.meta?.can_retake)
   const currentTime = moment.utc()
-
-  const IS_AFTER_CURRENT_TIME = targetTime.isBefore(currentTime)
 
   const queryParams = new URLSearchParams(location.search)
   const IS_TEST_FAILED = statusTest == status.failed
@@ -148,7 +150,9 @@ export default function TestingPage() {
     }
 
     if (dataTestingTopic?.status === status.doing) {
+      // Nếu đang làm thì đẩy sang phần câu hỏi luôn không cần người ta phải bấm "bắt đầu làm"
       handleStart()
+      // setOnStart(true)
     }
 
     if (dataTestingTopic?.status === status.pending) {
@@ -172,12 +176,20 @@ export default function TestingPage() {
     window.scrollTo(0, 0)
   }, [])
 
+  useEffect(() => {
+    console.log({ test: targetTime.isBefore(currentTime) })
+    dispatch({
+      type: ActionTypes.CAN_RETAKE,
+      payload: targetTime.isBefore(currentTime)
+    })
+  }, [currentTime])
+
   return onStart ? (
     <Questions testId={dataTesting?.id} listQuestions={listQuestions} meta={meta} />
   ) : (
     <DefaultLayout>
-      {testDetail?.meta?.can_retake ? (
-        <CanRetake testDetail={testDetail} IS_AFTER_CURRENT_TIME={IS_AFTER_CURRENT_TIME} />
+      {isHasCanRetake ? (
+        <CanRetake testDetail={testDetail} />
       ) : (
         <div className='flex flex-col gap-4 p-4'>
           <div className='flex flex-col items-center'>
@@ -241,11 +253,20 @@ export default function TestingPage() {
           </div>
         </div>
       )}
-      <div className='sticky bottom-0 min-h-[84px] w-full bg-white p-4'>
+      <div className='sticky bottom-0 z-50 min-h-[84px] w-full bg-white p-4'>
         {testDetail?.meta?.can_retake ? (
           <div className='flex flex-col gap-2'>
-            <PrimaryButton isDisabled={!IS_AFTER_CURRENT_TIME} onClick={handleStart} className='h-11 w-full rounded-full'>
-              {t?.text18}
+            <PrimaryButton
+              isLoading={onFetchingAnswer}
+              isDisabled={!canRetake || !isReady}
+              onClick={() => {
+                setIsHasCanRetake(false)
+                handleStart()
+                setIsRetake(true)
+              }}
+              className='h-11 w-full rounded-full'
+            >
+              {isRetake ? t?.text21 : t?.text18}
             </PrimaryButton>
             <Button onClick={() => postMessageCustom({ message: keyPossmessage.CAN_POP })} className='h-11 w-full rounded-full bg-transparent text-[#A6A6A6]'>
               {t?.text19}

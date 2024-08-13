@@ -46,21 +46,6 @@ const Wrapper = ({ children }: { children: React.ReactNode }) => {
     }
   }, [navigate])
 
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 600) return
-
-      navigate('/invalid')
-    }
-
-    handleResize()
-
-    window.addEventListener('resize', handleResize)
-    return () => {
-      window.removeEventListener('resize', handleResize)
-    }
-  }, [])
-
   return <TranslationProvider lang={lang}>{children}</TranslationProvider>
 }
 

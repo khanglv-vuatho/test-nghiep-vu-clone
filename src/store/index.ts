@@ -11,7 +11,8 @@ export const ActionTypes = {
   TEST_DETAIL: 'testDetail',
   IS_START_AGAIN: 'isStartAgain',
   SEARCH_VALUE: 'searchValue',
-  KYC_STATUS: 'kyc_status'
+  KYC_STATUS: 'kyc_status',
+  CAN_RETAKE: 'canRetake'
 }
 
 type Answer = {
@@ -45,6 +46,7 @@ export type TInitState = {
   searchValue: string
   direction: direction
   kyc_status: number | null
+  canRetake: boolean | null
 }
 
 const DefaultValueState: TInitState = {
@@ -66,7 +68,8 @@ const DefaultValueState: TInitState = {
   step2: null,
   token: '',
   direction: 'right',
-  kyc_status: null
+  kyc_status: null,
+  canRetake: null
 }
 
 function counterReducer(state: TInitState = DefaultValueState, action: { type: string; payload: any }) {
@@ -91,6 +94,8 @@ function counterReducer(state: TInitState = DefaultValueState, action: { type: s
       return { ...state, searchValue: action.payload }
     case ActionTypes.KYC_STATUS:
       return { ...state, kyc_status: action.payload }
+    case ActionTypes.CAN_RETAKE:
+      return { ...state, canRetake: action.payload }
     default:
       return state
   }

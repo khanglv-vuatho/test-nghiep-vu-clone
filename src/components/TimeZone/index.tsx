@@ -1,7 +1,9 @@
 import { translate } from '@/context/translationProvider'
+import { ActionTypes } from '@/store'
 import { formatLocalTimeWithOriginType } from '@/utils'
 import moment from 'moment'
 import { memo, useEffect, useState, useCallback, useMemo } from 'react'
+import { useDispatch } from 'react-redux'
 
 type TTimeLeft = {
   days: number
@@ -9,14 +11,30 @@ type TTimeLeft = {
   minutes: number
   seconds: number
 }
+
 type TimeZoneProps = { targetDate: string }
 
 const TimeZone: React.FC<TimeZoneProps> = ({ targetDate }) => {
   const t = translate('TimeZone')
+  const dispatch = useDispatch()
   const calculateTimeLeft = useCallback(() => {
     const now = moment()
     const target = formatLocalTimeWithOriginType(targetDate)
     const duration = moment.duration(target.diff(now))
+
+    if (duration.asSeconds() < 0) {
+      console.log('khang dep trai')
+      dispatch({
+        type: ActionTypes.CAN_RETAKE,
+        payload: true
+      })
+      return {
+        days: 0,
+        hours: 0,
+        minutes: 0,
+        seconds: 0
+      }
+    }
 
     return {
       days: Math.floor(duration.asDays()),
@@ -26,30 +44,24 @@ const TimeZone: React.FC<TimeZoneProps> = ({ targetDate }) => {
     }
   }, [targetDate])
 
-  const initialTimeLeft = useMemo(calculateTimeLeft, [calculateTimeLeft])
-
-  const [timeLeft, setTimeLeft] = useState<TTimeLeft>(initialTimeLeft)
-
+  const [timeLeft, setTimeLeft] = useState<TTimeLeft>(calculateTimeLeft())
   useEffect(() => {
+    console.log({ timeLeft })
     if (targetDate === '') return
-    if (timeLeft.days === 0 && timeLeft.hours === 0 && timeLeft.minutes === 0 && timeLeft.seconds === 0) {
-      setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 })
-      return
-    }
     const timer = setInterval(() => {
+      if ((timeLeft.days == 0 && timeLeft.hours == 0 && timeLeft.minutes == 0 && timeLeft.seconds == 0) || timeLeft.seconds < 0) {
+        console.log('co chay vao day')
+        dispatch({
+          type: ActionTypes.CAN_RETAKE,
+          payload: true
+        })
+        return
+      }
       setTimeLeft(calculateTimeLeft())
     }, 1000)
 
     return () => clearInterval(timer)
-  }, [targetDate, calculateTimeLeft])
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      console.log(1)
-    }, 1000)
-
-    return () => clearInterval(interval)
-  }, [])
+  }, [targetDate, calculateTimeLeft, timeLeft])
 
   const { days, hours, minutes, seconds } = timeLeft
 
@@ -62,9 +74,7 @@ const TimeZone: React.FC<TimeZoneProps> = ({ targetDate }) => {
 
   return (
     <div className='mx-auto grid w-fit grid-cols-4 justify-center gap-4'>
-      {timeUnits.map((unit) => (
-        <TimeItem key={unit.time.toString()} timeLeft={unit.time} name={unit.name} />
-      ))}
+      {timeUnits.every((unit) => unit.time >= 0) && timeUnits.map((unit) => <TimeItem key={unit.time.toString()} timeLeft={unit.time} name={unit.name} />)}
     </div>
   )
 }
