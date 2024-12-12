@@ -47,6 +47,8 @@ const ResultPage = () => {
       type: ActionTypes.DIRECTION,
       payload: 'left'
     })
+    postMessageCustom({ message: keyPossmessage.FINISHED_TEST })
+    return
 
     if (IS_KYC_STATUS_PENDING) {
       setIsLoading(true)
