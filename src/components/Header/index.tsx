@@ -18,12 +18,16 @@ const Header = () => {
 
   let title = pathname.includes('testing') ? tt?.text3 : t?.text9
 
+  const isResultPage = pathname.includes('result')
   const handleCloseWebview = () => {
     if (pathname.includes('testing')) {
       navigate(handleAddLangInUrl({ mainUrl: '/', lang, token }))
-    } else {
-      postMessageCustom({ message: keyPossmessage.CAN_POP })
+      return
     }
+
+    postMessageCustom({
+      message: isResultPage ? keyPossmessage.FINISHED_TEST : keyPossmessage.CAN_POP
+    })
   }
 
   return (
