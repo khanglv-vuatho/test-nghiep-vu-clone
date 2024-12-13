@@ -33,6 +33,10 @@ const Step2End = () => {
       payload: 'left'
     })
 
+    setIsLoading(true)
+    postMessageCustom({ message: keyPossmessage.FINISHED_TEST })
+    return
+
     if (IS_KYC_STATUS_PENDING) {
       setIsLoading(true)
       postMessageCustom({ message: keyPossmessage.FINISHED_TEST })
